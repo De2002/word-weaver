@@ -13,119 +13,62 @@
 
 @layer base {
   :root {
-    /* Light mode - warm paper aesthetics */
-    --background: 36 33% 97%;
-    --foreground: 30 10% 15%;
+    /* Clean white light mode */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
 
-    --card: 36 30% 99%;
-    --card-foreground: 30 10% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
 
-    --popover: 36 30% 99%;
-    --popover-foreground: 30 10% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
 
-    --primary: 24 70% 50%;
-    --primary-foreground: 36 33% 97%;
+    --primary: 24 80% 50%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 36 20% 92%;
-    --secondary-foreground: 30 10% 25%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 20%;
 
-    --muted: 36 15% 90%;
-    --muted-foreground: 30 8% 45%;
+    --muted: 0 0% 94%;
+    --muted-foreground: 0 0% 45%;
 
-    --accent: 24 50% 55%;
-    --accent-foreground: 36 33% 97%;
+    --accent: 24 70% 55%;
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 51%;
-    --destructive-foreground: 36 33% 97%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 36 20% 88%;
-    --input: 36 20% 88%;
-    --ring: 24 70% 50%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 24 80% 50%;
 
     --radius: 0.75rem;
 
     /* Custom colors */
-    --ink: 30 15% 12%;
-    --paper: 36 33% 97%;
-    --warm-gold: 38 70% 55%;
-    --soft-coral: 15 60% 60%;
-    --sage: 140 15% 45%;
-    --poem-bg: 36 25% 98%;
+    --ink: 0 0% 10%;
+    --paper: 0 0% 100%;
+    --warm-gold: 38 80% 50%;
+    --soft-coral: 15 70% 55%;
+    --sage: 140 25% 40%;
+    --poem-bg: 0 0% 99%;
 
     /* Gradients */
-    --gradient-warm: linear-gradient(135deg, hsl(24 70% 50%), hsl(38 70% 55%));
-    --gradient-sunset: linear-gradient(180deg, hsl(36 33% 97%), hsl(30 25% 92%));
+    --gradient-warm: linear-gradient(135deg, hsl(24 80% 50%), hsl(38 80% 50%));
+    --gradient-sunset: linear-gradient(180deg, hsl(0 0% 100%), hsl(0 0% 98%));
     
     /* Shadows */
-    --shadow-soft: 0 2px 8px -2px hsl(30 15% 12% / 0.08);
-    --shadow-card: 0 4px 16px -4px hsl(30 15% 12% / 0.1);
-    --shadow-elevated: 0 8px 32px -8px hsl(30 15% 12% / 0.15);
+    --shadow-soft: 0 2px 8px -2px hsl(0 0% 0% / 0.06);
+    --shadow-card: 0 4px 16px -4px hsl(0 0% 0% / 0.08);
+    --shadow-elevated: 0 8px 32px -8px hsl(0 0% 0% / 0.12);
 
     --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-foreground: 0 0% 20%;
+    --sidebar-primary: 0 0% 10%;
     --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
-  }
-
-  .dark {
-    /* Dark mode - calm night reading */
-    --background: 30 15% 8%;
-    --foreground: 36 20% 90%;
-
-    --card: 30 12% 12%;
-    --card-foreground: 36 20% 90%;
-
-    --popover: 30 12% 12%;
-    --popover-foreground: 36 20% 90%;
-
-    --primary: 24 65% 55%;
-    --primary-foreground: 30 15% 8%;
-
-    --secondary: 30 10% 18%;
-    --secondary-foreground: 36 15% 75%;
-
-    --muted: 30 8% 20%;
-    --muted-foreground: 36 10% 55%;
-
-    --accent: 24 55% 60%;
-    --accent-foreground: 30 15% 8%;
-
-    --destructive: 0 62% 45%;
-    --destructive-foreground: 36 20% 90%;
-
-    --border: 30 8% 20%;
-    --input: 30 8% 20%;
-    --ring: 24 65% 55%;
-
-    /* Custom colors - dark mode */
-    --ink: 36 20% 90%;
-    --paper: 30 15% 8%;
-    --warm-gold: 38 65% 50%;
-    --soft-coral: 15 55% 55%;
-    --sage: 140 12% 50%;
-    --poem-bg: 30 10% 14%;
-
-    /* Gradients - dark mode */
-    --gradient-warm: linear-gradient(135deg, hsl(24 65% 55%), hsl(38 65% 50%));
-    --gradient-sunset: linear-gradient(180deg, hsl(30 15% 8%), hsl(30 12% 12%));
-    
-    /* Shadows - dark mode */
-    --shadow-soft: 0 2px 8px -2px hsl(0 0% 0% / 0.3);
-    --shadow-card: 0 4px 16px -4px hsl(0 0% 0% / 0.4);
-    --shadow-elevated: 0 8px 32px -8px hsl(0 0% 0% / 0.5);
-
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 224.3 76.3% 48%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
-    --sidebar-accent-foreground: 240 4.8% 95.9%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 217.2 91.2% 59.8%;
+    --sidebar-accent: 0 0% 96%;
+    --sidebar-accent-foreground: 0 0% 10%;
+    --sidebar-border: 0 0% 90%;
+    --sidebar-ring: 24 80% 50%;
   }
 }
 
