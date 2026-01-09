@@ -15,17 +15,17 @@ const sectionConfig = {
   trending: {
     icon: Sparkles,
     gradient: 'from-primary to-warm-gold',
-    bg: 'bg-gradient-to-r from-primary/5 to-warm-gold/5',
+    bg: 'bg-secondary/50',
   },
   rising: {
     icon: TrendingUp,
     gradient: 'from-soft-coral to-primary',
-    bg: 'bg-soft-coral/5',
+    bg: 'bg-secondary/50',
   },
   new: {
     icon: Sprout,
     gradient: 'from-sage to-sage',
-    bg: 'bg-sage/5',
+    bg: 'bg-secondary/50',
   },
 };
 

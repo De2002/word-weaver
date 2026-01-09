@@ -8,7 +8,7 @@ import { mockPoems, trendingPoets, newPoets, risingPoets, mockPoets } from '@/da
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background dark">
+    <div className="min-h-screen bg-background">
       <Header />
       
       <main className="max-w-2xl mx-auto pb-safe">
