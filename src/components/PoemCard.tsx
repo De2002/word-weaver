@@ -73,7 +73,7 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
       </header>
 
       {/* Poem Content */}
-      <div className="space-y-3">
+      <a href={`/poem/${poem.id}`} className="block space-y-3 hover:opacity-90 transition-opacity">
         {poem.title && (
           <h2 className="poem-title text-foreground">{poem.title}</h2>
         )}
@@ -83,14 +83,11 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
         </div>
 
         {shouldTruncate && !isExpanded && (
-          <button
-            onClick={() => setIsExpanded(true)}
-            className="text-sm text-primary font-medium hover:underline"
-          >
+          <span className="text-sm text-primary font-medium hover:underline">
             Read more...
-          </button>
+          </span>
         )}
-      </div>
+      </a>
 
       {/* Tags */}
       <div className="flex flex-wrap gap-2">
