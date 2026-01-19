@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, MessageCircle, Bookmark, Share2, Sparkles, Send, ChevronDown, ChevronUp } from 'lucide-react';
+import { Heart, MessageCircle, Bookmark, Share2, Sparkles, Send, ChevronDown, ChevronUp, Twitter, Facebook, Link2, MessageSquare } from 'lucide-react';
 import { Poem } from '@/types/poem';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { TagBadge } from '@/components/TagBadge';
@@ -9,6 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
+import { toast } from '@/hooks/use-toast';
 
 interface Comment {
   id: string;
@@ -34,6 +35,8 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
   const [upvotes, setUpvotes] = useState(poem.upvotes);
   const [isExpanded, setIsExpanded] = useState(false);
   const [showComments, setShowComments] = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
+  const shareMenuRef = useRef<HTMLDivElement>(null);
   const [commentText, setCommentText] = useState('');
   const [comments, setComments] = useState<Comment[]>([
     {
@@ -48,6 +51,56 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
       likes: 5,
     },
   ]);
+
+  // Close share menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (shareMenuRef.current && !shareMenuRef.current.contains(event.target as Node)) {
+        setShowShareMenu(false);
+      }
+    };
+    
+    if (showShareMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showShareMenu]);
+
+  const poemUrl = `${window.location.origin}/poem/${poem.id}`;
+  const shareText = `"${poem.title}" by ${poem.poet.name} - ${poem.text.slice(0, 100)}...`;
+
+  const handleShare = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowShareMenu(!showShareMenu);
+  };
+
+  const shareToTwitter = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(poemUrl)}`, '_blank');
+    setShowShareMenu(false);
+  };
+
+  const shareToFacebook = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(poemUrl)}`, '_blank');
+    setShowShareMenu(false);
+  };
+
+  const shareToWhatsApp = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    window.open(`https://wa.me/?text=${encodeURIComponent(shareText + ' ' + poemUrl)}`, '_blank');
+    setShowShareMenu(false);
+  };
+
+  const copyLink = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    await navigator.clipboard.writeText(poemUrl);
+    toast({
+      title: "Link copied!",
+      description: "Poem link has been copied to clipboard.",
+    });
+    setShowShareMenu(false);
+  };
 
   const poemLines = poem.text.split('\n');
   const shouldTruncate = poemLines.length > 8;
@@ -240,12 +293,60 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
           </motion.button>
         </div>
 
-        <button 
-          className="text-muted-foreground hover:text-foreground transition-colors"
-          onClick={(e) => e.stopPropagation()}
-        >
-          <Share2 className="h-5 w-5" />
-        </button>
+        <div className="relative" ref={shareMenuRef}>
+          <motion.button 
+            whileTap={{ scale: 0.9 }}
+            className={cn(
+              "text-muted-foreground hover:text-foreground transition-colors p-1.5 rounded-full",
+              showShareMenu && "bg-secondary text-foreground"
+            )}
+            onClick={handleShare}
+          >
+            <Share2 className="h-5 w-5" />
+          </motion.button>
+
+          <AnimatePresence>
+            {showShareMenu && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                transition={{ duration: 0.15 }}
+                className="absolute bottom-full right-0 mb-2 bg-card border border-border rounded-xl shadow-lg p-2 min-w-[160px] z-50"
+              >
+                <button
+                  onClick={shareToTwitter}
+                  className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-foreground hover:bg-secondary rounded-lg transition-colors"
+                >
+                  <Twitter className="h-4 w-4 text-[#1DA1F2]" />
+                  <span>Twitter</span>
+                </button>
+                <button
+                  onClick={shareToFacebook}
+                  className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-foreground hover:bg-secondary rounded-lg transition-colors"
+                >
+                  <Facebook className="h-4 w-4 text-[#1877F2]" />
+                  <span>Facebook</span>
+                </button>
+                <button
+                  onClick={shareToWhatsApp}
+                  className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-foreground hover:bg-secondary rounded-lg transition-colors"
+                >
+                  <MessageSquare className="h-4 w-4 text-[#25D366]" />
+                  <span>WhatsApp</span>
+                </button>
+                <Separator className="my-1" />
+                <button
+                  onClick={copyLink}
+                  className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-foreground hover:bg-secondary rounded-lg transition-colors"
+                >
+                  <Link2 className="h-4 w-4" />
+                  <span>Copy link</span>
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
 
       {/* Inline Comments Section */}
