@@ -6,7 +6,7 @@ import {
   Send, MoreHorizontal, Sparkles 
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
+import { TagBadge } from '@/components/TagBadge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
@@ -181,13 +181,7 @@ export default function PoemDetail() {
           {/* Tags */}
           <div className="flex flex-wrap gap-2">
             {poem.tags.map(tag => (
-              <Badge 
-                key={tag} 
-                variant="secondary"
-                className="text-sm font-normal px-3 py-1"
-              >
-                #{tag}
-              </Badge>
+              <TagBadge key={tag} tag={tag} />
             ))}
           </div>
 
