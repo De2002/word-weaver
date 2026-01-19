@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, MessageCircle, Bookmark, Share2, Sparkles, Send, ChevronDown, ChevronUp } from 'lucide-react';
 import { Poem } from '@/types/poem';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Badge } from '@/components/ui/badge';
+import { TagBadge } from '@/components/TagBadge';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
@@ -183,13 +183,7 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
       {/* Tags */}
       <div className="flex flex-wrap gap-2 mb-4">
         {poem.tags.slice(0, 4).map(tag => (
-          <Badge 
-            key={tag} 
-            variant="secondary"
-            className="text-xs font-normal px-2.5 py-1"
-          >
-            #{tag}
-          </Badge>
+          <TagBadge key={tag} tag={tag} />
         ))}
       </div>
 
