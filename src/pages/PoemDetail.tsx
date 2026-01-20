@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { TagBadge } from '@/components/TagBadge';
+import { AudioPlayButton } from '@/components/AudioPlayButton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
@@ -168,11 +169,20 @@ export default function PoemDetail() {
 
           {/* Full Poem */}
           <div className="space-y-4 py-4">
-            {poem.title && (
-              <h1 className="font-serif text-2xl font-semibold text-foreground">
-                {poem.title}
-              </h1>
-            )}
+            <div className="flex items-start justify-between gap-3">
+              {poem.title && (
+                <h1 className="font-serif text-2xl font-semibold text-foreground">
+                  {poem.title}
+                </h1>
+              )}
+              {poem.audioUrl && (
+                <AudioPlayButton 
+                  audioUrl={poem.audioUrl} 
+                  size="md"
+                  className="flex-shrink-0"
+                />
+              )}
+            </div>
             <p className="font-serif text-lg leading-relaxed text-foreground/90 whitespace-pre-line">
               {poem.text}
             </p>

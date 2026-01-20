@@ -5,6 +5,7 @@ import { Heart, MessageCircle, Bookmark, Share2, Sparkles, Send, ChevronDown, Ch
 import { Poem } from '@/types/poem';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { TagBadge } from '@/components/TagBadge';
+import { AudioPlayButton } from '@/components/AudioPlayButton';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
@@ -202,11 +203,20 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
         onClick={handlePoemClick}
         className="cursor-pointer space-y-3 mb-4"
       >
-        {poem.title && (
-          <h2 className="font-serif text-xl md:text-2xl font-semibold text-foreground">
-            {poem.title}
-          </h2>
-        )}
+        <div className="flex items-start justify-between gap-3">
+          {poem.title && (
+            <h2 className="font-serif text-xl md:text-2xl font-semibold text-foreground">
+              {poem.title}
+            </h2>
+          )}
+          {poem.audioUrl && (
+            <AudioPlayButton 
+              audioUrl={poem.audioUrl} 
+              size="sm"
+              className="flex-shrink-0 mt-1"
+            />
+          )}
+        </div>
         
         <div className="font-serif text-lg leading-relaxed text-foreground whitespace-pre-line">
           {displayText}
