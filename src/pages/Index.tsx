@@ -1,15 +1,21 @@
+import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Header } from '@/components/Header';
 import { BottomNav } from '@/components/BottomNav';
 import { FeedTabs } from '@/components/FeedTabs';
 import { PoemCard } from '@/components/PoemCard';
 import { DiscoverSection } from '@/components/DiscoverSection';
+import { AppSidebar } from '@/components/AppSidebar';
 import { mockPoems, trendingPoets, newPoets, risingPoets, mockPoets } from '@/data/mockData';
 
 const Index = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <AppSidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+      
+      <Header onMenuClick={() => setSidebarOpen(true)} />
       
       <main className="max-w-2xl mx-auto pb-safe">
         {/* Feed Tabs */}
