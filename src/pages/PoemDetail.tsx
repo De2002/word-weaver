@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   ArrowLeft, Heart, MessageCircle, Bookmark, Share2, 
-  Send, MoreHorizontal, Sparkles 
+  Send, MoreHorizontal, Sparkles, TrendingUp 
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { TagBadge } from '@/components/TagBadge';
@@ -137,32 +137,34 @@ export default function PoemDetail() {
           <header className="flex items-center justify-between">
             <a 
               href="/profile" 
-              className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+              className="flex items-center gap-2.5 hover:opacity-80 transition-opacity"
             >
-              <Avatar className="h-12 w-12 ring-2 ring-border">
-                <AvatarImage src={poem.poet.avatar} alt={poem.poet.name} />
-                <AvatarFallback className="bg-secondary font-medium">
-                  {poem.poet.name.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
+              <div className="relative">
+                <Avatar className="h-9 w-9 ring-2 ring-border">
+                  <AvatarImage src={poem.poet.avatar} alt={poem.poet.name} />
+                  <AvatarFallback className="bg-secondary font-medium text-sm">
+                    {poem.poet.name.charAt(0)}
+                  </AvatarFallback>
+                </Avatar>
+                {poetBadge && (
+                  <span className={cn(
+                    "absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full flex items-center justify-center ring-2 ring-background",
+                    poetBadge.type === 'trending' && 'bg-gradient-to-br from-primary to-warm-gold',
+                    poetBadge.type === 'new' && 'bg-sage',
+                    poetBadge.type === 'rising' && 'bg-soft-coral',
+                  )}>
+                    {poetBadge.type === 'trending' && <Sparkles className="h-2.5 w-2.5 text-white" />}
+                    {poetBadge.type === 'new' && <span className="text-[8px] font-bold text-white">N</span>}
+                    {poetBadge.type === 'rising' && <TrendingUp className="h-2.5 w-2.5 text-white" />}
+                  </span>
+                )}
+              </div>
               <div className="flex flex-col">
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold">{poem.poet.name}</span>
-                  {poetBadge && (
-                    <span className={cn(
-                      poetBadge.type === 'trending' && 'badge-trending',
-                      poetBadge.type === 'new' && 'badge-new',
-                      poetBadge.type === 'rising' && 'badge-rising',
-                    )}>
-                      {poetBadge.type === 'trending' && <Sparkles className="h-3 w-3" />}
-                      {poetBadge.label}
-                    </span>
-                  )}
-                </div>
-                <span className="text-sm text-muted-foreground">@{poem.poet.username}</span>
+                <span className="font-medium text-sm">{poem.poet.name}</span>
+                <span className="text-xs text-muted-foreground">@{poem.poet.username}</span>
               </div>
             </a>
-            <Button variant="outline" size="sm" className="rounded-full">
+            <Button variant="outline" size="sm" className="rounded-full h-8 text-xs">
               Follow
             </Button>
           </header>
