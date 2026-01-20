@@ -24,6 +24,7 @@ export interface Poem {
   text: string;
   poet: Poet;
   imageUrl?: string;
+  audioUrl?: string;
   language: string;
   tags: string[];
   upvotes: number;
