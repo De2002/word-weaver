@@ -8,6 +8,7 @@ import Profile from "./pages/Profile";
 import Discover from "./pages/Discover";
 import PoemDetail from "./pages/PoemDetail";
 import TagPage from "./pages/TagPage";
+import More from "./pages/More";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/discover" element={<Discover />} />
           <Route path="/poem/:id" element={<PoemDetail />} />
           <Route path="/tag/:tag" element={<TagPage />} />
+          <Route path="/more" element={<More />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

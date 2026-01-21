@@ -1,7 +1,6 @@
-import { Home, Compass, PenLine, Bell, User } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
+import { Home, Compass, Bell, MoreHorizontal } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
 
 interface NavItem {
   icon: React.ElementType;
@@ -12,9 +11,8 @@ interface NavItem {
 const navItems: NavItem[] = [
   { icon: Home, label: 'Home', href: '/' },
   { icon: Compass, label: 'Discover', href: '/discover' },
-  { icon: PenLine, label: 'Post', href: '/post' },
   { icon: Bell, label: 'Alerts', href: '/notifications' },
-  { icon: User, label: 'Profile', href: '/profile' },
+  { icon: MoreHorizontal, label: 'More', href: '/more' },
 ];
 
 export function BottomNav() {
@@ -26,49 +24,34 @@ export function BottomNav() {
   };
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50">
-      <div className="mx-auto max-w-lg px-4 pb-[env(safe-area-inset-bottom)]">
-        <div className="mb-2 flex items-center justify-around rounded-2xl bg-card/95 backdrop-blur-xl border border-border/50 shadow-lg px-2 py-2">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-background border-t border-border">
+      <div className="mx-auto max-w-lg pb-[env(safe-area-inset-bottom)]">
+        <div className="flex items-center justify-around h-14">
           {navItems.map((item) => {
             const active = isActive(item.href);
             
             return (
-              <motion.a
+              <Link
                 key={item.label}
-                href={item.href}
-                whileTap={{ scale: 0.92 }}
+                to={item.href}
                 className={cn(
-                  "relative flex flex-col items-center justify-center gap-0.5 px-4 py-2 rounded-xl transition-all duration-200",
+                  "flex flex-col items-center justify-center gap-1 px-6 py-2 transition-colors",
                   active 
                     ? "text-primary" 
                     : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                {item.label === 'Post' ? (
-                  <div className="flex items-center justify-center w-12 h-12 -mt-6 rounded-full bg-gradient-to-br from-primary to-warm-gold shadow-lg shadow-primary/30">
-                    <item.icon className="h-5 w-5 text-white" strokeWidth={2.5} />
-                  </div>
-                ) : (
-                  <>
-                    <item.icon className={cn(
-                      "h-5 w-5 transition-all",
-                      active && "stroke-[2.5]"
-                    )} />
-                    <span className={cn(
-                      "text-[10px] font-medium transition-all",
-                      active && "font-semibold"
-                    )}>
-                      {item.label}
-                    </span>
-                    {active && (
-                      <motion.div 
-                        layoutId="activeTab"
-                        className="absolute -bottom-1 w-1 h-1 rounded-full bg-primary"
-                      />
-                    )}
-                  </>
-                )}
-              </motion.a>
+                <item.icon className={cn(
+                  "h-5 w-5",
+                  active && "stroke-[2.5]"
+                )} />
+                <span className={cn(
+                  "text-[10px]",
+                  active ? "font-semibold" : "font-medium"
+                )}>
+                  {item.label}
+                </span>
+              </Link>
             );
           })}
         </div>
