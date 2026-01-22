@@ -2,13 +2,13 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Feather, Search } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { useAuth } from '@/context/AuthProvider';
 
 export function Header() {
-  // Mock user data - would come from auth context in real app
-  const user = {
-    name: 'You',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop',
-  };
+  const { user, profile } = useAuth();
+  const displayName = profile?.display_name || profile?.username || user?.email || 'You';
+  const avatarUrl = profile?.avatar_url || undefined;
 
   return (
     <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
@@ -41,17 +41,23 @@ export function Header() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.05 }}
           >
-            <Link 
-              to="/profile"
-              className="block rounded-full ring-2 ring-transparent hover:ring-primary/30 transition-all"
-            >
-              <Avatar className="h-8 w-8">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="bg-primary/10 text-primary text-xs font-medium">
-                  {user.name.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
-            </Link>
+            {user ? (
+              <Link
+                to="/profile"
+                className="block rounded-full ring-2 ring-transparent hover:ring-primary/30 transition-all"
+              >
+                <Avatar className="h-8 w-8">
+                  <AvatarImage src={avatarUrl} alt={displayName} />
+                  <AvatarFallback className="bg-primary/10 text-primary text-xs font-medium">
+                    {displayName.charAt(0).toUpperCase()}
+                  </AvatarFallback>
+                </Avatar>
+              </Link>
+            ) : (
+              <Button asChild size="sm" variant="secondary">
+                <Link to="/login">Sign in</Link>
+              </Button>
+            )}
           </motion.div>
         </div>
       </div>
