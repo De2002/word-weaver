@@ -11,6 +11,7 @@ import { useToast } from "@/hooks/use-toast";
 import { normalizeTag } from "@/lib/tags";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/lib/db";
 import { useAuth } from "@/context/AuthProvider";
 
 const MAX_TITLE_LENGTH = 100;
@@ -105,7 +106,7 @@ export function PoemEditor({ initial }: Props) {
     if (uploadError) throw uploadError;
 
     // Link it in DB
-    const { error: upsertError } = await supabase
+    const { error: upsertError } = await db
       .from("poem_audio_files")
       .upsert(
         {
@@ -141,7 +142,7 @@ export function PoemEditor({ initial }: Props) {
       let poemId = initial?.id;
 
       if (!poemId) {
-        const { data, error } = await supabase
+        const { data, error } = await db
           .from("poems")
           .insert({
             user_id: user.id,
@@ -154,9 +155,10 @@ export function PoemEditor({ initial }: Props) {
           .single();
 
         if (error) throw error;
-        poemId = data.id;
+        poemId = data?.id;
+        if (!poemId) throw new Error("Could not create poem");
       } else {
-        const { error } = await supabase
+        const { error } = await db
           .from("poems")
           .update({
             title: title.trim() || null,

@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { db } from "@/lib/db";
 
 export default function Signup() {
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ export default function Signup() {
     }
 
     // Create profile + baseline role
-    const { error: profileError } = await supabase.from("profiles").insert({
+    const { error: profileError } = await db.from("profiles").insert({
       user_id: userId,
       username: username.trim() || null,
       display_name: displayName.trim() || null,
@@ -55,7 +56,7 @@ export default function Signup() {
       return;
     }
 
-    await supabase.from("user_roles").insert({ user_id: userId, role: "user" });
+    await db.from("user_roles").insert({ user_id: userId, role: "user" });
 
     setLoading(false);
     toast({ title: "Welcome to WordStack", description: "You can complete your profile now." });
