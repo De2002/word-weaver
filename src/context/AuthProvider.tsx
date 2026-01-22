@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/lib/db";
 
 export type UserRole = "user" | "poet" | "moderator" | "admin";
 
@@ -28,7 +29,7 @@ type AuthContextValue = {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 async function fetchProfile(userId: string): Promise<ProfileRow | null> {
-  const { data, error } = await supabase
+  const { data, error } = await db
     .from("profiles")
     .select("user_id, username, display_name, avatar_url, bio, links")
     .eq("user_id", userId)
@@ -39,13 +40,13 @@ async function fetchProfile(userId: string): Promise<ProfileRow | null> {
 }
 
 async function fetchRoles(userId: string): Promise<UserRole[]> {
-  const { data, error } = await supabase
+  const { data, error } = await db
     .from("user_roles")
     .select("role")
     .eq("user_id", userId);
 
   if (error) throw error;
-  return (data ?? []).map((r) => r.role as UserRole);
+  return (data ?? []).map((r: { role: string }) => r.role as UserRole);
 }
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {

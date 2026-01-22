@@ -7,7 +7,7 @@ import { BottomNav } from "@/components/BottomNav";
 import { CreateButton } from "@/components/CreateButton";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/lib/db";
 import { useAuth } from "@/context/AuthProvider";
 import { useToast } from "@/hooks/use-toast";
 
@@ -28,7 +28,7 @@ export default function MyPoems() {
   const load = async () => {
     if (!user) return;
     setLoading(true);
-    const { data, error } = await supabase
+    const { data, error } = await db
       .from("poems")
       .select("id, title, content, status, updated_at")
       .eq("user_id", user.id)
@@ -51,7 +51,7 @@ export default function MyPoems() {
   const published = useMemo(() => poems.filter((p) => p.status === "published"), [poems]);
 
   const setStatus = async (poemId: string, next: "draft" | "published") => {
-    const { error } = await supabase.from("poems").update({ status: next }).eq("id", poemId);
+    const { error } = await db.from("poems").update({ status: next }).eq("id", poemId);
     if (error) {
       toast({ title: "Couldn’t update", description: error.message, variant: "destructive" });
       return;
@@ -60,7 +60,7 @@ export default function MyPoems() {
   };
 
   const remove = async (poemId: string) => {
-    const { error } = await supabase.from("poems").delete().eq("id", poemId);
+    const { error } = await db.from("poems").delete().eq("id", poemId);
     if (error) {
       toast({ title: "Couldn’t delete", description: error.message, variant: "destructive" });
       return;

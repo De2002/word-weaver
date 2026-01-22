@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PoemEditor } from "@/components/PoemEditor";
-import { supabase } from "@/integrations/supabase/client";
+import { db } from "@/lib/db";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthProvider";
 
@@ -19,7 +19,7 @@ export default function EditPoem() {
     if (!id || !user) return;
     (async () => {
       setLoading(true);
-      const { data: poem, error } = await supabase
+      const { data: poem, error } = await db
         .from("poems")
         .select("id, title, content, tags, status")
         .eq("id", id)
@@ -30,18 +30,25 @@ export default function EditPoem() {
         return;
       }
 
-      const { data: audio } = await supabase
+      const { data: audio } = await db
         .from("poem_audio_files")
         .select("storage_path")
         .eq("poem_id", id)
         .maybeSingle();
 
+      if (!poem?.id) {
+        setInitial(null);
+        setLoading(false);
+        toast({ title: "Not found", description: "Poem not found (or you don’t have access).", variant: "destructive" });
+        return;
+      }
+
       setInitial({
-        id: poem?.id,
-        title: poem?.title,
-        content: poem?.content,
-        tags: poem?.tags ?? [],
-        status: poem?.status,
+        id: poem.id,
+        title: poem.title,
+        content: poem.content,
+        tags: poem.tags ?? [],
+        status: poem.status,
         audioPath: audio?.storage_path ?? null,
       });
       setLoading(false);
