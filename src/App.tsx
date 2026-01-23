@@ -17,6 +17,7 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import MyPoems from "./pages/MyPoems";
 import EditPoem from "./pages/EditPoem";
+import PoetProfile from "./pages/PoetProfile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -43,6 +44,7 @@ const App = () => (
               }
             />
             <Route path="/discover" element={<Discover />} />
+            <Route path="/poet/:username" element={<PoetProfile />} />
             <Route path="/poem/:id" element={<PoemDetail />} />
             <Route path="/tag/:tag" element={<TagPage />} />
             <Route path="/more" element={<More />} />

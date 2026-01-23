@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, MessageCircle, Bookmark, Share2, Sparkles, Send, ChevronDown, ChevronUp, Twitter, Facebook, Link2, MessageSquare, TrendingUp } from 'lucide-react';
 import { Poem } from '@/types/poem';
@@ -166,7 +166,11 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
     >
       {/* Poet Header */}
       <header className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-3">
+        <Link
+          to={`/poet/${poem.poet.username}`}
+          className="flex items-center gap-3 hover:opacity-80 transition-opacity"
+          onClick={(e) => e.stopPropagation()}
+        >
           <div className="relative">
             <Avatar className="h-10 w-10 ring-2 ring-border">
               <AvatarImage src={poem.poet.avatar} alt={poem.poet.name} />
@@ -191,7 +195,7 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
             <span className="font-medium text-sm text-foreground">{poem.poet.name}</span>
             <span className="text-xs text-muted-foreground">@{poem.poet.username}</span>
           </div>
-        </div>
+        </Link>
         <button 
           className="text-sm text-primary font-medium hover:underline px-3 py-1.5 rounded-full border border-primary/30 hover:bg-primary/5 transition-colors"
           onClick={(e) => e.stopPropagation()}
