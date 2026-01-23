@@ -68,6 +68,40 @@ export function usePoetProfile(username: string): UsePoetProfileResult {
     enabled: !!profile?.user_id,
   });
 
+  // Fetch total reads for this poet's poems
+  const { data: totalReads } = useQuery({
+    queryKey: ['poet-total-reads', profile?.user_id],
+    queryFn: async () => {
+      if (!poemsData || poemsData.length === 0) return 0;
+      const poemIds = poemsData.map((p: any) => p.id);
+      const { count, error } = await db
+        .from('poem_reads')
+        .select('*', { count: 'exact', head: true })
+        .in('poem_id', poemIds);
+
+      if (error) throw error;
+      return count || 0;
+    },
+    enabled: !!poemsData && poemsData.length > 0,
+  });
+
+  // Fetch total upvotes for this poet's poems
+  const { data: totalUpvotes } = useQuery({
+    queryKey: ['poet-total-upvotes', profile?.user_id],
+    queryFn: async () => {
+      if (!poemsData || poemsData.length === 0) return 0;
+      const poemIds = poemsData.map((p: any) => p.id);
+      const { count, error } = await db
+        .from('poem_upvotes')
+        .select('*', { count: 'exact', head: true })
+        .in('poem_id', poemIds);
+
+      if (error) throw error;
+      return count || 0;
+    },
+    enabled: !!poemsData && poemsData.length > 0,
+  });
+
   // Transform to app types
   const poet: Poet | null = profile
     ? {
@@ -77,8 +111,8 @@ export function usePoetProfile(username: string): UsePoetProfileResult {
         avatar: profile.avatar_url || '',
         bio: profile.bio || '',
         languages: [],
-        totalReads: 0,
-        totalUpvotes: 0,
+        totalReads: totalReads || 0,
+        totalUpvotes: totalUpvotes || 0,
         totalPoems: poemsData?.length || 0,
         followersCount: followerCount || 0,
         supportLinks: profile.links || {},

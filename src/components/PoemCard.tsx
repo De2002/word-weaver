@@ -12,6 +12,7 @@ import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import { toast } from '@/hooks/use-toast';
+import { usePoemInteractions } from '@/hooks/usePoemInteractions';
 
 interface Comment {
   id: string;
@@ -32,27 +33,28 @@ interface PoemCardProps {
 
 export function PoemCard({ poem, index = 0 }: PoemCardProps) {
   const navigate = useNavigate();
-  const [isUpvoted, setIsUpvoted] = useState(poem.isUpvoted);
-  const [isSaved, setIsSaved] = useState(poem.isSaved);
-  const [upvotes, setUpvotes] = useState(poem.upvotes);
+  const {
+    isUpvoted,
+    isSaved,
+    upvoteCount,
+    saveCount,
+    readCount,
+    toggleUpvote,
+    toggleSave,
+    recordRead,
+  } = usePoemInteractions(poem.id);
+
   const [isExpanded, setIsExpanded] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [showShareMenu, setShowShareMenu] = useState(false);
   const shareMenuRef = useRef<HTMLDivElement>(null);
   const [commentText, setCommentText] = useState('');
-  const [comments, setComments] = useState<Comment[]>([
-    {
-      id: '1',
-      author: {
-        name: 'Maya Thompson',
-        username: 'mayapoetry',
-        avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face',
-      },
-      text: 'This touched my soul. Beautiful words.',
-      createdAt: new Date(Date.now() - 3600000).toISOString(),
-      likes: 5,
-    },
-  ]);
+  const [comments, setComments] = useState<Comment[]>([]);
+
+  // Record read when poem is viewed
+  useEffect(() => {
+    recordRead();
+  }, []);
 
   // Close share menu when clicking outside
   useEffect(() => {
@@ -112,13 +114,12 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
 
   const handleUpvote = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsUpvoted(!isUpvoted);
-    setUpvotes(prev => isUpvoted ? prev - 1 : prev + 1);
+    toggleUpvote();
   };
 
   const handleSave = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setIsSaved(!isSaved);
+    toggleSave();
   };
 
   const handleToggleComments = (e: React.MouseEvent) => {
@@ -254,7 +255,7 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
 
       {/* Meta Info */}
       <div className="text-sm text-muted-foreground mb-4">
-        <span>{poem.reads?.toLocaleString() || 0} reads</span>
+        <span>{readCount.toLocaleString()} reads</span>
         <span className="mx-2">·</span>
         <span>{formatDistanceToNow(new Date(poem.createdAt), { addSuffix: true })}</span>
       </div>
@@ -275,7 +276,7 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
             <Heart 
               className={cn("h-5 w-5", isUpvoted && "fill-current")} 
             />
-            <span className="font-medium text-sm">{upvotes}</span>
+            <span className="font-medium text-sm">{upvoteCount}</span>
           </motion.button>
 
           <motion.button 
@@ -287,7 +288,7 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
             )}
           >
             <MessageCircle className={cn("h-5 w-5", showComments && "fill-primary/20")} />
-            <span className="font-medium text-sm">{poem.comments + comments.length - 1}</span>
+            <span className="font-medium text-sm">{comments.length}</span>
           </motion.button>
 
           <motion.button
@@ -301,7 +302,7 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
             <Bookmark 
               className={cn("h-5 w-5", isSaved && "fill-current")} 
             />
-            <span className="font-medium text-sm">{poem.saves}</span>
+            <span className="font-medium text-sm">{saveCount}</span>
           </motion.button>
         </div>
 

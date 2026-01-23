@@ -67,6 +67,93 @@ export type Database = {
           },
         ]
       }
+      poem_reads: {
+        Row: {
+          created_at: string
+          id: string
+          poem_id: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          poem_id: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          poem_id?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "poem_reads_poem_id_fkey"
+            columns: ["poem_id"]
+            isOneToOne: false
+            referencedRelation: "poems"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      poem_saves: {
+        Row: {
+          created_at: string
+          id: string
+          poem_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          poem_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          poem_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "poem_saves_poem_id_fkey"
+            columns: ["poem_id"]
+            isOneToOne: false
+            referencedRelation: "poems"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      poem_upvotes: {
+        Row: {
+          created_at: string
+          id: string
+          poem_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          poem_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          poem_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "poem_upvotes_poem_id_fkey"
+            columns: ["poem_id"]
+            isOneToOne: false
+            referencedRelation: "poems"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       poems: {
         Row: {
           content: string
