@@ -1,30 +1,19 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, MessageCircle, Bookmark, Share2, Sparkles, Send, ChevronDown, ChevronUp, Twitter, Facebook, Link2, MessageSquare, TrendingUp } from 'lucide-react';
+import { Heart, MessageCircle, Bookmark, Share2, Sparkles, ChevronDown, ChevronUp, Twitter, Facebook, Link2, MessageSquare, TrendingUp } from 'lucide-react';
 import { Poem } from '@/types/poem';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { TagBadge } from '@/components/TagBadge';
 import { AudioPlayButton } from '@/components/AudioPlayButton';
 import { FollowButton } from '@/components/FollowButton';
-import { Input } from '@/components/ui/input';
+import { CommentSection } from '@/components/CommentSection';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import { toast } from '@/hooks/use-toast';
 import { usePoemInteractions } from '@/hooks/usePoemInteractions';
-
-interface Comment {
-  id: string;
-  author: {
-    name: string;
-    username: string;
-    avatar: string;
-  };
-  text: string;
-  createdAt: string;
-  likes: number;
-}
+import { useComments } from '@/hooks/useComments';
 
 interface PoemCardProps {
   poem: Poem;
@@ -44,12 +33,12 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
     recordRead,
   } = usePoemInteractions(poem.id);
 
+  const { commentCount } = useComments(poem.id);
+
   const [isExpanded, setIsExpanded] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [showShareMenu, setShowShareMenu] = useState(false);
   const shareMenuRef = useRef<HTMLDivElement>(null);
-  const [commentText, setCommentText] = useState('');
-  const [comments, setComments] = useState<Comment[]>([]);
 
   // Record read when poem is viewed
   useEffect(() => {
@@ -125,26 +114,6 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
   const handleToggleComments = (e: React.MouseEvent) => {
     e.stopPropagation();
     setShowComments(!showComments);
-  };
-
-  const handleSubmitComment = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (!commentText.trim()) return;
-    
-    const newComment: Comment = {
-      id: Date.now().toString(),
-      author: {
-        name: 'You',
-        username: 'you',
-        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face',
-      },
-      text: commentText,
-      createdAt: new Date().toISOString(),
-      likes: 0,
-    };
-    
-    setComments([newComment, ...comments]);
-    setCommentText('');
   };
 
   const handleReadMore = (e: React.MouseEvent) => {
@@ -288,7 +257,7 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
             )}
           >
             <MessageCircle className={cn("h-5 w-5", showComments && "fill-primary/20")} />
-            <span className="font-medium text-sm">{comments.length}</span>
+            <span className="font-medium text-sm">{commentCount}</span>
           </motion.button>
 
           <motion.button
@@ -365,96 +334,11 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
       {/* Inline Comments Section */}
       <AnimatePresence>
         {showComments && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden"
-          >
-            <Separator className="my-4" />
-            
-            {/* Comment Input */}
-            <div className="flex items-center gap-3 mb-4">
-              <Avatar className="h-8 w-8">
-                <AvatarImage src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face" />
-                <AvatarFallback>Y</AvatarFallback>
-              </Avatar>
-              <div className="flex-1 flex items-center gap-2">
-                <Input
-                  placeholder="Add a comment..."
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.stopPropagation();
-                      handleSubmitComment(e as any);
-                    }
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                  className="flex-1 bg-secondary/50 border-0 h-9 text-sm"
-                />
-                <motion.button
-                  whileTap={{ scale: 0.9 }}
-                  onClick={handleSubmitComment}
-                  disabled={!commentText.trim()}
-                  className={cn(
-                    "p-2 rounded-full transition-colors",
-                    commentText.trim() 
-                      ? "bg-primary text-primary-foreground" 
-                      : "bg-secondary text-muted-foreground"
-                  )}
-                >
-                  <Send className="h-4 w-4" />
-                </motion.button>
-              </div>
-            </div>
-
-            {/* Comments List */}
-            <div className="space-y-3">
-              {comments.slice(0, 3).map((comment, idx) => (
-                <motion.div
-                  key={comment.id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.05 }}
-                  className="flex gap-3"
-                >
-                  <Avatar className="h-7 w-7 flex-shrink-0">
-                    <AvatarImage src={comment.author.avatar} alt={comment.author.name} />
-                    <AvatarFallback>{comment.author.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 space-y-0.5">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium text-sm text-foreground">{comment.author.name}</span>
-                      <span className="text-xs text-muted-foreground">
-                        {formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}
-                      </span>
-                    </div>
-                    <p className="text-sm text-foreground/90">{comment.text}</p>
-                    <div className="flex items-center gap-4 pt-1">
-                      <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
-                        <Heart className="h-3 w-3" />
-                        <span>{comment.likes}</span>
-                      </button>
-                      <button className="text-xs text-muted-foreground hover:text-foreground transition-colors">
-                        Reply
-                      </button>
-                    </div>
-                  </div>
-                </motion.div>
-              ))}
-              
-              {comments.length > 3 && (
-                <button 
-                  onClick={handlePoemClick}
-                  className="text-sm text-primary font-medium hover:underline"
-                >
-                  View all {comments.length} comments
-                </button>
-              )}
-            </div>
-          </motion.div>
+          <CommentSection 
+            poemId={poem.id} 
+            onViewAll={handlePoemClick}
+            maxComments={3}
+          />
         )}
       </AnimatePresence>
     </motion.article>
