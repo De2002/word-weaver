@@ -1,6 +1,6 @@
-import { useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2, RefreshCw, AlertCircle } from 'lucide-react';
+import { Loader2, RefreshCw, AlertCircle, Users } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { BottomNav } from '@/components/BottomNav';
 import { CreateButton } from '@/components/CreateButton';
@@ -10,6 +10,7 @@ import { DiscoverSection } from '@/components/DiscoverSection';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { usePublishedPoems } from '@/hooks/usePublishedPoems';
+import { useFollowingPoems } from '@/hooks/useFollowingPoems';
 import { trendingPoets, newPoets, risingPoets, mockPoets } from '@/data/mockData';
 
 function PoemCardSkeleton() {
@@ -37,18 +38,35 @@ function PoemCardSkeleton() {
 }
 
 const Index = () => {
+  const [activeTab, setActiveTab] = useState('for-you');
   const { poems, isLoading, isLoadingMore, error, hasMore, loadMore, refresh } = usePublishedPoems();
+  const { 
+    poems: followingPoems, 
+    isLoading: followingLoading, 
+    error: followingError, 
+    hasMore: followingHasMore, 
+    loadMore: loadMoreFollowing, 
+    refresh: refreshFollowing,
+    isAuthenticated,
+  } = useFollowingPoems();
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
+  // Determine which data to show based on active tab
+  const currentPoems = activeTab === 'following' ? followingPoems : poems;
+  const currentLoading = activeTab === 'following' ? followingLoading : isLoading;
+  const currentError = activeTab === 'following' ? followingError : error;
+  const currentHasMore = activeTab === 'following' ? followingHasMore : hasMore;
+  const currentLoadMore = activeTab === 'following' ? loadMoreFollowing : loadMore;
+  const currentRefresh = activeTab === 'following' ? refreshFollowing : refresh;
   // Infinite scroll observer
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       const [entry] = entries;
-      if (entry.isIntersecting && hasMore && !isLoadingMore && !isLoading) {
-        loadMore();
+      if (entry.isIntersecting && currentHasMore && !isLoadingMore && !currentLoading) {
+        currentLoadMore();
       }
     },
-    [hasMore, isLoadingMore, isLoading, loadMore]
+    [currentHasMore, isLoadingMore, currentLoading, currentLoadMore]
   );
 
   useEffect(() => {
@@ -71,38 +89,42 @@ const Index = () => {
       
       <main className="max-w-2xl mx-auto pb-safe">
         {/* Feed Tabs */}
-        <FeedTabs />
+        <FeedTabs onTabChange={setActiveTab} />
 
-        {/* Discover Sections */}
-        <div className="space-y-6 py-4">
-          <DiscoverSection 
-            title="Trending Poets" 
-            subtitle="Most loved this week"
-            poets={trendingPoets.length > 0 ? trendingPoets : mockPoets.slice(0, 3)}
-            type="trending"
-          />
-          
-          <DiscoverSection 
-            title="New Voices" 
-            subtitle="Fresh talent to discover"
-            poets={newPoets.length > 0 ? newPoets : mockPoets.slice(2, 4)}
-            type="new"
-          />
+        {/* Discover Sections - only show on For You tab */}
+        {activeTab === 'for-you' && (
+          <>
+            <div className="space-y-6 py-4">
+              <DiscoverSection 
+                title="Trending Poets" 
+                subtitle="Most loved this week"
+                poets={trendingPoets.length > 0 ? trendingPoets : mockPoets.slice(0, 3)}
+                type="trending"
+              />
+              
+              <DiscoverSection 
+                title="New Voices" 
+                subtitle="Fresh talent to discover"
+                poets={newPoets.length > 0 ? newPoets : mockPoets.slice(2, 4)}
+                type="new"
+              />
 
-          {risingPoets.length > 0 && (
-            <DiscoverSection 
-              title="Rising Poets" 
-              subtitle="Gaining momentum"
-              poets={risingPoets}
-              type="rising"
-            />
-          )}
-        </div>
+              {risingPoets.length > 0 && (
+                <DiscoverSection 
+                  title="Rising Poets" 
+                  subtitle="Gaining momentum"
+                  poets={risingPoets}
+                  type="rising"
+                />
+              )}
+            </div>
 
-        {/* Divider */}
-        <div className="px-4 py-4">
-          <div className="h-px bg-border" />
-        </div>
+            {/* Divider */}
+            <div className="px-4 py-4">
+              <div className="h-px bg-border" />
+            </div>
+          </>
+        )}
 
         {/* Poem Feed */}
         <motion.section 
@@ -113,13 +135,13 @@ const Index = () => {
         >
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-              Latest Poems
+              {activeTab === 'following' ? 'From Poets You Follow' : 'Latest Poems'}
             </h2>
-            {!isLoading && (
+            {!currentLoading && (
               <Button 
                 variant="ghost" 
                 size="sm" 
-                onClick={refresh}
+                onClick={currentRefresh}
                 className="h-8 px-2 text-muted-foreground hover:text-foreground"
               >
                 <RefreshCw className="w-4 h-4" />
@@ -128,7 +150,7 @@ const Index = () => {
           </div>
           
           {/* Loading State */}
-          {isLoading && (
+          {currentLoading && (
             <div className="space-y-4">
               <PoemCardSkeleton />
               <PoemCardSkeleton />
@@ -137,19 +159,43 @@ const Index = () => {
           )}
 
           {/* Error State */}
-          {error && !isLoading && (
+          {currentError && !currentLoading && (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <AlertCircle className="w-12 h-12 text-destructive mb-4" />
-              <p className="text-muted-foreground mb-4">{error}</p>
-              <Button onClick={refresh} variant="outline">
+              <p className="text-muted-foreground mb-4">{currentError}</p>
+              <Button onClick={currentRefresh} variant="outline">
                 <RefreshCw className="w-4 h-4 mr-2" />
                 Try Again
               </Button>
             </div>
           )}
 
-          {/* Empty State */}
-          {!isLoading && !error && poems.length === 0 && (
+          {/* Empty State for Following Tab (not authenticated) */}
+          {activeTab === 'following' && !isAuthenticated && !currentLoading && (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <Users className="w-12 h-12 text-muted-foreground mb-4" />
+              <p className="text-lg font-medium text-foreground mb-2">Sign in to see your feed</p>
+              <p className="text-muted-foreground mb-4">Follow poets and see their work here</p>
+              <Button asChild variant="default">
+                <a href="/login">Sign In</a>
+              </Button>
+            </div>
+          )}
+
+          {/* Empty State for Following Tab (no follows) */}
+          {activeTab === 'following' && isAuthenticated && !currentLoading && !currentError && currentPoems.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <Users className="w-12 h-12 text-muted-foreground mb-4" />
+              <p className="text-lg font-medium text-foreground mb-2">No poems from followed poets</p>
+              <p className="text-muted-foreground mb-4">Follow poets to see their work in your feed</p>
+              <Button asChild variant="default">
+                <a href="/discover">Discover Poets</a>
+              </Button>
+            </div>
+          )}
+
+          {/* Empty State for For You Tab */}
+          {activeTab !== 'following' && !currentLoading && !currentError && currentPoems.length === 0 && (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <p className="text-lg font-medium text-foreground mb-2">No poems yet</p>
               <p className="text-muted-foreground mb-4">Be the first to share your poetry!</p>
@@ -160,9 +206,9 @@ const Index = () => {
           )}
 
           {/* Poems List */}
-          {!isLoading && !error && poems.length > 0 && (
+          {!currentLoading && !currentError && currentPoems.length > 0 && (
             <div className="space-y-4">
-              {poems.map((poem, index) => (
+              {currentPoems.map((poem, index) => (
                 <PoemCard key={poem.id} poem={poem} index={index} />
               ))}
             </div>
@@ -177,7 +223,7 @@ const Index = () => {
               <span className="text-sm">Loading more...</span>
             </div>
           )}
-          {!isLoadingMore && hasMore && poems.length > 0 && (
+          {!isLoadingMore && currentHasMore && currentPoems.length > 0 && (
             <motion.div
               animate={{ opacity: [0.5, 1, 0.5] }}
               transition={{ duration: 1.5, repeat: Infinity }}
@@ -186,7 +232,7 @@ const Index = () => {
               Scroll for more poetry...
             </motion.div>
           )}
-          {!hasMore && poems.length > 0 && (
+          {!currentHasMore && currentPoems.length > 0 && (
             <p className="text-sm text-muted-foreground">You've reached the end ✨</p>
           )}
         </div>

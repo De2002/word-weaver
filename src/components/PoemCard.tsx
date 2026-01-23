@@ -6,6 +6,7 @@ import { Poem } from '@/types/poem';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { TagBadge } from '@/components/TagBadge';
 import { AudioPlayButton } from '@/components/AudioPlayButton';
+import { FollowButton } from '@/components/FollowButton';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
@@ -196,12 +197,7 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
             <span className="text-xs text-muted-foreground">@{poem.poet.username}</span>
           </div>
         </Link>
-        <button 
-          className="text-sm text-primary font-medium hover:underline px-3 py-1.5 rounded-full border border-primary/30 hover:bg-primary/5 transition-colors"
-          onClick={(e) => e.stopPropagation()}
-        >
-          Follow
-        </button>
+        <FollowButton poetUserId={poem.poet.id} variant="outline" />
       </header>
 
       {/* Poem Content - Clickable */}

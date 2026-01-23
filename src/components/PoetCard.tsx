@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Sparkles, TrendingUp, Sprout } from 'lucide-react';
 import { Poet } from '@/types/poem';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { FollowButton } from '@/components/FollowButton';
 import { cn } from '@/lib/utils';
 
 interface PoetCardProps {
@@ -104,12 +105,7 @@ export function PoetCard({ poet, index = 0, variant = 'compact' }: PoetCardProps
             <span>{(poet.totalReads / 1000).toFixed(1)}k reads</span>
           </div>
         </div>
-        <button 
-          className="text-xs text-primary font-medium hover:underline shrink-0"
-          onClick={(e) => e.preventDefault()}
-        >
-          Follow
-        </button>
+        <FollowButton poetUserId={poet.id} variant="compact" />
       </motion.div>
     </Link>
   );
