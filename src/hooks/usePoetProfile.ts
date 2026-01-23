@@ -8,6 +8,7 @@ interface UsePoetProfileResult {
   isLoading: boolean;
   error: Error | null;
   notFound: boolean;
+  followerCount: number;
 }
 
 export function usePoetProfile(username: string): UsePoetProfileResult {
@@ -52,6 +53,21 @@ export function usePoetProfile(username: string): UsePoetProfileResult {
     enabled: !!profile?.user_id,
   });
 
+  // Fetch follower count
+  const { data: followerCount } = useQuery({
+    queryKey: ['follower-count', profile?.user_id],
+    queryFn: async () => {
+      const { count, error } = await db
+        .from('follows')
+        .select('*', { count: 'exact', head: true })
+        .eq('following_id', profile.user_id);
+
+      if (error) throw error;
+      return count || 0;
+    },
+    enabled: !!profile?.user_id,
+  });
+
   // Transform to app types
   const poet: Poet | null = profile
     ? {
@@ -61,10 +77,10 @@ export function usePoetProfile(username: string): UsePoetProfileResult {
         avatar: profile.avatar_url || '',
         bio: profile.bio || '',
         languages: [],
-        totalReads: 0, // Will be computed when interaction tables exist
+        totalReads: 0,
         totalUpvotes: 0,
         totalPoems: poemsData?.length || 0,
-        followersCount: 0,
+        followersCount: followerCount || 0,
         supportLinks: profile.links || {},
         badges: [] as Badge[],
         isFollowing: false,
@@ -95,5 +111,6 @@ export function usePoetProfile(username: string): UsePoetProfileResult {
     isLoading: profileLoading || poemsLoading,
     error: (profileError || poemsError) as Error | null,
     notFound: !profileLoading && !profile,
+    followerCount: followerCount || 0,
   };
 }

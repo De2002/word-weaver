@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, FileText, Eye, Heart, Users, ExternalLink, Sparkles, TrendingUp } from 'lucide-react';
 import { usePoetProfile } from '@/hooks/usePoetProfile';
 import { PoemCard } from '@/components/PoemCard';
+import { FollowButton } from '@/components/FollowButton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -13,7 +14,7 @@ import { cn } from '@/lib/utils';
 
 export default function PoetProfile() {
   const { username } = useParams<{ username: string }>();
-  const { poet, poems, isLoading, error, notFound } = usePoetProfile(username || '');
+  const { poet, poems, isLoading, error, notFound, followerCount } = usePoetProfile(username || '');
   const [activeTab, setActiveTab] = useState('all');
 
   // Sort poems for "Popular" tab (by upvotes when available)
@@ -137,7 +138,7 @@ export default function PoetProfile() {
           </p>
         )}
 
-        <Button className="rounded-full px-6">Follow</Button>
+        {poet && <FollowButton poetUserId={poet.id} />}
       </motion.section>
 
       {/* Stats */}
@@ -151,7 +152,7 @@ export default function PoetProfile() {
           { icon: FileText, label: 'Poems', value: poet?.totalPoems || 0 },
           { icon: Eye, label: 'Reads', value: poet?.totalReads || 0 },
           { icon: Heart, label: 'Upvotes', value: poet?.totalUpvotes || 0 },
-          { icon: Users, label: 'Followers', value: poet?.followersCount || 0 },
+          { icon: Users, label: 'Followers', value: followerCount },
         ].map((stat) => (
           <div
             key={stat.label}
