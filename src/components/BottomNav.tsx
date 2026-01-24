@@ -1,4 +1,4 @@
-import { Home, Compass, Bell, MoreHorizontal } from 'lucide-react';
+import { Home, Compass, Search, MoreHorizontal } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
@@ -11,7 +11,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { icon: Home, label: 'Home', href: '/home' },
   { icon: Compass, label: 'Discover', href: '/discover' },
-  { icon: Bell, label: 'Alerts', href: '/notifications' },
+  { icon: Search, label: 'Search', href: '/search' },
   { icon: MoreHorizontal, label: 'More', href: '/more' },
 ];
 
