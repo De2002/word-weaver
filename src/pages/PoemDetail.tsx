@@ -1,12 +1,11 @@
-import { useEffect } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, Heart, MessageCircle, Bookmark, Share2, 
   Sparkles, TrendingUp, Twitter, Facebook, Link2, MessageSquare
 } from 'lucide-react';
-import { useState, useRef } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { TagBadge } from '@/components/TagBadge';
 import { AudioPlayButton } from '@/components/AudioPlayButton';
@@ -16,14 +15,12 @@ import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
-import { toast } from '@/hooks/use-toast';
 import { usePoemInteractions } from '@/hooks/usePoemInteractions';
 import { useComments } from '@/hooks/useComments';
 import { usePoemRealtime } from '@/hooks/usePoemRealtime';
+import { useNativeShare } from '@/hooks/useNativeShare';
 import { db } from '@/lib/db';
 import { Poem } from '@/types/poem';
-import { AnimatePresence } from 'framer-motion';
-
 export default function PoemDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -117,7 +114,7 @@ export default function PoemDetail() {
   } = usePoemInteractions(id || '');
 
   const { commentCount } = useComments(id || '');
-
+  const { share, copyToClipboard, shareToTwitter, shareToFacebook, shareToWhatsApp } = useNativeShare();
   // Subscribe to real-time updates for this poem
   usePoemRealtime(id || '');
   useEffect(() => {
@@ -188,36 +185,43 @@ export default function PoemDetail() {
   const poemUrl = `${window.location.origin}/poem/${poem.id}`;
   const shareText = `"${poem.title || 'Untitled'}" by ${poem.poet.name} - ${poem.text.slice(0, 100)}...`;
 
-  const handleShare = (e: React.MouseEvent) => {
+  const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    setShowShareMenu(!showShareMenu);
-  };
-
-  const shareToTwitter = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(poemUrl)}`, '_blank');
-    setShowShareMenu(false);
-  };
-
-  const shareToFacebook = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(poemUrl)}`, '_blank');
-    setShowShareMenu(false);
-  };
-
-  const shareToWhatsApp = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    window.open(`https://wa.me/?text=${encodeURIComponent(shareText + ' ' + poemUrl)}`, '_blank');
-    setShowShareMenu(false);
-  };
-
-  const copyLink = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    await navigator.clipboard.writeText(poemUrl);
-    toast({
-      title: "Link copied!",
-      description: "Poem link has been copied to clipboard.",
+    
+    // Try native share first (mobile devices)
+    const usedNativeShare = await share({
+      title: poem.title || 'A poem on WordStack',
+      text: shareText,
+      url: poemUrl,
     });
+    
+    // If native share not available, show fallback menu
+    if (!usedNativeShare) {
+      setShowShareMenu(!showShareMenu);
+    }
+  };
+
+  const handleShareToTwitter = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    shareToTwitter(shareText, poemUrl);
+    setShowShareMenu(false);
+  };
+
+  const handleShareToFacebook = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    shareToFacebook(poemUrl);
+    setShowShareMenu(false);
+  };
+
+  const handleShareToWhatsApp = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    shareToWhatsApp(shareText, poemUrl);
+    setShowShareMenu(false);
+  };
+
+  const handleCopyLink = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    await copyToClipboard(poemUrl);
     setShowShareMenu(false);
   };
 
@@ -386,21 +390,21 @@ export default function PoemDetail() {
                     className="absolute bottom-full right-0 mb-2 bg-card border border-border rounded-xl shadow-lg p-2 min-w-[160px] z-50"
                   >
                     <button
-                      onClick={shareToTwitter}
+                      onClick={handleShareToTwitter}
                       className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-foreground hover:bg-secondary rounded-lg transition-colors"
                     >
                       <Twitter className="h-4 w-4 text-[#1DA1F2]" />
                       <span>Twitter</span>
                     </button>
                     <button
-                      onClick={shareToFacebook}
+                      onClick={handleShareToFacebook}
                       className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-foreground hover:bg-secondary rounded-lg transition-colors"
                     >
                       <Facebook className="h-4 w-4 text-[#1877F2]" />
                       <span>Facebook</span>
                     </button>
                     <button
-                      onClick={shareToWhatsApp}
+                      onClick={handleShareToWhatsApp}
                       className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-foreground hover:bg-secondary rounded-lg transition-colors"
                     >
                       <MessageSquare className="h-4 w-4 text-[#25D366]" />
@@ -408,7 +412,7 @@ export default function PoemDetail() {
                     </button>
                     <Separator className="my-1" />
                     <button
-                      onClick={copyLink}
+                      onClick={handleCopyLink}
                       className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-foreground hover:bg-secondary rounded-lg transition-colors"
                     >
                       <Link2 className="h-4 w-4" />
