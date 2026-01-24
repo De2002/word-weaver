@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2, RefreshCw, AlertCircle, Users, TrendingUp } from 'lucide-react';
+import { Loader2, RefreshCw, AlertCircle, Users, TrendingUp, Zap } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { CreateButton } from '@/components/CreateButton';
 import { PoemCard } from '@/components/PoemCard';
@@ -11,6 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { usePublishedPoems } from '@/hooks/usePublishedPoems';
 import { useFollowingPoems } from '@/hooks/useFollowingPoems';
 import { useTrendingPoems } from '@/hooks/useTrendingPoems';
+import { useRisingPoems } from '@/hooks/useRisingPoems';
 import { useDiscoverPoets } from '@/hooks/useDiscoverPoets';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 
@@ -59,6 +60,15 @@ const Index = () => {
     loadMore: loadMoreTrending,
     refresh: refreshTrending,
   } = useTrendingPoems();
+  const {
+    poems: risingPoems,
+    isLoading: risingLoading,
+    isLoadingMore: risingLoadingMore,
+    error: risingError,
+    hasMore: risingHasMore,
+    loadMore: loadMoreRising,
+    refresh: refreshRising,
+  } = useRisingPoems();
   const { 
     trendingPoets, 
     risingPoets, 
@@ -90,6 +100,16 @@ const Index = () => {
           loadMore: loadMoreTrending,
           refresh: refreshTrending,
         };
+      case 'rising':
+        return {
+          poems: risingPoems,
+          loading: risingLoading,
+          loadingMore: risingLoadingMore,
+          error: risingError,
+          hasMore: risingHasMore,
+          loadMore: loadMoreRising,
+          refresh: refreshRising,
+        };
       default:
         return {
           poems,
@@ -101,7 +121,7 @@ const Index = () => {
           refresh,
         };
     }
-  }, [activeTab, followingPoems, followingLoading, followingError, followingHasMore, loadMoreFollowing, refreshFollowing, trendingPoems, trendingLoading, trendingLoadingMore, trendingError, trendingHasMore, loadMoreTrending, refreshTrending, poems, isLoading, isLoadingMore, error, hasMore, loadMore, refresh]);
+  }, [activeTab, followingPoems, followingLoading, followingError, followingHasMore, loadMoreFollowing, refreshFollowing, trendingPoems, trendingLoading, trendingLoadingMore, trendingError, trendingHasMore, loadMoreTrending, refreshTrending, risingPoems, risingLoading, risingLoadingMore, risingError, risingHasMore, loadMoreRising, refreshRising, poems, isLoading, isLoadingMore, error, hasMore, loadMore, refresh]);
 
   const currentData = getCurrentData();
 
@@ -211,6 +231,12 @@ const Index = () => {
                   Trending Now
                 </>
               )}
+              {activeTab === 'rising' && (
+                <>
+                  <Zap className="w-4 h-4" />
+                  Rising Fast
+                </>
+              )}
               {activeTab === 'for-you' && 'Latest Poems'}
             </h2>
             {!currentData.loading && (
@@ -276,6 +302,15 @@ const Index = () => {
               <TrendingUp className="w-12 h-12 text-muted-foreground mb-4" />
               <p className="text-lg font-medium text-foreground mb-2">No trending poems yet</p>
               <p className="text-muted-foreground mb-4">Check back later for popular poetry!</p>
+            </div>
+          )}
+
+          {/* Empty State for Rising Tab */}
+          {activeTab === 'rising' && !currentData.loading && !currentData.error && currentData.poems.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <Zap className="w-12 h-12 text-muted-foreground mb-4" />
+              <p className="text-lg font-medium text-foreground mb-2">No rising poems yet</p>
+              <p className="text-muted-foreground mb-4">New poems with high engagement velocity will appear here!</p>
             </div>
           )}
 
