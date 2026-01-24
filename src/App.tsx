@@ -20,6 +20,7 @@ import EditPoem from "./pages/EditPoem";
 import PoetProfile from "./pages/PoetProfile";
 import Notifications from "./pages/Notifications";
 import SavedPoems from "./pages/SavedPoems";
+import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -46,6 +47,7 @@ const App = () => (
               }
             />
             <Route path="/discover" element={<Discover />} />
+            <Route path="/search" element={<Search />} />
             <Route path="/poet/:username" element={<PoetProfile />} />
             <Route path="/poem/:id" element={<PoemDetail />} />
             <Route path="/tag/:tag" element={<TagPage />} />

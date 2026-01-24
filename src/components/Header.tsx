@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Search, Bell } from 'lucide-react';
+import { Bell } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthProvider';
@@ -51,14 +51,6 @@ export function Header({ activeTab = 'for-you', onTabChange, showTabs = false }:
           </motion.div>
 
           <div className="flex items-center gap-1">
-            <motion.button 
-              initial={{ opacity: 0, x: 10 }}
-              animate={{ opacity: 1, x: 0 }}
-              whileTap={{ scale: 0.95 }}
-              className="p-2 rounded-full hover:bg-secondary transition-colors"
-            >
-              <Search className="h-5 w-5 text-muted-foreground" />
-            </motion.button>
 
             {user && (
               <motion.div
