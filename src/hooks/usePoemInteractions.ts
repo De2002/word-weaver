@@ -97,7 +97,7 @@ export function usePoemInteractions(poemId: string): UsePoemInteractionsResult {
     enabled: !!poemId,
   });
 
-  // Upvote mutation
+  // Upvote mutation with optimistic update
   const upvoteMutation = useMutation({
     mutationFn: async () => {
       if (!userId) throw new Error('Must be logged in');
@@ -106,13 +106,26 @@ export function usePoemInteractions(poemId: string): UsePoemInteractionsResult {
         .insert({ user_id: userId, poem_id: poemId });
       if (error) throw error;
     },
-    onSuccess: () => {
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ['poem-upvote', poemId, userId] });
+      await queryClient.cancelQueries({ queryKey: ['poem-upvote-count', poemId] });
+      const previousUpvote = queryClient.getQueryData(['poem-upvote', poemId, userId]);
+      const previousCount = queryClient.getQueryData(['poem-upvote-count', poemId]);
+      queryClient.setQueryData(['poem-upvote', poemId, userId], { id: 'optimistic' });
+      queryClient.setQueryData(['poem-upvote-count', poemId], (old: number) => (old || 0) + 1);
+      return { previousUpvote, previousCount };
+    },
+    onError: (_err, _vars, context) => {
+      queryClient.setQueryData(['poem-upvote', poemId, userId], context?.previousUpvote);
+      queryClient.setQueryData(['poem-upvote-count', poemId], context?.previousCount);
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['poem-upvote', poemId, userId] });
       queryClient.invalidateQueries({ queryKey: ['poem-upvote-count', poemId] });
     },
   });
 
-  // Remove upvote mutation
+  // Remove upvote mutation with optimistic update
   const removeUpvoteMutation = useMutation({
     mutationFn: async () => {
       if (!userId) throw new Error('Must be logged in');
@@ -123,13 +136,26 @@ export function usePoemInteractions(poemId: string): UsePoemInteractionsResult {
         .eq('poem_id', poemId);
       if (error) throw error;
     },
-    onSuccess: () => {
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ['poem-upvote', poemId, userId] });
+      await queryClient.cancelQueries({ queryKey: ['poem-upvote-count', poemId] });
+      const previousUpvote = queryClient.getQueryData(['poem-upvote', poemId, userId]);
+      const previousCount = queryClient.getQueryData(['poem-upvote-count', poemId]);
+      queryClient.setQueryData(['poem-upvote', poemId, userId], null);
+      queryClient.setQueryData(['poem-upvote-count', poemId], (old: number) => Math.max((old || 1) - 1, 0));
+      return { previousUpvote, previousCount };
+    },
+    onError: (_err, _vars, context) => {
+      queryClient.setQueryData(['poem-upvote', poemId, userId], context?.previousUpvote);
+      queryClient.setQueryData(['poem-upvote-count', poemId], context?.previousCount);
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['poem-upvote', poemId, userId] });
       queryClient.invalidateQueries({ queryKey: ['poem-upvote-count', poemId] });
     },
   });
 
-  // Save mutation
+  // Save mutation with optimistic update
   const saveMutation = useMutation({
     mutationFn: async () => {
       if (!userId) throw new Error('Must be logged in');
@@ -138,14 +164,30 @@ export function usePoemInteractions(poemId: string): UsePoemInteractionsResult {
         .insert({ user_id: userId, poem_id: poemId });
       if (error) throw error;
     },
-    onSuccess: () => {
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ['poem-save', poemId, userId] });
+      await queryClient.cancelQueries({ queryKey: ['poem-save-count', poemId] });
+      const previousSave = queryClient.getQueryData(['poem-save', poemId, userId]);
+      const previousCount = queryClient.getQueryData(['poem-save-count', poemId]);
+      queryClient.setQueryData(['poem-save', poemId, userId], { id: 'optimistic' });
+      queryClient.setQueryData(['poem-save-count', poemId], (old: number) => (old || 0) + 1);
+      return { previousSave, previousCount };
+    },
+    onError: (_err, _vars, context) => {
+      queryClient.setQueryData(['poem-save', poemId, userId], context?.previousSave);
+      queryClient.setQueryData(['poem-save-count', poemId], context?.previousCount);
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['poem-save', poemId, userId] });
       queryClient.invalidateQueries({ queryKey: ['poem-save-count', poemId] });
+      queryClient.invalidateQueries({ queryKey: ['saved-poems'] });
+    },
+    onSuccess: () => {
       toast({ title: 'Saved!', description: 'Poem added to your saved collection.' });
     },
   });
 
-  // Unsave mutation
+  // Unsave mutation with optimistic update
   const unsaveMutation = useMutation({
     mutationFn: async () => {
       if (!userId) throw new Error('Must be logged in');
@@ -156,9 +198,25 @@ export function usePoemInteractions(poemId: string): UsePoemInteractionsResult {
         .eq('poem_id', poemId);
       if (error) throw error;
     },
-    onSuccess: () => {
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey: ['poem-save', poemId, userId] });
+      await queryClient.cancelQueries({ queryKey: ['poem-save-count', poemId] });
+      const previousSave = queryClient.getQueryData(['poem-save', poemId, userId]);
+      const previousCount = queryClient.getQueryData(['poem-save-count', poemId]);
+      queryClient.setQueryData(['poem-save', poemId, userId], null);
+      queryClient.setQueryData(['poem-save-count', poemId], (old: number) => Math.max((old || 1) - 1, 0));
+      return { previousSave, previousCount };
+    },
+    onError: (_err, _vars, context) => {
+      queryClient.setQueryData(['poem-save', poemId, userId], context?.previousSave);
+      queryClient.setQueryData(['poem-save-count', poemId], context?.previousCount);
+    },
+    onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['poem-save', poemId, userId] });
       queryClient.invalidateQueries({ queryKey: ['poem-save-count', poemId] });
+      queryClient.invalidateQueries({ queryKey: ['saved-poems'] });
+    },
+    onSuccess: () => {
       toast({ title: 'Removed', description: 'Poem removed from saved collection.' });
     },
   });
