@@ -11,10 +11,9 @@ import { CommentSection } from '@/components/CommentSection';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
-import { toast } from '@/hooks/use-toast';
 import { usePoemInteractions } from '@/hooks/usePoemInteractions';
 import { useComments } from '@/hooks/useComments';
-
+import { useNativeShare } from '@/hooks/useNativeShare';
 interface PoemCardProps {
   poem: Poem;
   index?: number;
@@ -34,6 +33,7 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
   } = usePoemInteractions(poem.id);
 
   const { commentCount } = useComments(poem.id);
+  const { share, copyToClipboard, shareToTwitter, shareToFacebook, shareToWhatsApp, isNativeShareSupported } = useNativeShare();
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [showComments, setShowComments] = useState(false);
@@ -62,36 +62,43 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
   const poemUrl = `${window.location.origin}/poem/${poem.id}`;
   const shareText = `"${poem.title}" by ${poem.poet.name} - ${poem.text.slice(0, 100)}...`;
 
-  const handleShare = (e: React.MouseEvent) => {
+  const handleShare = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    setShowShareMenu(!showShareMenu);
-  };
-
-  const shareToTwitter = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(poemUrl)}`, '_blank');
-    setShowShareMenu(false);
-  };
-
-  const shareToFacebook = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(poemUrl)}`, '_blank');
-    setShowShareMenu(false);
-  };
-
-  const shareToWhatsApp = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    window.open(`https://wa.me/?text=${encodeURIComponent(shareText + ' ' + poemUrl)}`, '_blank');
-    setShowShareMenu(false);
-  };
-
-  const copyLink = async (e: React.MouseEvent) => {
-    e.stopPropagation();
-    await navigator.clipboard.writeText(poemUrl);
-    toast({
-      title: "Link copied!",
-      description: "Poem link has been copied to clipboard.",
+    
+    // Try native share first (mobile devices)
+    const usedNativeShare = await share({
+      title: poem.title || 'A poem on WordStack',
+      text: shareText,
+      url: poemUrl,
     });
+    
+    // If native share not available, show fallback menu
+    if (!usedNativeShare) {
+      setShowShareMenu(!showShareMenu);
+    }
+  };
+
+  const handleShareToTwitter = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    shareToTwitter(shareText, poemUrl);
+    setShowShareMenu(false);
+  };
+
+  const handleShareToFacebook = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    shareToFacebook(poemUrl);
+    setShowShareMenu(false);
+  };
+
+  const handleShareToWhatsApp = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    shareToWhatsApp(shareText, poemUrl);
+    setShowShareMenu(false);
+  };
+
+  const handleCopyLink = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    await copyToClipboard(poemUrl);
     setShowShareMenu(false);
   };
 
@@ -297,21 +304,21 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
                 className="absolute bottom-full right-0 mb-2 bg-card border border-border rounded-xl shadow-lg p-2 min-w-[160px] z-50"
               >
                 <button
-                  onClick={shareToTwitter}
+                  onClick={handleShareToTwitter}
                   className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-foreground hover:bg-secondary rounded-lg transition-colors"
                 >
                   <Twitter className="h-4 w-4 text-[#1DA1F2]" />
                   <span>Twitter</span>
                 </button>
                 <button
-                  onClick={shareToFacebook}
+                  onClick={handleShareToFacebook}
                   className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-foreground hover:bg-secondary rounded-lg transition-colors"
                 >
                   <Facebook className="h-4 w-4 text-[#1877F2]" />
                   <span>Facebook</span>
                 </button>
                 <button
-                  onClick={shareToWhatsApp}
+                  onClick={handleShareToWhatsApp}
                   className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-foreground hover:bg-secondary rounded-lg transition-colors"
                 >
                   <MessageSquare className="h-4 w-4 text-[#25D366]" />
@@ -319,7 +326,7 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
                 </button>
                 <Separator className="my-1" />
                 <button
-                  onClick={copyLink}
+                  onClick={handleCopyLink}
                   className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-foreground hover:bg-secondary rounded-lg transition-colors"
                 >
                   <Link2 className="h-4 w-4" />
