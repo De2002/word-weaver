@@ -30,23 +30,16 @@ export default function PoemDetail() {
   const [showShareMenu, setShowShareMenu] = useState(false);
   const shareMenuRef = useRef<HTMLDivElement>(null);
 
-  // Fetch poem from database
+  // Fetch poem from database (using separate queries like feed to handle missing profiles)
   const { data: poem, isLoading, error } = useQuery({
     queryKey: ['poem-detail', id],
     queryFn: async (): Promise<Poem | null> => {
       if (!id) return null;
 
+      // First fetch the poem
       const { data: poemData, error: poemError } = await db
         .from('poems')
-        .select(`
-          id,
-          title,
-          content,
-          tags,
-          created_at,
-          user_id,
-          profiles!inner(display_name, username, avatar_url, user_id, created_at)
-        `)
+        .select('id, title, content, tags, created_at, user_id')
         .eq('id', id)
         .eq('status', 'published')
         .maybeSingle();
@@ -54,8 +47,15 @@ export default function PoemDetail() {
       if (poemError) throw poemError;
       if (!poemData) return null;
 
+      // Then fetch the profile separately (allows fallback if missing)
+      const { data: profileData } = await db
+        .from('profiles')
+        .select('user_id, username, display_name, avatar_url, bio, created_at')
+        .eq('user_id', poemData.user_id)
+        .maybeSingle();
+
       // Determine poet badge based on profile age
-      const profileCreatedAt = new Date((poemData.profiles as any)?.created_at || poemData.created_at);
+      const profileCreatedAt = new Date(profileData?.created_at || poemData.created_at);
       const daysSinceJoined = (Date.now() - profileCreatedAt.getTime()) / (1000 * 60 * 60 * 24);
       
       let badges: { type: 'new' | 'rising' | 'trending'; label: string }[] = [];
@@ -77,11 +77,11 @@ export default function PoemDetail() {
         saves: 0,
         reads: 0,
         poet: {
-          id: (poemData.profiles as any)?.user_id || poemData.user_id,
-          name: (poemData.profiles as any)?.display_name || 'Anonymous',
-          username: (poemData.profiles as any)?.username || 'anonymous',
-          avatar: (poemData.profiles as any)?.avatar_url || '',
-          bio: '',
+          id: profileData?.user_id || poemData.user_id,
+          name: profileData?.display_name || 'Anonymous',
+          username: profileData?.username || 'anonymous',
+          avatar: profileData?.avatar_url || '',
+          bio: profileData?.bio || '',
           languages: [],
           totalReads: 0,
           totalUpvotes: 0,
@@ -93,6 +93,17 @@ export default function PoemDetail() {
     },
     enabled: !!id,
   });
+
+  // Set SEO title dynamically
+  useEffect(() => {
+    if (poem) {
+      const poemTitle = poem.title || 'Untitled';
+      document.title = `${poemTitle} by ${poem.poet.name} | WordStack`;
+    }
+    return () => {
+      document.title = 'WordStack';
+    };
+  }, [poem]);
 
   const {
     isUpvoted,
