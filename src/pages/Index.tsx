@@ -4,7 +4,6 @@ import { Loader2, RefreshCw, AlertCircle, Users, TrendingUp } from 'lucide-react
 import { Header } from '@/components/Header';
 import { BottomNav } from '@/components/BottomNav';
 import { CreateButton } from '@/components/CreateButton';
-import { FeedTabs } from '@/components/FeedTabs';
 import { PoemCard } from '@/components/PoemCard';
 import { DiscoverSection } from '@/components/DiscoverSection';
 import { Button } from '@/components/ui/button';
@@ -131,11 +130,12 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Header showTabs activeTab={activeTab} onTabChange={setActiveTab} />
+      
+      {/* Spacer for fixed header */}
+      <div className="h-[5.5rem]" />
       
       <main className="max-w-2xl mx-auto pb-safe">
-        {/* Feed Tabs */}
-        <FeedTabs onTabChange={setActiveTab} />
 
         {/* Discover Sections - only show on For You tab */}
         {activeTab === 'for-you' && !poetsLoading && (
