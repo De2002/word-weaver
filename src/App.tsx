@@ -19,6 +19,7 @@ import MyPoems from "./pages/MyPoems";
 import EditPoem from "./pages/EditPoem";
 import PoetProfile from "./pages/PoetProfile";
 import Notifications from "./pages/Notifications";
+import SavedPoems from "./pages/SavedPoems";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -78,6 +79,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <Notifications />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/saved"
+              element={
+                <ProtectedRoute>
+                  <SavedPoems />
                 </ProtectedRoute>
               }
             />

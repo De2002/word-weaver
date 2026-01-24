@@ -52,7 +52,7 @@ const menuSections: MenuSection[] = [
   {
     title: 'Your Space',
     items: [
-      { icon: Bookmark, label: 'Bookmarks', href: '/bookmarks', description: 'Saved poetry' },
+      { icon: Bookmark, label: 'Saved', href: '/saved', description: 'Your saved poems' },
       { icon: MessageCircle, label: 'Messages', href: '/messages', description: 'Your conversations' },
     ],
   },
