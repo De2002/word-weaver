@@ -164,8 +164,8 @@ const Index = () => {
     <div ref={containerRef} className="min-h-screen bg-background relative">
       <Header showTabs activeTab={activeTab} onTabChange={setActiveTab} />
       
-      {/* Spacer for fixed header */}
-      <div className="h-[5.5rem]" />
+      {/* Spacer for fixed header with tabs */}
+      <div className="h-24" />
 
       {/* Pull to refresh indicator */}
       <PullToRefreshIndicator 
