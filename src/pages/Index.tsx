@@ -6,12 +6,14 @@ import { BottomNav } from '@/components/BottomNav';
 import { CreateButton } from '@/components/CreateButton';
 import { PoemCard } from '@/components/PoemCard';
 import { DiscoverSection } from '@/components/DiscoverSection';
+import { PullToRefreshIndicator } from '@/components/PullToRefreshIndicator';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { usePublishedPoems } from '@/hooks/usePublishedPoems';
 import { useFollowingPoems } from '@/hooks/useFollowingPoems';
 import { useTrendingPoems } from '@/hooks/useTrendingPoems';
 import { useDiscoverPoets } from '@/hooks/useDiscoverPoets';
+import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 
 function PoemCardSkeleton() {
   return (
@@ -67,7 +69,7 @@ const Index = () => {
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
   // Determine which data to show based on active tab
-  const getCurrentData = () => {
+  const getCurrentData = useCallback(() => {
     switch (activeTab) {
       case 'following':
         return {
@@ -100,9 +102,20 @@ const Index = () => {
           refresh,
         };
     }
-  };
+  }, [activeTab, followingPoems, followingLoading, followingError, followingHasMore, loadMoreFollowing, refreshFollowing, trendingPoems, trendingLoading, trendingLoadingMore, trendingError, trendingHasMore, loadMoreTrending, refreshTrending, poems, isLoading, isLoadingMore, error, hasMore, loadMore, refresh]);
 
   const currentData = getCurrentData();
+
+  // Pull to refresh
+  const handlePullRefresh = useCallback(async () => {
+    await currentData.refresh();
+  }, [currentData]);
+
+  const { containerRef, pullDistance, isRefreshing, progress } = usePullToRefresh({
+    onRefresh: handlePullRefresh,
+    threshold: 80,
+  });
+
   // Infinite scroll observer
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
@@ -129,11 +142,18 @@ const Index = () => {
   }, [handleObserver]);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div ref={containerRef} className="min-h-screen bg-background relative">
       <Header showTabs activeTab={activeTab} onTabChange={setActiveTab} />
       
       {/* Spacer for fixed header */}
       <div className="h-[5.5rem]" />
+
+      {/* Pull to refresh indicator */}
+      <PullToRefreshIndicator 
+        pullDistance={pullDistance} 
+        isRefreshing={isRefreshing} 
+        progress={progress} 
+      />
       
       <main className="max-w-2xl mx-auto pb-safe">
 
