@@ -32,29 +32,34 @@ export default function SavedPoems() {
 
       const poemIds = saves.map((s: { poem_id: string }) => s.poem_id);
 
-      // Then fetch the poems with their profiles
+      // Fetch poems without inner join to avoid RLS issues
       const { data: poems, error: poemsError } = await db
         .from('poems')
-        .select(`
-          id,
-          title,
-          content,
-          tags,
-          created_at,
-          user_id,
-          profiles!inner(display_name, username, avatar_url, user_id)
-        `)
+        .select('id, title, content, tags, created_at, user_id')
         .in('id', poemIds)
         .eq('status', 'published');
 
       if (poemsError) throw poemsError;
+      if (!poems || poems.length === 0) return [];
+
+      // Fetch profiles separately
+      const userIds = [...new Set(poems.map((p: any) => p.user_id))];
+      const { data: profiles } = await db
+        .from('profiles')
+        .select('user_id, display_name, username, avatar_url')
+        .in('user_id', userIds);
+
+      const profileMap = new Map<string, any>(
+        (profiles || []).map((p: any) => [p.user_id, p])
+      );
 
       // Sort poems by the order they were saved and transform to Poem type
-      const poemMap = new Map<string, any>(poems?.map((p: any) => [p.id, p]) || []);
+      const poemMap = new Map<string, any>(poems.map((p: any) => [p.id, p]));
       return saves
         .map((s: { poem_id: string }) => {
-          const p = poemMap.get(s.poem_id) as any;
+          const p = poemMap.get(s.poem_id);
           if (!p) return null;
+          const profile = profileMap.get(p.user_id);
           return {
             id: p.id,
             title: p.title || undefined,
@@ -67,10 +72,10 @@ export default function SavedPoems() {
             saves: 0,
             reads: 0,
             poet: {
-              id: p.profiles?.user_id || p.user_id,
-              name: p.profiles?.display_name || 'Anonymous',
-              username: p.profiles?.username || 'anonymous',
-              avatar: p.profiles?.avatar_url || '',
+              id: p.user_id,
+              name: profile?.display_name || 'Anonymous',
+              username: profile?.username || 'anonymous',
+              avatar: profile?.avatar_url || '',
               bio: '',
               languages: [],
               totalReads: 0,
