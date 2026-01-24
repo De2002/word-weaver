@@ -5,7 +5,6 @@ import { useNotifications, Notification } from '@/hooks/useNotifications';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { BottomNav } from '@/components/BottomNav';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 
@@ -209,8 +208,6 @@ export default function Notifications() {
           </AnimatePresence>
         </div>
       )}
-
-      <BottomNav />
     </div>
   );
 }

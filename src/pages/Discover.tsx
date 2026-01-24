@@ -2,7 +2,6 @@ import { motion } from 'framer-motion';
 import { Sparkles, TrendingUp, Sprout, Search, ArrowLeft, Loader2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { PoetCard } from '@/components/PoetCard';
-import { BottomNav } from '@/components/BottomNav';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useDiscoverPoets } from '@/hooks/useDiscoverPoets';
 import { cn } from '@/lib/utils';
@@ -200,8 +199,6 @@ export default function Discover() {
           )}
         </div>
       </main>
-
-      <BottomNav />
     </div>
   );
 }

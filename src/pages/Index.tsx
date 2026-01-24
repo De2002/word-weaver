@@ -2,7 +2,6 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { Loader2, RefreshCw, AlertCircle, Users, TrendingUp } from 'lucide-react';
 import { Header } from '@/components/Header';
-import { BottomNav } from '@/components/BottomNav';
 import { CreateButton } from '@/components/CreateButton';
 import { PoemCard } from '@/components/PoemCard';
 import { DiscoverSection } from '@/components/DiscoverSection';
@@ -325,7 +324,6 @@ const Index = () => {
       </main>
 
       <CreateButton />
-      <BottomNav />
     </div>
   );
 };

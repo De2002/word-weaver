@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import { Bookmark, ArrowLeft } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Header } from '@/components/Header';
-import { BottomNav } from '@/components/BottomNav';
 import { CreateButton } from '@/components/CreateButton';
 import { PoemCard } from '@/components/PoemCard';
 import { useAuth } from '@/context/AuthProvider';
@@ -170,7 +169,6 @@ export default function SavedPoems() {
       </main>
 
       <CreateButton />
-      <BottomNav />
     </div>
   );
 }

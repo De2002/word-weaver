@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Pencil, Trash2, Eye, EyeOff } from "lucide-react";
 import { Header } from "@/components/Header";
-import { BottomNav } from "@/components/BottomNav";
 import { CreateButton } from "@/components/CreateButton";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -81,7 +80,6 @@ export default function MyPoems() {
           </Button>
         </main>
         <CreateButton />
-        <BottomNav />
       </div>
     );
   }
@@ -185,7 +183,6 @@ export default function MyPoems() {
         </Tabs>
       </main>
       <CreateButton />
-      <BottomNav />
     </div>
   );
 }
