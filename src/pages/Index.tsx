@@ -222,34 +222,6 @@ const Index = () => {
           transition={{ delay: 0.2 }}
           className="px-4 space-y-4"
         >
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-              {activeTab === 'following' && 'From Poets You Follow'}
-              {activeTab === 'trending' && (
-                <>
-                  <TrendingUp className="w-4 h-4" />
-                  Trending Now
-                </>
-              )}
-              {activeTab === 'rising' && (
-                <>
-                  <Zap className="w-4 h-4" />
-                  Rising Fast
-                </>
-              )}
-              {activeTab === 'for-you' && 'Latest Poems'}
-            </h2>
-            {!currentData.loading && (
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                onClick={currentData.refresh}
-                className="h-8 px-2 text-muted-foreground hover:text-foreground"
-              >
-                <RefreshCw className="w-4 h-4" />
-              </Button>
-            )}
-          </div>
           
           {/* Loading State */}
           {currentData.loading && (
