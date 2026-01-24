@@ -23,7 +23,6 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { Header } from '@/components/Header';
-import { BottomNav } from '@/components/BottomNav';
 import { CreateButton } from '@/components/CreateButton';
 import { cn } from '@/lib/utils';
 
@@ -179,7 +178,6 @@ export default function More() {
       </main>
 
       <CreateButton />
-      <BottomNav />
     </div>
   );
 }

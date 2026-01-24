@@ -9,7 +9,6 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import { BottomNav } from '@/components/BottomNav';
 import { cn } from '@/lib/utils';
 
 export default function PoetProfile() {
@@ -51,7 +50,6 @@ export default function PoetProfile() {
             ))}
           </div>
         </div>
-        <BottomNav />
       </div>
     );
   }
@@ -77,7 +75,6 @@ export default function PoetProfile() {
             <Button>Browse Poets</Button>
           </Link>
         </div>
-        <BottomNav />
       </div>
     );
   }
@@ -246,8 +243,6 @@ export default function PoetProfile() {
           )}
         </TabsContent>
       </Tabs>
-
-      <BottomNav />
     </div>
   );
 }
