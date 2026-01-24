@@ -19,6 +19,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { toast } from '@/hooks/use-toast';
 import { usePoemInteractions } from '@/hooks/usePoemInteractions';
 import { useComments } from '@/hooks/useComments';
+import { usePoemRealtime } from '@/hooks/usePoemRealtime';
 import { db } from '@/lib/db';
 import { Poem } from '@/types/poem';
 import { AnimatePresence } from 'framer-motion';
@@ -106,7 +107,8 @@ export default function PoemDetail() {
 
   const { commentCount } = useComments(id || '');
 
-  // Record read when poem is viewed
+  // Subscribe to real-time updates for this poem
+  usePoemRealtime(id || '');
   useEffect(() => {
     if (id) {
       recordRead();
