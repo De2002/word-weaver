@@ -1,106 +1,221 @@
-import { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { 
   ArrowLeft, Heart, MessageCircle, Bookmark, Share2, 
-  Send, MoreHorizontal, Sparkles, TrendingUp 
+  Sparkles, TrendingUp, Twitter, Facebook, Link2, MessageSquare
 } from 'lucide-react';
+import { useState, useRef } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { TagBadge } from '@/components/TagBadge';
 import { AudioPlayButton } from '@/components/AudioPlayButton';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import { FollowButton } from '@/components/FollowButton';
+import { CommentSection } from '@/components/CommentSection';
 import { Separator } from '@/components/ui/separator';
-import { mockPoems } from '@/data/mockData';
+import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
-
-interface Comment {
-  id: string;
-  author: {
-    name: string;
-    username: string;
-    avatar: string;
-  };
-  text: string;
-  createdAt: string;
-  likes: number;
-}
-
-const mockComments: Comment[] = [
-  {
-    id: '1',
-    author: {
-      name: 'Maya Thompson',
-      username: 'mayapoetry',
-      avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face',
-    },
-    text: 'This touched my soul. The imagery of counting puddles like blessings is beautiful.',
-    createdAt: '2026-01-08T12:00:00Z',
-    likes: 12,
-  },
-  {
-    id: '2',
-    author: {
-      name: 'David Park',
-      username: 'davidwrites',
-      avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
-    },
-    text: 'The way you capture solitude without loneliness is masterful.',
-    createdAt: '2026-01-08T14:30:00Z',
-    likes: 8,
-  },
-  {
-    id: '3',
-    author: {
-      name: 'Lily Chen',
-      username: 'lilyverses',
-      avatar: 'https://images.unsplash.com/photo-1489424731084-a5d8b219a5bb?w=100&h=100&fit=crop&crop=face',
-    },
-    text: 'Reading this on a rainy evening hits different. Thank you for this.',
-    createdAt: '2026-01-09T09:15:00Z',
-    likes: 5,
-  },
-];
+import { toast } from '@/hooks/use-toast';
+import { usePoemInteractions } from '@/hooks/usePoemInteractions';
+import { useComments } from '@/hooks/useComments';
+import { db } from '@/lib/db';
+import { Poem } from '@/types/poem';
+import { AnimatePresence } from 'framer-motion';
 
 export default function PoemDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  
-  const poem = mockPoems.find(p => p.id === id) || mockPoems[0];
-  
-  const [isUpvoted, setIsUpvoted] = useState(poem.isUpvoted);
-  const [isSaved, setIsSaved] = useState(poem.isSaved);
-  const [upvotes, setUpvotes] = useState(poem.upvotes);
-  const [commentText, setCommentText] = useState('');
-  const [comments, setComments] = useState(mockComments);
+  const [showShareMenu, setShowShareMenu] = useState(false);
+  const shareMenuRef = useRef<HTMLDivElement>(null);
 
-  const handleUpvote = () => {
-    setIsUpvoted(!isUpvoted);
-    setUpvotes(prev => isUpvoted ? prev - 1 : prev + 1);
-  };
+  // Fetch poem from database
+  const { data: poem, isLoading, error } = useQuery({
+    queryKey: ['poem-detail', id],
+    queryFn: async (): Promise<Poem | null> => {
+      if (!id) return null;
 
-  const handleSave = () => {
-    setIsSaved(!isSaved);
-  };
+      const { data: poemData, error: poemError } = await db
+        .from('poems')
+        .select(`
+          id,
+          title,
+          content,
+          tags,
+          created_at,
+          user_id,
+          profiles!inner(display_name, username, avatar_url, user_id, created_at)
+        `)
+        .eq('id', id)
+        .eq('status', 'published')
+        .maybeSingle();
 
-  const handleSubmitComment = () => {
-    if (!commentText.trim()) return;
-    
-    const newComment: Comment = {
-      id: Date.now().toString(),
-      author: {
-        name: 'You',
-        username: 'you',
-        avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face',
-      },
-      text: commentText,
-      createdAt: new Date().toISOString(),
-      likes: 0,
+      if (poemError) throw poemError;
+      if (!poemData) return null;
+
+      // Determine poet badge based on profile age
+      const profileCreatedAt = new Date((poemData.profiles as any)?.created_at || poemData.created_at);
+      const daysSinceJoined = (Date.now() - profileCreatedAt.getTime()) / (1000 * 60 * 60 * 24);
+      
+      let badges: { type: 'new' | 'rising' | 'trending'; label: string }[] = [];
+      if (daysSinceJoined <= 14) {
+        badges = [{ type: 'new', label: 'New Voice' }];
+      } else if (daysSinceJoined <= 30) {
+        badges = [{ type: 'rising', label: 'Rising' }];
+      }
+
+      return {
+        id: poemData.id,
+        title: poemData.title || undefined,
+        text: poemData.content,
+        tags: poemData.tags || [],
+        createdAt: poemData.created_at,
+        language: 'en',
+        upvotes: 0,
+        comments: 0,
+        saves: 0,
+        reads: 0,
+        poet: {
+          id: (poemData.profiles as any)?.user_id || poemData.user_id,
+          name: (poemData.profiles as any)?.display_name || 'Anonymous',
+          username: (poemData.profiles as any)?.username || 'anonymous',
+          avatar: (poemData.profiles as any)?.avatar_url || '',
+          bio: '',
+          languages: [],
+          totalReads: 0,
+          totalUpvotes: 0,
+          totalPoems: 0,
+          followersCount: 0,
+          badges,
+        },
+      } as Poem;
+    },
+    enabled: !!id,
+  });
+
+  const {
+    isUpvoted,
+    isSaved,
+    upvoteCount,
+    saveCount,
+    readCount,
+    toggleUpvote,
+    toggleSave,
+    recordRead,
+  } = usePoemInteractions(id || '');
+
+  const { commentCount } = useComments(id || '');
+
+  // Record read when poem is viewed
+  useEffect(() => {
+    if (id) {
+      recordRead();
+    }
+  }, [id]);
+
+  // Close share menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (shareMenuRef.current && !shareMenuRef.current.contains(event.target as Node)) {
+        setShowShareMenu(false);
+      }
     };
     
-    setComments([newComment, ...comments]);
-    setCommentText('');
+    if (showShareMenu) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showShareMenu]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background">
+        <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border">
+          <div className="flex items-center gap-3 px-4 py-3">
+            <button onClick={() => navigate(-1)} className="p-2 -ml-2 rounded-full hover:bg-secondary">
+              <ArrowLeft className="h-5 w-5" />
+            </button>
+            <span className="font-medium">Poem</span>
+          </div>
+        </header>
+        <main className="max-w-2xl mx-auto p-5 space-y-5">
+          <div className="flex items-center gap-3">
+            <Skeleton className="h-10 w-10 rounded-full" />
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-24" />
+              <Skeleton className="h-3 w-16" />
+            </div>
+          </div>
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-40 w-full" />
+        </main>
+      </div>
+    );
+  }
+
+  if (error || !poem) {
+    return (
+      <div className="min-h-screen bg-background">
+        <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border">
+          <div className="flex items-center gap-3 px-4 py-3">
+            <button onClick={() => navigate(-1)} className="p-2 -ml-2 rounded-full hover:bg-secondary">
+              <ArrowLeft className="h-5 w-5" />
+            </button>
+            <span className="font-medium">Poem</span>
+          </div>
+        </header>
+        <main className="max-w-2xl mx-auto p-5 text-center py-20">
+          <h2 className="text-lg font-medium text-foreground mb-2">Poem not found</h2>
+          <p className="text-muted-foreground">This poem may have been removed or doesn't exist.</p>
+        </main>
+      </div>
+    );
+  }
+
+  const poemUrl = `${window.location.origin}/poem/${poem.id}`;
+  const shareText = `"${poem.title || 'Untitled'}" by ${poem.poet.name} - ${poem.text.slice(0, 100)}...`;
+
+  const handleShare = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowShareMenu(!showShareMenu);
+  };
+
+  const shareToTwitter = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(poemUrl)}`, '_blank');
+    setShowShareMenu(false);
+  };
+
+  const shareToFacebook = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(poemUrl)}`, '_blank');
+    setShowShareMenu(false);
+  };
+
+  const shareToWhatsApp = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    window.open(`https://wa.me/?text=${encodeURIComponent(shareText + ' ' + poemUrl)}`, '_blank');
+    setShowShareMenu(false);
+  };
+
+  const copyLink = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    await navigator.clipboard.writeText(poemUrl);
+    toast({
+      title: "Link copied!",
+      description: "Poem link has been copied to clipboard.",
+    });
+    setShowShareMenu(false);
+  };
+
+  const handleUpvote = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    toggleUpvote();
+  };
+
+  const handleSave = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    toggleSave();
   };
 
   const poetBadge = poem.poet.badges[0];
@@ -109,38 +224,32 @@ export default function PoemDetail() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border">
-        <div className="flex items-center justify-between px-4 py-3">
-          <div className="flex items-center gap-3">
-            <motion.button
-              whileTap={{ scale: 0.95 }}
-              onClick={() => navigate(-1)}
-              className="p-2 -ml-2 rounded-full hover:bg-secondary transition-colors"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </motion.button>
-            <span className="font-medium">Poem</span>
-          </div>
-          <button className="p-2 rounded-full hover:bg-secondary transition-colors">
-            <MoreHorizontal className="h-5 w-5" />
-          </button>
+        <div className="flex items-center gap-3 px-4 py-3">
+          <motion.button
+            whileTap={{ scale: 0.95 }}
+            onClick={() => navigate(-1)}
+            className="p-2 -ml-2 rounded-full hover:bg-secondary transition-colors"
+          >
+            <ArrowLeft className="h-5 w-5" />
+          </motion.button>
+          <span className="font-medium">Poem</span>
         </div>
       </header>
 
-      <main className="max-w-lg mx-auto pb-24">
-        {/* Poem Content */}
+      <main className="max-w-2xl mx-auto pb-24">
         <motion.article
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-5 space-y-5"
+          className="bg-card border-b border-border/50 p-5 md:p-6"
         >
-          {/* Poet Header */}
-          <header className="flex items-center justify-between">
-            <a 
-              href="/profile" 
-              className="flex items-center gap-2.5 hover:opacity-80 transition-opacity"
+          {/* Poet Header - Same as PoemCard */}
+          <header className="flex items-center justify-between mb-4">
+            <Link
+              to={`/poet/${poem.poet.username}`}
+              className="flex items-center gap-3 hover:opacity-80 transition-opacity"
             >
               <div className="relative">
-                <Avatar className="h-9 w-9 ring-2 ring-border">
+                <Avatar className="h-10 w-10 ring-2 ring-border">
                   <AvatarImage src={poem.poet.avatar} alt={poem.poet.name} />
                   <AvatarFallback className="bg-secondary font-medium text-sm">
                     {poem.poet.name.charAt(0)}
@@ -160,55 +269,54 @@ export default function PoemDetail() {
                 )}
               </div>
               <div className="flex flex-col">
-                <span className="font-medium text-sm">{poem.poet.name}</span>
+                <span className="font-medium text-sm text-foreground">{poem.poet.name}</span>
                 <span className="text-xs text-muted-foreground">@{poem.poet.username}</span>
               </div>
-            </a>
-            <Button variant="outline" size="sm" className="rounded-full h-8 text-xs">
-              Follow
-            </Button>
+            </Link>
+            <FollowButton poetUserId={poem.poet.id} variant="outline" />
           </header>
 
-          {/* Full Poem */}
-          <div className="space-y-4 py-4">
+          {/* Poem Content - Full display */}
+          <div className="space-y-3 mb-4">
             <div className="flex items-start justify-between gap-3">
               {poem.title && (
-                <h1 className="font-serif text-2xl font-semibold text-foreground">
+                <h1 className="font-serif text-xl md:text-2xl font-semibold text-foreground">
                   {poem.title}
                 </h1>
               )}
               {poem.audioUrl && (
                 <AudioPlayButton 
                   audioUrl={poem.audioUrl} 
-                  size="md"
-                  className="flex-shrink-0"
+                  size="sm"
+                  className="flex-shrink-0 mt-1"
                 />
               )}
             </div>
-            <p className="font-serif text-lg leading-relaxed text-foreground/90 whitespace-pre-line">
+            
+            <div className="font-serif text-lg leading-relaxed text-foreground whitespace-pre-line">
               {poem.text}
-            </p>
+            </div>
           </div>
 
           {/* Tags */}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 mb-4">
             {poem.tags.map(tag => (
               <TagBadge key={tag} tag={tag} />
             ))}
           </div>
 
           {/* Meta Info */}
-          <div className="text-sm text-muted-foreground">
-            <span>{poem.reads.toLocaleString()} reads</span>
+          <div className="text-sm text-muted-foreground mb-4">
+            <span>{readCount.toLocaleString()} reads</span>
             <span className="mx-2">·</span>
             <span>{formatDistanceToNow(new Date(poem.createdAt), { addSuffix: true })}</span>
           </div>
 
-          <Separator />
+          <Separator className="mb-4" />
 
-          {/* Interaction Buttons */}
-          <div className="flex items-center justify-between py-2">
-            <div className="flex items-center gap-6">
+          {/* Actions - Same as PoemCard */}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-5">
               <motion.button
                 whileTap={{ scale: 0.9 }}
                 onClick={handleUpvote}
@@ -217,14 +325,16 @@ export default function PoemDetail() {
                   isUpvoted ? "text-soft-coral" : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                <Heart className={cn("h-6 w-6", isUpvoted && "fill-current")} />
-                <span className="font-medium">{upvotes}</span>
+                <Heart 
+                  className={cn("h-5 w-5", isUpvoted && "fill-current")} 
+                />
+                <span className="font-medium text-sm">{upvoteCount}</span>
               </motion.button>
 
-              <button className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
-                <MessageCircle className="h-6 w-6" />
-                <span className="font-medium">{comments.length}</span>
-              </button>
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <MessageCircle className="h-5 w-5" />
+                <span className="font-medium text-sm">{commentCount}</span>
+              </div>
 
               <motion.button
                 whileTap={{ scale: 0.9 }}
@@ -234,84 +344,73 @@ export default function PoemDetail() {
                   isSaved ? "text-warm-gold" : "text-muted-foreground hover:text-foreground"
                 )}
               >
-                <Bookmark className={cn("h-6 w-6", isSaved && "fill-current")} />
+                <Bookmark 
+                  className={cn("h-5 w-5", isSaved && "fill-current")} 
+                />
+                <span className="font-medium text-sm">{saveCount}</span>
               </motion.button>
             </div>
 
-            <button className="text-muted-foreground hover:text-foreground transition-colors">
-              <Share2 className="h-6 w-6" />
-            </button>
-          </div>
-
-          <Separator />
-
-          {/* Comment Input */}
-          <div className="flex items-center gap-3 py-2">
-            <Avatar className="h-9 w-9">
-              <AvatarImage src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=face" />
-              <AvatarFallback>Y</AvatarFallback>
-            </Avatar>
-            <div className="flex-1 flex items-center gap-2">
-              <Input
-                placeholder="Add a comment..."
-                value={commentText}
-                onChange={(e) => setCommentText(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && handleSubmitComment()}
-                className="flex-1 bg-secondary/50 border-0"
-              />
-              <motion.button
+            <div className="relative" ref={shareMenuRef}>
+              <motion.button 
                 whileTap={{ scale: 0.9 }}
-                onClick={handleSubmitComment}
-                disabled={!commentText.trim()}
                 className={cn(
-                  "p-2 rounded-full transition-colors",
-                  commentText.trim() 
-                    ? "bg-primary text-primary-foreground" 
-                    : "bg-secondary text-muted-foreground"
+                  "text-muted-foreground hover:text-foreground transition-colors p-1.5 rounded-full",
+                  showShareMenu && "bg-secondary text-foreground"
                 )}
+                onClick={handleShare}
               >
-                <Send className="h-4 w-4" />
+                <Share2 className="h-5 w-5" />
               </motion.button>
+
+              <AnimatePresence>
+                {showShareMenu && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.9, y: 10 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.9, y: 10 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute bottom-full right-0 mb-2 bg-card border border-border rounded-xl shadow-lg p-2 min-w-[160px] z-50"
+                  >
+                    <button
+                      onClick={shareToTwitter}
+                      className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-foreground hover:bg-secondary rounded-lg transition-colors"
+                    >
+                      <Twitter className="h-4 w-4 text-[#1DA1F2]" />
+                      <span>Twitter</span>
+                    </button>
+                    <button
+                      onClick={shareToFacebook}
+                      className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-foreground hover:bg-secondary rounded-lg transition-colors"
+                    >
+                      <Facebook className="h-4 w-4 text-[#1877F2]" />
+                      <span>Facebook</span>
+                    </button>
+                    <button
+                      onClick={shareToWhatsApp}
+                      className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-foreground hover:bg-secondary rounded-lg transition-colors"
+                    >
+                      <MessageSquare className="h-4 w-4 text-[#25D366]" />
+                      <span>WhatsApp</span>
+                    </button>
+                    <Separator className="my-1" />
+                    <button
+                      onClick={copyLink}
+                      className="flex items-center gap-3 w-full px-3 py-2.5 text-sm text-foreground hover:bg-secondary rounded-lg transition-colors"
+                    >
+                      <Link2 className="h-4 w-4" />
+                      <span>Copy link</span>
+                    </button>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
 
-          {/* Comments Section */}
-          <div className="space-y-4 pt-2">
-            <h3 className="font-semibold text-sm">Comments ({comments.length})</h3>
-            
-            {comments.map((comment, index) => (
-              <motion.div
-                key={comment.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
-                className="flex gap-3"
-              >
-                <Avatar className="h-8 w-8 flex-shrink-0">
-                  <AvatarImage src={comment.author.avatar} alt={comment.author.name} />
-                  <AvatarFallback>{comment.author.name.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <div className="flex-1 space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className="font-medium text-sm">{comment.author.name}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}
-                    </span>
-                  </div>
-                  <p className="text-sm text-foreground/90">{comment.text}</p>
-                  <div className="flex items-center gap-4 pt-1">
-                    <button className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
-                      <Heart className="h-3.5 w-3.5" />
-                      <span>{comment.likes}</span>
-                    </button>
-                    <button className="text-xs text-muted-foreground hover:text-foreground transition-colors">
-                      Reply
-                    </button>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          <Separator className="my-4" />
+
+          {/* Full Comments Section - Always visible on detail page */}
+          <CommentSection poemId={poem.id} />
         </motion.article>
       </main>
     </div>
