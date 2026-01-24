@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2, RefreshCw, AlertCircle, Users } from 'lucide-react';
+import { Loader2, RefreshCw, AlertCircle, Users, TrendingUp } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { BottomNav } from '@/components/BottomNav';
 import { CreateButton } from '@/components/CreateButton';
@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { usePublishedPoems } from '@/hooks/usePublishedPoems';
 import { useFollowingPoems } from '@/hooks/useFollowingPoems';
+import { useTrendingPoems } from '@/hooks/useTrendingPoems';
 import { trendingPoets, newPoets, risingPoets, mockPoets } from '@/data/mockData';
 
 function PoemCardSkeleton() {
@@ -49,24 +50,63 @@ const Index = () => {
     refresh: refreshFollowing,
     isAuthenticated,
   } = useFollowingPoems();
+  const {
+    poems: trendingPoems,
+    isLoading: trendingLoading,
+    isLoadingMore: trendingLoadingMore,
+    error: trendingError,
+    hasMore: trendingHasMore,
+    loadMore: loadMoreTrending,
+    refresh: refreshTrending,
+  } = useTrendingPoems();
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
   // Determine which data to show based on active tab
-  const currentPoems = activeTab === 'following' ? followingPoems : poems;
-  const currentLoading = activeTab === 'following' ? followingLoading : isLoading;
-  const currentError = activeTab === 'following' ? followingError : error;
-  const currentHasMore = activeTab === 'following' ? followingHasMore : hasMore;
-  const currentLoadMore = activeTab === 'following' ? loadMoreFollowing : loadMore;
-  const currentRefresh = activeTab === 'following' ? refreshFollowing : refresh;
+  const getCurrentData = () => {
+    switch (activeTab) {
+      case 'following':
+        return {
+          poems: followingPoems,
+          loading: followingLoading,
+          loadingMore: false,
+          error: followingError,
+          hasMore: followingHasMore,
+          loadMore: loadMoreFollowing,
+          refresh: refreshFollowing,
+        };
+      case 'trending':
+        return {
+          poems: trendingPoems,
+          loading: trendingLoading,
+          loadingMore: trendingLoadingMore,
+          error: trendingError,
+          hasMore: trendingHasMore,
+          loadMore: loadMoreTrending,
+          refresh: refreshTrending,
+        };
+      default:
+        return {
+          poems,
+          loading: isLoading,
+          loadingMore: isLoadingMore,
+          error,
+          hasMore,
+          loadMore,
+          refresh,
+        };
+    }
+  };
+
+  const currentData = getCurrentData();
   // Infinite scroll observer
   const handleObserver = useCallback(
     (entries: IntersectionObserverEntry[]) => {
       const [entry] = entries;
-      if (entry.isIntersecting && currentHasMore && !isLoadingMore && !currentLoading) {
-        currentLoadMore();
+      if (entry.isIntersecting && currentData.hasMore && !currentData.loadingMore && !currentData.loading) {
+        currentData.loadMore();
       }
     },
-    [currentHasMore, isLoadingMore, currentLoading, currentLoadMore]
+    [currentData]
   );
 
   useEffect(() => {
@@ -134,14 +174,21 @@ const Index = () => {
           className="px-4 space-y-4"
         >
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-              {activeTab === 'following' ? 'From Poets You Follow' : 'Latest Poems'}
+            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+              {activeTab === 'following' && 'From Poets You Follow'}
+              {activeTab === 'trending' && (
+                <>
+                  <TrendingUp className="w-4 h-4" />
+                  Trending Now
+                </>
+              )}
+              {activeTab === 'for-you' && 'Latest Poems'}
             </h2>
-            {!currentLoading && (
+            {!currentData.loading && (
               <Button 
                 variant="ghost" 
                 size="sm" 
-                onClick={currentRefresh}
+                onClick={currentData.refresh}
                 className="h-8 px-2 text-muted-foreground hover:text-foreground"
               >
                 <RefreshCw className="w-4 h-4" />
@@ -150,7 +197,7 @@ const Index = () => {
           </div>
           
           {/* Loading State */}
-          {currentLoading && (
+          {currentData.loading && (
             <div className="space-y-4">
               <PoemCardSkeleton />
               <PoemCardSkeleton />
@@ -159,11 +206,11 @@ const Index = () => {
           )}
 
           {/* Error State */}
-          {currentError && !currentLoading && (
+          {currentData.error && !currentData.loading && (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <AlertCircle className="w-12 h-12 text-destructive mb-4" />
-              <p className="text-muted-foreground mb-4">{currentError}</p>
-              <Button onClick={currentRefresh} variant="outline">
+              <p className="text-muted-foreground mb-4">{currentData.error}</p>
+              <Button onClick={currentData.refresh} variant="outline">
                 <RefreshCw className="w-4 h-4 mr-2" />
                 Try Again
               </Button>
@@ -171,7 +218,7 @@ const Index = () => {
           )}
 
           {/* Empty State for Following Tab (not authenticated) */}
-          {activeTab === 'following' && !isAuthenticated && !currentLoading && (
+          {activeTab === 'following' && !isAuthenticated && !currentData.loading && (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <Users className="w-12 h-12 text-muted-foreground mb-4" />
               <p className="text-lg font-medium text-foreground mb-2">Sign in to see your feed</p>
@@ -183,7 +230,7 @@ const Index = () => {
           )}
 
           {/* Empty State for Following Tab (no follows) */}
-          {activeTab === 'following' && isAuthenticated && !currentLoading && !currentError && currentPoems.length === 0 && (
+          {activeTab === 'following' && isAuthenticated && !currentData.loading && !currentData.error && currentData.poems.length === 0 && (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <Users className="w-12 h-12 text-muted-foreground mb-4" />
               <p className="text-lg font-medium text-foreground mb-2">No poems from followed poets</p>
@@ -194,8 +241,17 @@ const Index = () => {
             </div>
           )}
 
+          {/* Empty State for Trending Tab */}
+          {activeTab === 'trending' && !currentData.loading && !currentData.error && currentData.poems.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <TrendingUp className="w-12 h-12 text-muted-foreground mb-4" />
+              <p className="text-lg font-medium text-foreground mb-2">No trending poems yet</p>
+              <p className="text-muted-foreground mb-4">Check back later for popular poetry!</p>
+            </div>
+          )}
+
           {/* Empty State for For You Tab */}
-          {activeTab !== 'following' && !currentLoading && !currentError && currentPoems.length === 0 && (
+          {activeTab === 'for-you' && !currentData.loading && !currentData.error && currentData.poems.length === 0 && (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <p className="text-lg font-medium text-foreground mb-2">No poems yet</p>
               <p className="text-muted-foreground mb-4">Be the first to share your poetry!</p>
@@ -206,9 +262,9 @@ const Index = () => {
           )}
 
           {/* Poems List */}
-          {!currentLoading && !currentError && currentPoems.length > 0 && (
+          {!currentData.loading && !currentData.error && currentData.poems.length > 0 && (
             <div className="space-y-4">
-              {currentPoems.map((poem, index) => (
+              {currentData.poems.map((poem, index) => (
                 <PoemCard key={poem.id} poem={poem} index={index} />
               ))}
             </div>
@@ -217,13 +273,13 @@ const Index = () => {
 
         {/* Load More / Infinite Scroll Trigger */}
         <div ref={loadMoreRef} className="flex justify-center py-8">
-          {isLoadingMore && (
+          {currentData.loadingMore && (
             <div className="flex items-center gap-2 text-muted-foreground">
               <Loader2 className="w-4 h-4 animate-spin" />
               <span className="text-sm">Loading more...</span>
             </div>
           )}
-          {!isLoadingMore && currentHasMore && currentPoems.length > 0 && (
+          {!currentData.loadingMore && currentData.hasMore && currentData.poems.length > 0 && (
             <motion.div
               animate={{ opacity: [0.5, 1, 0.5] }}
               transition={{ duration: 1.5, repeat: Infinity }}
@@ -232,7 +288,7 @@ const Index = () => {
               Scroll for more poetry...
             </motion.div>
           )}
-          {!currentHasMore && currentPoems.length > 0 && (
+          {!currentData.hasMore && currentData.poems.length > 0 && (
             <p className="text-sm text-muted-foreground">You've reached the end ✨</p>
           )}
         </div>
