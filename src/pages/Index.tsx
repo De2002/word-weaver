@@ -12,7 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { usePublishedPoems } from '@/hooks/usePublishedPoems';
 import { useFollowingPoems } from '@/hooks/useFollowingPoems';
 import { useTrendingPoems } from '@/hooks/useTrendingPoems';
-import { trendingPoets, newPoets, risingPoets, mockPoets } from '@/data/mockData';
+import { useDiscoverPoets } from '@/hooks/useDiscoverPoets';
 
 function PoemCardSkeleton() {
   return (
@@ -59,6 +59,12 @@ const Index = () => {
     loadMore: loadMoreTrending,
     refresh: refreshTrending,
   } = useTrendingPoems();
+  const { 
+    trendingPoets, 
+    risingPoets, 
+    newPoets, 
+    isLoading: poetsLoading 
+  } = useDiscoverPoets();
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
   // Determine which data to show based on active tab
@@ -132,22 +138,26 @@ const Index = () => {
         <FeedTabs onTabChange={setActiveTab} />
 
         {/* Discover Sections - only show on For You tab */}
-        {activeTab === 'for-you' && (
+        {activeTab === 'for-you' && !poetsLoading && (
           <>
             <div className="space-y-6 py-4">
-              <DiscoverSection 
-                title="Trending Poets" 
-                subtitle="Most loved this week"
-                poets={trendingPoets.length > 0 ? trendingPoets : mockPoets.slice(0, 3)}
-                type="trending"
-              />
+              {trendingPoets.length > 0 && (
+                <DiscoverSection 
+                  title="Trending Poets" 
+                  subtitle="Most loved this week"
+                  poets={trendingPoets}
+                  type="trending"
+                />
+              )}
               
-              <DiscoverSection 
-                title="New Voices" 
-                subtitle="Fresh talent to discover"
-                poets={newPoets.length > 0 ? newPoets : mockPoets.slice(2, 4)}
-                type="new"
-              />
+              {newPoets.length > 0 && (
+                <DiscoverSection 
+                  title="New Voices" 
+                  subtitle="Fresh talent to discover"
+                  poets={newPoets}
+                  type="new"
+                />
+              )}
 
               {risingPoets.length > 0 && (
                 <DiscoverSection 
