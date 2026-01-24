@@ -242,7 +242,6 @@ export function usePoemInteractions(poemId: string): UsePoemInteractionsResult {
       toast({ 
         title: 'Sign in required', 
         description: 'Please sign in to upvote poems.',
-        variant: 'destructive',
       });
       return;
     }
@@ -258,7 +257,6 @@ export function usePoemInteractions(poemId: string): UsePoemInteractionsResult {
       toast({ 
         title: 'Sign in required', 
         description: 'Please sign in to save poems.',
-        variant: 'destructive',
       });
       return;
     }

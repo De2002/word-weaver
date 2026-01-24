@@ -100,7 +100,6 @@ export function useFollow(poetUserId: string): UseFollowResult {
       toast({ 
         title: 'Sign in required', 
         description: 'Please sign in to follow poets.',
-        variant: 'destructive',
       });
       return;
     }

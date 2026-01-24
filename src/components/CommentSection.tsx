@@ -1,14 +1,16 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, Send, Trash2, CornerDownRight, Loader2 } from 'lucide-react';
+import { Heart, Send, Trash2, CornerDownRight, Loader2, LogIn } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import { useComments, Comment } from '@/hooks/useComments';
 import { useAuth } from '@/context/AuthProvider';
+import { toast } from '@/hooks/use-toast';
 
 interface CommentSectionProps {
   poemId: string;
@@ -28,6 +30,41 @@ interface CommentItemProps {
 function CommentItem({ comment, onLike, onDelete, onReply, currentUserId, depth = 0 }: CommentItemProps) {
   const isOwner = currentUserId === comment.userId;
   const maxDepth = 2; // Limit nesting depth
+  const navigate = useNavigate();
+
+  const handleLike = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!currentUserId) {
+      toast({
+        title: 'Sign in required',
+        description: 'Please sign in to like comments.',
+        action: (
+          <Button size="sm" variant="outline" onClick={() => navigate('/login')}>
+            Sign In
+          </Button>
+        ),
+      });
+      return;
+    }
+    onLike(comment.id);
+  };
+
+  const handleReply = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!currentUserId) {
+      toast({
+        title: 'Sign in required',
+        description: 'Please sign in to reply to comments.',
+        action: (
+          <Button size="sm" variant="outline" onClick={() => navigate('/login')}>
+            Sign In
+          </Button>
+        ),
+      });
+      return;
+    }
+    onReply(comment.id);
+  };
 
   return (
     <motion.div
@@ -57,7 +94,7 @@ function CommentItem({ comment, onLike, onDelete, onReply, currentUserId, depth 
         <p className="text-sm text-foreground/90 mt-0.5 break-words">{comment.content}</p>
         <div className="flex items-center gap-4 pt-1.5">
           <button 
-            onClick={(e) => { e.stopPropagation(); onLike(comment.id); }}
+            onClick={handleLike}
             className={cn(
               "flex items-center gap-1 text-xs transition-colors",
               comment.isLiked ? "text-soft-coral" : "text-muted-foreground hover:text-foreground"
@@ -68,7 +105,7 @@ function CommentItem({ comment, onLike, onDelete, onReply, currentUserId, depth 
           </button>
           {depth < maxDepth && (
             <button 
-              onClick={(e) => { e.stopPropagation(); onReply(comment.id); }}
+              onClick={handleReply}
               className="text-xs text-muted-foreground hover:text-foreground transition-colors"
             >
               Reply
@@ -107,16 +144,27 @@ function CommentItem({ comment, onLike, onDelete, onReply, currentUserId, depth 
 
 export function CommentSection({ poemId, onViewAll, maxComments = 3 }: CommentSectionProps) {
   const { session } = useAuth();
+  const navigate = useNavigate();
   const { comments, commentCount, isLoading, addComment, deleteComment, toggleLike, isAddingComment } = useComments(poemId);
   const [commentText, setCommentText] = useState('');
   const [replyingTo, setReplyingTo] = useState<string | null>(null);
   
   const userProfile = session?.user;
   const userAvatar = ''; // Will be fetched from profile in real implementation
+  const isAuthenticated = !!session?.user;
 
   const handleSubmit = (e?: React.MouseEvent | React.KeyboardEvent) => {
     e?.stopPropagation();
     if (!commentText.trim()) return;
+    
+    if (!isAuthenticated) {
+      toast({
+        title: 'Sign in required',
+        description: 'Please sign in to comment on poems.',
+      });
+      navigate('/login');
+      return;
+    }
     
     addComment(commentText.trim(), replyingTo || undefined);
     setCommentText('');
@@ -124,6 +172,14 @@ export function CommentSection({ poemId, onViewAll, maxComments = 3 }: CommentSe
   };
 
   const handleReply = (parentId: string) => {
+    if (!isAuthenticated) {
+      toast({
+        title: 'Sign in required',
+        description: 'Please sign in to reply to comments.',
+      });
+      navigate('/login');
+      return;
+    }
     setReplyingTo(parentId);
     // Find the comment to show who we're replying to
     const parent = comments.find(c => c.id === parentId) || 
@@ -164,48 +220,59 @@ export function CommentSection({ poemId, onViewAll, maxComments = 3 }: CommentSe
         </div>
       )}
 
-      {/* Comment Input */}
-      <div className="flex items-center gap-3 mb-4">
-        <Avatar className="h-8 w-8">
-          <AvatarImage src={userAvatar} />
-          <AvatarFallback className="text-xs bg-secondary">
-            {userProfile?.email?.charAt(0).toUpperCase() || '?'}
-          </AvatarFallback>
-        </Avatar>
-        <div className="flex-1 flex items-center gap-2">
-          <Input
-            placeholder={replyingTo ? "Write a reply..." : "Add a comment..."}
-            value={commentText}
-            onChange={(e) => setCommentText(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' && !e.shiftKey) {
-                e.preventDefault();
-                handleSubmit(e);
-              }
-            }}
-            onClick={(e) => e.stopPropagation()}
-            className="flex-1 bg-secondary/50 border-0 h-9 text-sm"
-            maxLength={1000}
-          />
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            onClick={handleSubmit}
-            disabled={!commentText.trim() || isAddingComment}
-            className={cn(
-              "p-2 rounded-full transition-colors",
-              commentText.trim() && !isAddingComment
-                ? "bg-primary text-primary-foreground" 
-                : "bg-secondary text-muted-foreground"
-            )}
-          >
-            {isAddingComment ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Send className="h-4 w-4" />
-            )}
-          </motion.button>
+      {/* Comment Input - show login prompt for unauthenticated users */}
+      {isAuthenticated ? (
+        <div className="flex items-center gap-3 mb-4">
+          <Avatar className="h-8 w-8">
+            <AvatarImage src={userAvatar} />
+            <AvatarFallback className="text-xs bg-secondary">
+              {userProfile?.email?.charAt(0).toUpperCase() || '?'}
+            </AvatarFallback>
+          </Avatar>
+          <div className="flex-1 flex items-center gap-2">
+            <Input
+              placeholder={replyingTo ? "Write a reply..." : "Add a comment..."}
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSubmit(e);
+                }
+              }}
+              onClick={(e) => e.stopPropagation()}
+              className="flex-1 bg-secondary/50 border-0 h-9 text-sm"
+              maxLength={1000}
+            />
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              onClick={handleSubmit}
+              disabled={!commentText.trim() || isAddingComment}
+              className={cn(
+                "p-2 rounded-full transition-colors",
+                commentText.trim() && !isAddingComment
+                  ? "bg-primary text-primary-foreground" 
+                  : "bg-secondary text-muted-foreground"
+              )}
+            >
+              {isAddingComment ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Send className="h-4 w-4" />
+              )}
+            </motion.button>
+          </div>
         </div>
-      </div>
+      ) : (
+        <Link
+          to="/login"
+          onClick={(e) => e.stopPropagation()}
+          className="flex items-center gap-3 mb-4 p-3 rounded-lg bg-secondary/50 hover:bg-secondary/70 transition-colors"
+        >
+          <LogIn className="h-4 w-4 text-muted-foreground" />
+          <span className="text-sm text-muted-foreground">Sign in to join the conversation</span>
+        </Link>
+      )}
 
       {/* Loading State */}
       {isLoading && (
