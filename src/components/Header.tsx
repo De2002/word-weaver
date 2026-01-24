@@ -5,11 +5,15 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthProvider';
 import { useNotifications } from '@/hooks/useNotifications';
+import { useNotificationsRealtime } from '@/hooks/useNotificationsRealtime';
 import { cn } from '@/lib/utils';
 
 export function Header() {
   const { user, profile } = useAuth();
   const { unreadCount } = useNotifications();
+  
+  // Subscribe to real-time notification updates
+  useNotificationsRealtime();
   const displayName = profile?.display_name || profile?.username || user?.email || 'You';
   const avatarUrl = profile?.avatar_url || undefined;
 
