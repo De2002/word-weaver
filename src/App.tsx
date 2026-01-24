@@ -12,6 +12,10 @@ import Discover from "./pages/Discover";
 import PoemDetail from "./pages/PoemDetail";
 import TagPage from "./pages/TagPage";
 import More from "./pages/More";
+import About from "./pages/About";
+import Rules from "./pages/Rules";
+import UserAgreement from "./pages/UserAgreement";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import CreatePoetry from "./pages/CreatePoetry";
 import Start from "./pages/Start";
 import Login from "./pages/Login";
@@ -23,7 +27,6 @@ import Notifications from "./pages/Notifications";
 import SavedPoems from "./pages/SavedPoems";
 import Search from "./pages/Search";
 import NotFound from "./pages/NotFound";
-
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -53,6 +56,10 @@ const App = () => (
             <Route path="/poem/:id" element={<PoemDetail />} />
             <Route path="/tag/:tag" element={<TagPage />} />
             <Route path="/more" element={<More />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/rules" element={<Rules />} />
+            <Route path="/user-agreement" element={<UserAgreement />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
             <Route
               path="/create/poetry"
               element={
