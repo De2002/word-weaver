@@ -14,6 +14,95 @@ export type Database = {
   }
   public: {
     Tables: {
+      chapbook_saves: {
+        Row: {
+          chapbook_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          chapbook_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          chapbook_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chapbook_saves_chapbook_id_fkey"
+            columns: ["chapbook_id"]
+            isOneToOne: false
+            referencedRelation: "chapbooks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      chapbooks: {
+        Row: {
+          country: string | null
+          cover_url: string | null
+          created_at: string
+          currency: string | null
+          description: string | null
+          external_links: Json
+          format: string
+          genre_tags: string[]
+          id: string
+          is_free: boolean
+          poet_name: string
+          price: number | null
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+          year: number | null
+        }
+        Insert: {
+          country?: string | null
+          cover_url?: string | null
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          external_links?: Json
+          format: string
+          genre_tags?: string[]
+          id?: string
+          is_free?: boolean
+          poet_name: string
+          price?: number | null
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+          year?: number | null
+        }
+        Update: {
+          country?: string | null
+          cover_url?: string | null
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          external_links?: Json
+          format?: string
+          genre_tags?: string[]
+          id?: string
+          is_free?: boolean
+          poet_name?: string
+          price?: number | null
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+          year?: number | null
+        }
+        Relationships: []
+      }
       comment_likes: {
         Row: {
           comment_id: string
