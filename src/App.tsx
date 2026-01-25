@@ -26,6 +26,9 @@ import PoetProfile from "./pages/PoetProfile";
 import Notifications from "./pages/Notifications";
 import SavedPoems from "./pages/SavedPoems";
 import Search from "./pages/Search";
+import Events from "./pages/Events";
+import EventDetail from "./pages/EventDetail";
+import { SubmitEventForm } from "./components/events/SubmitEventForm";
 import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
@@ -60,6 +63,16 @@ const App = () => (
             <Route path="/rules" element={<Rules />} />
             <Route path="/user-agreement" element={<UserAgreement />} />
             <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/events" element={<Events />} />
+            <Route path="/events/:id" element={<EventDetail />} />
+            <Route
+              path="/events/submit"
+              element={
+                <ProtectedRoute>
+                  <SubmitEventForm />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/create/poetry"
               element={

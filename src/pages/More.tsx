@@ -44,7 +44,7 @@ const menuSections: MenuSection[] = [
     title: 'Community',
     items: [
       { icon: Users, label: 'Meet', href: '/meet', description: 'Introduce yourself' },
-      { icon: Calendar, label: 'Events', href: '/events', description: 'Local happenings' },
+      { icon: Calendar, label: 'Events', href: '/events', description: 'Poetry events worldwide' },
       { icon: Headphones, label: 'Podcast', href: '/podcast', description: 'Platform podcasts' },
     ],
   },
