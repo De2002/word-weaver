@@ -29,6 +29,9 @@ import Search from "./pages/Search";
 import Events from "./pages/Events";
 import EventDetail from "./pages/EventDetail";
 import { SubmitEventForm } from "./components/events/SubmitEventForm";
+import ChapbooksStore from "./pages/ChapbooksStore";
+import ChapbookDetail from "./pages/ChapbookDetail";
+import SubmitChapbook from "./pages/SubmitChapbook";
 import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
@@ -110,6 +113,17 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <SavedPoems />
+                </ProtectedRoute>
+              }
+            />
+            {/* Chapbooks Store */}
+            <Route path="/chapbooks" element={<ChapbooksStore />} />
+            <Route path="/chapbooks/:id" element={<ChapbookDetail />} />
+            <Route
+              path="/chapbooks/submit"
+              element={
+                <ProtectedRoute>
+                  <SubmitChapbook />
                 </ProtectedRoute>
               }
             />
