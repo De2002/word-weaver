@@ -32,6 +32,7 @@ import { SubmitEventForm } from "./components/events/SubmitEventForm";
 import ChapbooksStore from "./pages/ChapbooksStore";
 import ChapbookDetail from "./pages/ChapbookDetail";
 import SubmitChapbook from "./pages/SubmitChapbook";
+import Meet from "./pages/Meet";
 import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
@@ -62,6 +63,7 @@ const App = () => (
             <Route path="/poem/:id" element={<PoemDetail />} />
             <Route path="/tag/:tag" element={<TagPage />} />
             <Route path="/more" element={<More />} />
+            <Route path="/meet" element={<Meet />} />
             <Route path="/about" element={<About />} />
             <Route path="/rules" element={<Rules />} />
             <Route path="/user-agreement" element={<UserAgreement />} />

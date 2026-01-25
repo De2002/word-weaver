@@ -302,6 +302,62 @@ export type Database = {
         }
         Relationships: []
       }
+      introduction_reactions: {
+        Row: {
+          created_at: string
+          emoji: string
+          id: string
+          introduction_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          emoji: string
+          id?: string
+          introduction_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          emoji?: string
+          id?: string
+          introduction_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "introduction_reactions_introduction_id_fkey"
+            columns: ["introduction_id"]
+            isOneToOne: false
+            referencedRelation: "introductions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      introductions: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           actor_id: string
