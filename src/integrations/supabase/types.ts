@@ -591,6 +591,205 @@ export type Database = {
         }
         Relationships: []
       }
+      trail_progress: {
+        Row: {
+          completed: boolean
+          completed_at: string | null
+          current_step: number
+          id: string
+          started_at: string
+          trail_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          completed_at?: string | null
+          current_step?: number
+          id?: string
+          started_at?: string
+          trail_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          completed_at?: string | null
+          current_step?: number
+          id?: string
+          started_at?: string
+          trail_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trail_progress_trail_id_fkey"
+            columns: ["trail_id"]
+            isOneToOne: false
+            referencedRelation: "trails"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trail_reviews: {
+        Row: {
+          comment: string | null
+          created_at: string
+          emotion: string | null
+          favorite_step_id: string | null
+          id: string
+          trail_id: string
+          user_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          emotion?: string | null
+          favorite_step_id?: string | null
+          id?: string
+          trail_id: string
+          user_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          emotion?: string | null
+          favorite_step_id?: string | null
+          id?: string
+          trail_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trail_reviews_favorite_step_id_fkey"
+            columns: ["favorite_step_id"]
+            isOneToOne: false
+            referencedRelation: "trail_steps"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trail_reviews_trail_id_fkey"
+            columns: ["trail_id"]
+            isOneToOne: false
+            referencedRelation: "trails"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trail_step_reactions: {
+        Row: {
+          created_at: string
+          emoji: string
+          id: string
+          trail_step_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          emoji: string
+          id?: string
+          trail_step_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          emoji?: string
+          id?: string
+          trail_step_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trail_step_reactions_trail_step_id_fkey"
+            columns: ["trail_step_id"]
+            isOneToOne: false
+            referencedRelation: "trail_steps"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trail_steps: {
+        Row: {
+          created_at: string
+          id: string
+          poem_id: string
+          step_order: number
+          trail_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          poem_id: string
+          step_order: number
+          trail_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          poem_id?: string
+          step_order?: number
+          trail_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "trail_steps_poem_id_fkey"
+            columns: ["poem_id"]
+            isOneToOne: false
+            referencedRelation: "poems"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "trail_steps_trail_id_fkey"
+            columns: ["trail_id"]
+            isOneToOne: false
+            referencedRelation: "trails"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      trails: {
+        Row: {
+          category: string
+          cover_url: string | null
+          created_at: string
+          curation_note: string | null
+          description: string | null
+          id: string
+          mood: string | null
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category: string
+          cover_url?: string | null
+          created_at?: string
+          curation_note?: string | null
+          description?: string | null
+          id?: string
+          mood?: string | null
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          cover_url?: string | null
+          created_at?: string
+          curation_note?: string | null
+          description?: string | null
+          id?: string
+          mood?: string | null
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
