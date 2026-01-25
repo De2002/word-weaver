@@ -39,6 +39,10 @@ import CreateTrail from "./pages/CreateTrail";
 import EditTrail from "./pages/EditTrail";
 import Messages from "./pages/Messages";
 import NotFound from "./pages/NotFound";
+import PoetJournals from "./pages/PoetJournals";
+import JournalDetail from "./pages/JournalDetail";
+import CreateJournal from "./pages/CreateJournal";
+import EditJournal from "./pages/EditJournal";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -158,6 +162,25 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <EditTrail />
+                </ProtectedRoute>
+              }
+            />
+            {/* Poet Journals */}
+            <Route path="/journals" element={<PoetJournals />} />
+            <Route path="/journals/:id" element={<JournalDetail />} />
+            <Route
+              path="/journals/create"
+              element={
+                <ProtectedRoute>
+                  <CreateJournal />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/journals/:id/edit"
+              element={
+                <ProtectedRoute>
+                  <EditJournal />
                 </ProtectedRoute>
               }
             />
