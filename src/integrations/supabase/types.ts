@@ -88,6 +88,110 @@ export type Database = {
           },
         ]
       }
+      event_saves: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_saves_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      events: {
+        Row: {
+          city: string | null
+          country: string | null
+          created_at: string
+          date: string
+          description: string
+          end_time: string | null
+          event_type: string
+          id: string
+          is_featured: boolean
+          is_free: boolean
+          is_online: boolean
+          location: string | null
+          online_link: string | null
+          organizer_contact: string | null
+          organizer_name: string | null
+          short_description: string | null
+          start_time: string | null
+          status: string
+          tags: string[]
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          date: string
+          description: string
+          end_time?: string | null
+          event_type: string
+          id?: string
+          is_featured?: boolean
+          is_free?: boolean
+          is_online?: boolean
+          location?: string | null
+          online_link?: string | null
+          organizer_contact?: string | null
+          organizer_name?: string | null
+          short_description?: string | null
+          start_time?: string | null
+          status?: string
+          tags?: string[]
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          date?: string
+          description?: string
+          end_time?: string | null
+          event_type?: string
+          id?: string
+          is_featured?: boolean
+          is_free?: boolean
+          is_online?: boolean
+          location?: string | null
+          online_link?: string | null
+          organizer_contact?: string | null
+          organizer_name?: string | null
+          short_description?: string | null
+          start_time?: string | null
+          status?: string
+          tags?: string[]
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       follows: {
         Row: {
           created_at: string
