@@ -61,7 +61,7 @@ const menuSections: MenuSection[] = [
       { icon: Map, label: 'Trails', href: '/trails', description: 'Poetry journeys' },
       { icon: BookOpen, label: 'Chapbooks Store', href: '/chapbooks', description: 'Browse collections' },
       { icon: Award, label: 'Poets of the Month', href: '/poets-of-the-month', description: 'Featured poets' },
-      { icon: Newspaper, label: 'Blog', href: '/blog', description: 'Latest updates' },
+      { icon: Newspaper, label: 'Poet Journals', href: '/journals', description: 'Stories & reflections' },
     ],
   },
   {

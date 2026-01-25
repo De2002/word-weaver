@@ -31,7 +31,7 @@ const sidebarSections: SidebarSection[] = [
       { label: 'Trails', icon: Map, href: '/trails' },
       { label: 'Chapbooks Store', icon: BookOpen, href: '/chapbooks' },
       { label: 'Poets of the Month', icon: Award, href: '/poets-of-the-month' },
-      { label: 'Blog', icon: Newspaper, href: '/blog' },
+      { label: 'Poet Journals', icon: Newspaper, href: '/journals' },
     ],
   },
   {
