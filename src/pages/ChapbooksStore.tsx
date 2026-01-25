@@ -37,9 +37,9 @@ export default function ChapbooksStore() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-6"
         >
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <h1 className="text-2xl md:text-3xl font-serif font-bold flex items-center gap-2">
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+            <div className="text-center md:text-left">
+              <h1 className="text-2xl md:text-3xl font-serif font-bold flex items-center justify-center md:justify-start gap-2">
                 <Book className="w-7 h-7" />
                 Chapbooks Store
               </h1>
@@ -47,7 +47,7 @@ export default function ChapbooksStore() {
                 Discover chapbooks by poets from around the world. Click to buy from the original publisher or store.
               </p>
             </div>
-            <Button asChild>
+            <Button asChild className="w-full md:w-auto shrink-0">
               <Link to="/chapbooks/submit">
                 <Plus className="w-4 h-4 mr-2" />
                 List a Chapbook
