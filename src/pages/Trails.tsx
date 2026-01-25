@@ -29,7 +29,7 @@ export default function Trails() {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
+      <main className="max-w-4xl mx-auto px-4 pt-20 pb-24">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>

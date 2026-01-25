@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { MarkdownEditor } from '@/components/journals/MarkdownEditor';
 import { useCreateJournal } from '@/hooks/useJournals';
 import { useToast } from '@/hooks/use-toast';
 import { Link } from 'react-router-dom';
@@ -51,7 +52,7 @@ export default function CreateJournal() {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="max-w-2xl mx-auto px-4 py-8 pb-24">
+      <main className="max-w-2xl mx-auto px-4 pt-20 pb-24">
         {/* Back button */}
         <Link 
           to="/journals" 
@@ -109,12 +110,11 @@ export default function CreateJournal() {
             {/* Content */}
             <div className="space-y-2">
               <Label htmlFor="content">Content</Label>
-              <Textarea
-                id="content"
-                placeholder="Write your journal entry..."
+              <MarkdownEditor
                 value={content}
-                onChange={(e) => setContent(e.target.value)}
-                className="min-h-[400px] resize-y leading-relaxed"
+                onChange={setContent}
+                placeholder="Write your journal entry... Use markdown for formatting."
+                minHeight="400px"
               />
             </div>
 
