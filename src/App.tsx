@@ -36,6 +36,7 @@ import Meet from "./pages/Meet";
 import Trails from "./pages/Trails";
 import TrailDetail from "./pages/TrailDetail";
 import CreateTrail from "./pages/CreateTrail";
+import EditTrail from "./pages/EditTrail";
 import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
@@ -140,6 +141,14 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <CreateTrail />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/trails/:id/edit"
+              element={
+                <ProtectedRoute>
+                  <EditTrail />
                 </ProtectedRoute>
               }
             />
