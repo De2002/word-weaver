@@ -94,7 +94,7 @@ export default function SavedPoems() {
     <div className="min-h-screen bg-background">
       <Header />
 
-      <main className="max-w-2xl mx-auto px-4 py-6 pb-24">
+      <main className="max-w-2xl mx-auto px-4 pt-20 pb-24">
         {/* Back button and title */}
         <div className="flex items-center gap-3 mb-6">
           <Button

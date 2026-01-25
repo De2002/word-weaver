@@ -7,6 +7,7 @@ import { Header } from '@/components/Header';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { JournalCommentSection } from '@/components/journals/JournalCommentSection';
+import { MarkdownRenderer } from '@/components/journals/MarkdownRenderer';
 import { useJournal, useLikeJournal, useDeleteJournal } from '@/hooks/useJournals';
 import { useAuth } from '@/context/AuthProvider';
 import { useToast } from '@/hooks/use-toast';
@@ -100,7 +101,7 @@ export default function JournalDetail() {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="max-w-2xl mx-auto px-4 py-8 pb-24">
+      <main className="max-w-2xl mx-auto px-4 pt-20 pb-24">
         {/* Back button */}
         <Link 
           to="/journals" 
@@ -179,9 +180,7 @@ export default function JournalDetail() {
 
           {/* Content */}
           <div className="prose prose-lg max-w-none">
-            <div className="text-foreground/90 leading-relaxed whitespace-pre-wrap text-base md:text-lg">
-              {journal.content}
-            </div>
+            <MarkdownRenderer content={journal.content} />
           </div>
 
           {/* Like button */}

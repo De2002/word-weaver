@@ -77,7 +77,7 @@ export default function CreateTrail() {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="max-w-2xl mx-auto px-4 py-6 pb-24">
+      <main className="max-w-2xl mx-auto px-4 pt-20 pb-24">
         <Link to="/trails" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground mb-6">
           <ArrowLeft className="h-4 w-4" />
           Back to Trails

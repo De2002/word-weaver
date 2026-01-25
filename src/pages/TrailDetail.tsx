@@ -111,7 +111,7 @@ export default function TrailDetail() {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <main className="max-w-4xl mx-auto px-4 py-6">
+        <main className="max-w-4xl mx-auto px-4 pt-20">
           <Skeleton className="h-8 w-48 mb-4" />
           <Skeleton className="aspect-[2/1] rounded-xl mb-6" />
           <Skeleton className="h-6 w-3/4 mb-4" />
@@ -125,7 +125,7 @@ export default function TrailDetail() {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <main className="max-w-4xl mx-auto px-4 py-16 text-center">
+        <main className="max-w-4xl mx-auto px-4 pt-20 text-center">
           <Map className="h-16 w-16 text-muted-foreground/30 mx-auto mb-4" />
           <h2 className="text-xl font-semibold text-foreground mb-2">Trail not found</h2>
           <Button asChild variant="outline">
@@ -212,7 +212,7 @@ export default function TrailDetail() {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="max-w-4xl mx-auto px-4 py-6 pb-24">
+      <main className="max-w-4xl mx-auto px-4 pt-20 pb-24">
         {/* Back button */}
         <Link
           to="/trails"
