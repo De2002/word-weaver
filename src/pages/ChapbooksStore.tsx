@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Book, Plus, LayoutGrid, List, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -15,8 +15,17 @@ export default function ChapbooksStore() {
   const [filters, setFilters] = useState<ChapbookFilters>({});
   const [page, setPage] = useState(1);
   const [view, setView] = useState<'grid' | 'list'>('grid');
+  const [showFab, setShowFab] = useState(false);
 
   const { data, isLoading, error } = useChapbooks(filters, page);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowFab(window.scrollY > 200);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleFiltersChange = (newFilters: ChapbookFilters) => {
     setFilters(newFilters);
@@ -197,6 +206,25 @@ export default function ChapbooksStore() {
           </>
         )}
       </div>
+
+      {/* Mobile FAB */}
+      <AnimatePresence>
+        {showFab && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8, y: 20 }}
+            className="fixed bottom-24 right-4 z-40 md:hidden"
+          >
+            <Button asChild size="lg" className="rounded-full shadow-lg h-14 px-5">
+              <Link to="/chapbooks/submit">
+                <Plus className="w-5 h-5 mr-2" />
+                List a Chapbook
+              </Link>
+            </Button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <BottomNav />
     </div>
