@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, FileText, Eye, Heart, Users, ExternalLink, Sparkles, TrendingUp } from 'lucide-react';
+import { ArrowLeft, FileText, Eye, Heart, Users, ExternalLink, Sparkles, TrendingUp, MessageCircle, Coffee } from 'lucide-react';
 import { usePoetProfile } from '@/hooks/usePoetProfile';
+import { useAuth } from '@/context/AuthProvider';
 import { PoemCard } from '@/components/PoemCard';
 import { FollowButton } from '@/components/FollowButton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -10,12 +11,30 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 
 export default function PoetProfile() {
   const { username } = useParams<{ username: string }>();
   const { poet, poems, isLoading, error, notFound, followerCount } = usePoetProfile(username || '');
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('all');
 
+  const handleMessage = () => {
+    if (!user) {
+      toast({
+        title: 'Sign in required',
+        description: 'Please sign in to send messages',
+        variant: 'destructive',
+      });
+      navigate('/login');
+      return;
+    }
+    if (poet) {
+      navigate(`/messages?with=${poet.id}`);
+    }
+  };
   // Sort poems for "Popular" tab (by upvotes when available)
   const sortedPoems = activeTab === 'popular'
     ? [...poems].sort((a, b) => b.upvotes - a.upvotes)
@@ -135,7 +154,41 @@ export default function PoetProfile() {
           </p>
         )}
 
-        {poet && <FollowButton poetUserId={poet.id} />}
+        {/* Action buttons */}
+        <div className="flex items-center justify-center gap-3">
+          {poet && <FollowButton poetUserId={poet.id} />}
+          
+          {/* Message button - only show if not viewing own profile */}
+          {poet && user?.id !== poet.id && (
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={handleMessage}
+              className="rounded-full"
+              title="Send message"
+            >
+              <MessageCircle className="h-4 w-4" />
+            </Button>
+          )}
+          
+          {/* Coffee/Tip button */}
+          {supportLinks.buyMeACoffee && (
+            <a
+              href={supportLinks.buyMeACoffee}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Buy me a coffee"
+            >
+              <Button
+                variant="outline"
+                size="icon"
+                className="rounded-full bg-[#FFDD00]/10 border-[#FFDD00]/30 hover:bg-[#FFDD00]/20"
+              >
+                <Coffee className="h-4 w-4 text-[#FFDD00]" />
+              </Button>
+            </a>
+          )}
+        </div>
       </motion.section>
 
       {/* Stats */}
