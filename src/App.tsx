@@ -33,6 +33,9 @@ import ChapbooksStore from "./pages/ChapbooksStore";
 import ChapbookDetail from "./pages/ChapbookDetail";
 import SubmitChapbook from "./pages/SubmitChapbook";
 import Meet from "./pages/Meet";
+import Trails from "./pages/Trails";
+import TrailDetail from "./pages/TrailDetail";
+import CreateTrail from "./pages/CreateTrail";
 import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
@@ -126,6 +129,17 @@ const App = () => (
               element={
                 <ProtectedRoute>
                   <SubmitChapbook />
+                </ProtectedRoute>
+              }
+            />
+            {/* Trails */}
+            <Route path="/trails" element={<Trails />} />
+            <Route path="/trails/:id" element={<TrailDetail />} />
+            <Route
+              path="/trails/create"
+              element={
+                <ProtectedRoute>
+                  <CreateTrail />
                 </ProtectedRoute>
               }
             />
