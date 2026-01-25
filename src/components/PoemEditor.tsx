@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { db } from "@/lib/db";
 import { useAuth } from "@/context/AuthProvider";
+import { AddToTrailModal } from "@/components/trails/AddToTrailModal";
 
 const MAX_TITLE_LENGTH = 100;
 const MAX_POEM_LENGTH = 5000;
@@ -44,6 +45,8 @@ export function PoemEditor({ initial }: Props) {
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [existingAudioPath, setExistingAudioPath] = useState<string | null>(initial?.audioPath ?? null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showTrailModal, setShowTrailModal] = useState(false);
+  const [publishedPoemId, setPublishedPoemId] = useState<string | null>(null);
 
   const isEdit = Boolean(initial?.id);
   const canSubmit = poemText.trim().length > 0;
@@ -179,12 +182,23 @@ export function PoemEditor({ initial }: Props) {
         description: status === "published" ? "Your poem is now visible to readers." : "You can publish anytime from My Poems.",
       });
 
-      navigate("/my-poems");
+      // Show "Add to Trail" modal after publishing new poems
+      if (status === "published" && !isEdit && poemId) {
+        setPublishedPoemId(poemId);
+        setShowTrailModal(true);
+      } else {
+        navigate("/my-poems");
+      }
     } catch (e: any) {
-      toast({ title: "Couldn’t save", description: e?.message ?? "Please try again.", variant: "destructive" });
+      toast({ title: "Couldn't save", description: e?.message ?? "Please try again.", variant: "destructive" });
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handleTrailModalComplete = () => {
+    setShowTrailModal(false);
+    navigate("/my-poems");
   };
 
   return (
@@ -323,6 +337,18 @@ export function PoemEditor({ initial }: Props) {
           </label>
         )}
       </div>
+
+      {/* Add to Trail Modal */}
+      {publishedPoemId && (
+        <AddToTrailModal
+          open={showTrailModal}
+          onOpenChange={(open) => {
+            if (!open) handleTrailModalComplete();
+          }}
+          poemId={publishedPoemId}
+          onComplete={handleTrailModalComplete}
+        />
+      )}
     </div>
   );
 }
