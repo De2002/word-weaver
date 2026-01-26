@@ -41,6 +41,14 @@ export default function TrailDetail() {
   const [viewMode, setViewMode] = useState<ViewMode>('overview');
   const [currentStep, setCurrentStep] = useState(1);
 
+  // Dynamic SEO
+  useEffect(() => {
+    if (trail) {
+      document.title = `${trail.title} | WordStack Trails`;
+    }
+    return () => { document.title = 'WordStack'; };
+  }, [trail]);
+
   // Initialize step from progress
   useEffect(() => {
     if (progress?.current_step) {

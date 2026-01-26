@@ -7,6 +7,7 @@ import { PoemCard } from '@/components/PoemCard';
 import { slugToTag, normalizeTag } from '@/lib/tags';
 import { sortPoems, SortType } from '@/lib/ranking';
 import { cn } from '@/lib/utils';
+import { useSEO } from '@/hooks/useSEO';
 
 const sortOptions: { value: SortType; label: string; icon: React.ElementType }[] = [
   { value: 'hot', label: 'Hot', icon: Flame },
@@ -21,6 +22,11 @@ export default function TagPage() {
   const [sortBy, setSortBy] = useState<SortType>('hot');
   
   const displayTag = tag ? slugToTag(tag) : '';
+  
+  useSEO({
+    title: `#${displayTag}`,
+    description: `Explore poems tagged with #${displayTag} on WordStack.`
+  });
   const normalizedTag = normalizeTag(displayTag);
   
   // Filter poems that have this tag

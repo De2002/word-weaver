@@ -14,6 +14,7 @@ import { useTrendingPoems } from '@/hooks/useTrendingPoems';
 import { useRisingPoems } from '@/hooks/useRisingPoems';
 import { useDiscoverPoets } from '@/hooks/useDiscoverPoets';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
+import { useSEO } from '@/hooks/useSEO';
 
 function PoemCardSkeleton() {
   return (
@@ -40,6 +41,11 @@ function PoemCardSkeleton() {
 }
 
 const Index = () => {
+  useSEO({
+    title: "Feed",
+    description: "Explore poetry from talented voices. Discover trending poems, follow your favorite poets, and find new voices."
+  });
+
   const [activeTab, setActiveTab] = useState('for-you');
   const { poems, isLoading, isLoadingMore, error, hasMore, loadMore, refresh } = usePublishedPoems();
   const { 

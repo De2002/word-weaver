@@ -25,6 +25,7 @@ import {
 import { Header } from '@/components/Header';
 import { CreateButton } from '@/components/CreateButton';
 import { cn } from '@/lib/utils';
+import { useSEO } from '@/hooks/useSEO';
 
 interface MenuItem {
   icon: React.ElementType;
@@ -93,6 +94,10 @@ const menuSections: MenuSection[] = [
 ];
 
 export default function More() {
+  useSEO({
+    title: "More",
+    description: "Explore more of WordStack. Community, events, trails, chapbooks, and settings."
+  });
   return (
     <div className="min-h-screen bg-background">
       <Header />

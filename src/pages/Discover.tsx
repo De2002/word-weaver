@@ -5,6 +5,7 @@ import { PoetCard } from '@/components/PoetCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useDiscoverPoets } from '@/hooks/useDiscoverPoets';
 import { cn } from '@/lib/utils';
+import { useSEO } from '@/hooks/useSEO';
 
 function PoetCardSkeleton() {
   return (
@@ -47,6 +48,11 @@ const sectionConfig = {
 };
 
 export default function Discover() {
+  useSEO({
+    title: "Discover Poets",
+    description: "Discover trending poets, rising stars, and new voices in the poetry community."
+  });
+
   const { trendingPoets, risingPoets, newPoets, allPoets, isLoading, error } = useDiscoverPoets();
 
   const sections = [

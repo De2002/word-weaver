@@ -15,8 +15,13 @@ import { useTrailDetail, useTrailSteps } from '@/hooks/useTrailDetail';
 import { useUpdateTrail, useDeleteTrail } from '@/hooks/useTrails';
 import { TrailCategory, TrailStatus, TRAIL_MOODS } from '@/types/trail';
 import { useAuth } from '@/context/AuthProvider';
+import { useSEO } from '@/hooks/useSEO';
 
 export default function EditTrail() {
+  useSEO({
+    title: "Edit Trail",
+    description: "Edit your poetry trail on WordStack."
+  });
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();

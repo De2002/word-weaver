@@ -6,8 +6,13 @@ import { PoemEditor } from "@/components/PoemEditor";
 import { db } from "@/lib/db";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthProvider";
+import { useSEO } from "@/hooks/useSEO";
 
 export default function EditPoem() {
+  useSEO({
+    title: "Edit Poem",
+    description: "Edit your poem on WordStack."
+  });
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();

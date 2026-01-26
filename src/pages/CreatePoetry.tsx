@@ -1,8 +1,14 @@
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { PoemEditor } from '@/components/PoemEditor';
+import { useSEO } from '@/hooks/useSEO';
 
 export default function CreatePoetry() {
+  useSEO({
+    title: "New Poem",
+    description: "Write and publish your poetry on WordStack."
+  });
+
   const navigate = useNavigate();
   return (
     <div className="min-h-screen bg-background">

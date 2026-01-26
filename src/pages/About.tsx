@@ -2,8 +2,13 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Heart, Users, Feather, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useSEO } from '@/hooks/useSEO';
 
 export default function About() {
+  useSEO({
+    title: "About",
+    description: "Learn about WordStack, a community-driven platform dedicated to celebrating the art of poetry in all its forms."
+  });
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}

@@ -9,8 +9,13 @@ import { useAuth } from '@/context/AuthProvider';
 import { db } from '@/lib/db';
 import { Button } from '@/components/ui/button';
 import { Poem } from '@/types/poem';
+import { useSEO } from '@/hooks/useSEO';
 
 export default function SavedPoems() {
+  useSEO({
+    title: "Saved Poems",
+    description: "Your collection of saved poems on WordStack."
+  });
   const { user } = useAuth();
   const navigate = useNavigate();
 

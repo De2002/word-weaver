@@ -3,8 +3,13 @@ import { motion } from "framer-motion";
 import { Feather, Sparkles, TrendingUp, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthProvider";
+import { useSEO } from "@/hooks/useSEO";
 
 export default function Start() {
+  useSEO({
+    title: "Home",
+    description: "A home for poets. Share drafts, publish poetry, and build a following around your voice with optional audio readings and poet-friendly tools."
+  });
   const { user } = useAuth();
 
   return (

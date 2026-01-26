@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowLeft, FileText, Eye, Heart, Users, ExternalLink, Sparkles, TrendingUp, MessageCircle, Coffee } from 'lucide-react';
@@ -12,6 +12,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
+import { useSEO } from '@/hooks/useSEO';
 
 export default function PoetProfile() {
   const { username } = useParams<{ username: string }>();
@@ -20,6 +21,14 @@ export default function PoetProfile() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('all');
+
+  // Dynamic SEO based on poet data
+  useEffect(() => {
+    if (poet) {
+      document.title = `${poet.name || poet.username} | WordStack`;
+    }
+    return () => { document.title = 'WordStack'; };
+  }, [poet]);
 
   const handleMessage = () => {
     if (!user) {
