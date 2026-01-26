@@ -188,12 +188,12 @@ export default function PoetProfile() {
               rel="noopener noreferrer"
               title="Buy me a coffee"
             >
-              <Button
-                variant="outline"
-                size="icon"
-                className="rounded-full bg-[#FFDD00]/10 border-[#FFDD00]/30 hover:bg-[#FFDD00]/20"
-              >
-                <Coffee className="h-4 w-4 text-[#FFDD00]" />
+            <Button
+              variant="outline"
+              size="icon"
+              className="rounded-full"
+            >
+              <Coffee className="h-4 w-4 text-foreground" />
               </Button>
             </a>
           )}
@@ -242,16 +242,6 @@ export default function PoetProfile() {
                 className="inline-flex items-center gap-2 px-4 py-2 bg-[#FF5E5B] text-white rounded-full text-sm font-medium hover:opacity-90 transition-opacity"
               >
                 Ko-fi <ExternalLink className="h-3 w-3" />
-              </a>
-            )}
-            {supportLinks.buyMeACoffee && (
-              <a
-                href={supportLinks.buyMeACoffee}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-[#FFDD00] text-black rounded-full text-sm font-medium hover:opacity-90 transition-opacity"
-              >
-                Buy Me a Coffee <ExternalLink className="h-3 w-3" />
               </a>
             )}
             {supportLinks.paypal && (
