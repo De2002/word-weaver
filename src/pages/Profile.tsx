@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthProvider";
 import { db } from "@/lib/db";
 import { useSEO } from "@/hooks/useSEO";
+import { AvatarUpload } from "@/components/AvatarUpload";
 
 export default function Profile() {
   useSEO({
@@ -95,6 +96,20 @@ export default function Profile() {
 
       <main className="max-w-lg mx-auto px-4 pb-24">
         <div className="pt-6 pb-4 space-y-4">
+          {/* Avatar Upload */}
+          <div className="flex flex-col items-center gap-3 pb-4 border-b border-border">
+            <AvatarUpload
+              userId={user.id}
+              currentAvatarUrl={avatarUrl}
+              displayName={displayName || username || "User"}
+              onUploadComplete={(url) => {
+                setAvatarUrl(url);
+              }}
+              size="lg"
+            />
+            <p className="text-sm text-muted-foreground">Tap to change your photo</p>
+          </div>
+
           <div className="space-y-2">
             <Label htmlFor="username">Username</Label>
             <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="e.g. quietink" />
@@ -103,12 +118,6 @@ export default function Profile() {
           <div className="space-y-2">
             <Label htmlFor="display">Display name</Label>
             <Input id="display" value={displayName} onChange={(e) => setDisplayName(e.target.value)} placeholder="e.g. James Chen" />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="avatar">Avatar URL</Label>
-            <Input id="avatar" value={avatarUrl} onChange={(e) => setAvatarUrl(e.target.value)} placeholder="https://…" />
-            <p className="text-xs text-muted-foreground">We’ll add avatar upload next (for now, paste a link).</p>
           </div>
 
           <div className="space-y-2">
