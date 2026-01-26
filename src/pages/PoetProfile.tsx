@@ -232,7 +232,6 @@ export default function PoetProfile() {
           transition={{ delay: 0.15 }}
           className="px-6 mb-6"
         >
-          <h3 className="text-sm font-medium text-muted-foreground mb-3">Support this poet</h3>
           <div className="flex flex-wrap gap-2">
             {supportLinks.kofi && (
               <a
