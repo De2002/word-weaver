@@ -2,8 +2,13 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, ScrollText, Check, X, AlertTriangle, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useSEO } from '@/hooks/useSEO';
 
 export default function Rules() {
+  useSEO({
+    title: "Community Rules",
+    description: "WordStack community guidelines. Our rules to keep WordStack a safe, welcoming, and inspiring space for all poets."
+  });
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}

@@ -6,8 +6,13 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { db } from "@/lib/db";
+import { useSEO } from "@/hooks/useSEO";
 
 export default function Signup() {
+  useSEO({
+    title: "Create Account",
+    description: "Join WordStack as a reader or poet. Share your poetry with a community that appreciates the craft."
+  });
   const navigate = useNavigate();
   const { toast } = useToast();
 

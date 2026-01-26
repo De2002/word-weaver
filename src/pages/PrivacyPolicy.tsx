@@ -2,8 +2,13 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, Shield } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useSEO } from '@/hooks/useSEO';
 
 export default function PrivacyPolicy() {
+  useSEO({
+    title: "Privacy Policy",
+    description: "WordStack Privacy Policy. Learn how we collect, use, and protect your personal information."
+  });
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}

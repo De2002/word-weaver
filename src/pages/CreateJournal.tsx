@@ -11,8 +11,13 @@ import { MarkdownEditor } from '@/components/journals/MarkdownEditor';
 import { useCreateJournal } from '@/hooks/useJournals';
 import { useToast } from '@/hooks/use-toast';
 import { Link } from 'react-router-dom';
+import { useSEO } from '@/hooks/useSEO';
 
 export default function CreateJournal() {
+  useSEO({
+    title: "Write a Journal",
+    description: "Write and share your story, writing journey, or reflections with the WordStack community."
+  });
   const navigate = useNavigate();
   const { toast } = useToast();
   const createJournal = useCreateJournal();

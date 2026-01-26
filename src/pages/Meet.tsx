@@ -9,8 +9,13 @@ import { IntroductionForm } from '@/components/meet/IntroductionForm';
 import { useIntroductions } from '@/hooks/useIntroductions';
 import { useAuth } from '@/context/AuthProvider';
 import { ReactionEmoji } from '@/types/introduction';
+import { useSEO } from '@/hooks/useSEO';
 
 export default function Meet() {
+  useSEO({
+    title: "Meet the Community",
+    description: "Say hello, share your story, and welcome fellow poets. This is where connections begin."
+  });
   const { user } = useAuth();
   const { 
     introductions, 

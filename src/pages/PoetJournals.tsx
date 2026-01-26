@@ -9,8 +9,13 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useJournals, useMyJournals } from '@/hooks/useJournals';
 import { useAuth } from '@/context/AuthProvider';
+import { useSEO } from '@/hooks/useSEO';
 
 export default function PoetJournals() {
+  useSEO({
+    title: "Poet Journals",
+    description: "Personal stories, writing journeys, lessons learned, and reflections from poets in the WordStack community."
+  });
   const { user } = useAuth();
   const { data: journals = [], isLoading } = useJournals();
   const { data: myJournals = [] } = useMyJournals();

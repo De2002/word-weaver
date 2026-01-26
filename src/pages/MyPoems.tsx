@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { db } from "@/lib/db";
 import { useAuth } from "@/context/AuthProvider";
 import { useToast } from "@/hooks/use-toast";
+import { useSEO } from "@/hooks/useSEO";
 
 type PoemRow = {
   id: string;
@@ -19,6 +20,11 @@ type PoemRow = {
 };
 
 export default function MyPoems() {
+  useSEO({
+    title: "My Poems",
+    description: "Manage your drafts and published poems on WordStack."
+  });
+
   const { user, isPoet } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);

@@ -14,8 +14,13 @@ import { usePoemsForCuration, useAddPoemToTrail, useRemovePoemFromTrail } from '
 import { TrailCategory, TRAIL_MOODS } from '@/types/trail';
 import { useAuth } from '@/context/AuthProvider';
 import { cn } from '@/lib/utils';
+import { useSEO } from '@/hooks/useSEO';
 
 export default function CreateTrail() {
+  useSEO({
+    title: "Create Trail",
+    description: "Create a guided poetry journey for readers to walk through."
+  });
   const navigate = useNavigate();
   const { user } = useAuth();
   const createTrail = useCreateTrail();

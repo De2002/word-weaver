@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
@@ -29,6 +30,14 @@ export default function ChapbookDetail() {
 
   const { data: chapbook, isLoading, error } = useChapbook(id!);
   const { isSaved, toggleSave } = useChapbookSave(id!);
+
+  // Dynamic SEO
+  useEffect(() => {
+    if (chapbook) {
+      document.title = `${chapbook.title} by ${chapbook.poet_name} | WordStack`;
+    }
+    return () => { document.title = 'WordStack'; };
+  }, [chapbook]);
 
   const formatPrice = () => {
     if (!chapbook) return '';

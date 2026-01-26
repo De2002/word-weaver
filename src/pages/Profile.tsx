@@ -8,8 +8,13 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthProvider";
 import { db } from "@/lib/db";
+import { useSEO } from "@/hooks/useSEO";
 
 export default function Profile() {
+  useSEO({
+    title: "Your Profile",
+    description: "Manage your WordStack profile. Update your username, bio, avatar, and poet settings."
+  });
   const { user, profile, isPoet, refreshProfile, refreshRoles, signOut } = useAuth();
   const { toast } = useToast();
 

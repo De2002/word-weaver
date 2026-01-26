@@ -2,8 +2,13 @@ import { motion } from 'framer-motion';
 import { ArrowLeft, FileText } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useSEO } from '@/hooks/useSEO';
 
 export default function UserAgreement() {
+  useSEO({
+    title: "Terms of Service",
+    description: "WordStack Terms of Service. Read our user agreement before using the platform."
+  });
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}

@@ -34,6 +34,14 @@ export default function EventDetail() {
   const [loading, setLoading] = useState(true);
   const { savedEventIds, toggleSave } = useEventSaves();
 
+  // Dynamic SEO
+  useEffect(() => {
+    if (event) {
+      document.title = `${event.title} | WordStack Events`;
+    }
+    return () => { document.title = 'WordStack'; };
+  }, [event]);
+
   useEffect(() => {
     const fetchEvent = async () => {
       if (!id) return;

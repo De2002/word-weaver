@@ -12,8 +12,13 @@ import { EventCalendarView } from '@/components/events/EventCalendarView';
 import { useEvents, useFeaturedEvents, useEventSaves } from '@/hooks/useEvents';
 import { Skeleton } from '@/components/ui/skeleton';
 import { BottomNav } from '@/components/BottomNav';
+import { useSEO } from '@/hooks/useSEO';
 
 export default function Events() {
+  useSEO({
+    title: "Poetry Events",
+    description: "Discover poetry events around the world. Open mics, slams, workshops, festivals, and online poetry gatherings."
+  });
   const [view, setView] = useState<'list' | 'calendar'>('list');
   const [city, setCity] = useState('');
   const [dateFilter, setDateFilter] = useState('all');

@@ -10,8 +10,13 @@ import { ChapbookFiltersComponent } from '@/components/chapbooks/ChapbookFilters
 import { useChapbooks } from '@/hooks/useChapbooks';
 import { ChapbookFilters } from '@/types/chapbook';
 import { cn } from '@/lib/utils';
+import { useSEO } from '@/hooks/useSEO';
 
 export default function ChapbooksStore() {
+  useSEO({
+    title: "Chapbooks Store",
+    description: "Discover chapbooks by poets from around the world. Browse and buy from original publishers."
+  });
   const [filters, setFilters] = useState<ChapbookFilters>({});
   const [page, setPage] = useState(1);
   const [view, setView] = useState<'grid' | 'list'>('grid');

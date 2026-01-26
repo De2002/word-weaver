@@ -13,6 +13,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useSearch, SearchResult } from '@/hooks/useSearch';
 import { cn } from '@/lib/utils';
+import { useSEO } from '@/hooks/useSEO';
 
 function SearchResultItem({ result, onClick }: { result: SearchResult; onClick: () => void }) {
   const getIcon = () => {
@@ -114,6 +115,11 @@ function SearchGroup({
 }
 
 export default function Search() {
+  useSEO({
+    title: "Search",
+    description: "Search WordStack for poets, poems, and tags."
+  });
+
   const navigate = useNavigate();
   const inputRef = useRef<HTMLInputElement>(null);
   const { query, setQuery, isLoading, groupedResults } = useSearch();

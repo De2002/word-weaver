@@ -13,6 +13,7 @@ import { cn } from '@/lib/utils';
 import { MessageActions } from '@/components/messages/MessageActions';
 import { db } from '@/lib/db';
 import { useQuery } from '@tanstack/react-query';
+import { useSEO } from '@/hooks/useSEO';
 
 function ConversationList({ onSelect }: { onSelect: (partnerId: string) => void }) {
   const { data: conversations, isLoading } = useConversations();
@@ -233,6 +234,11 @@ function ConversationView({ partnerId, onBack }: { partnerId: string; onBack: ()
 }
 
 export default function Messages() {
+  useSEO({
+    title: "Messages",
+    description: "Your private messages on WordStack. Connect with fellow poets."
+  });
+
   const [searchParams, setSearchParams] = useSearchParams();
   const selectedPartner = searchParams.get('with');
 

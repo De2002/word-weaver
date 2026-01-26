@@ -11,8 +11,13 @@ import { MarkdownEditor } from '@/components/journals/MarkdownEditor';
 import { useJournal, useUpdateJournal } from '@/hooks/useJournals';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/context/AuthProvider';
+import { useSEO } from '@/hooks/useSEO';
 
 export default function EditJournal() {
+  useSEO({
+    title: "Edit Journal",
+    description: "Edit your journal entry on WordStack."
+  });
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();

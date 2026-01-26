@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
+import { useSEO } from '@/hooks/useSEO';
 
 function NotificationIcon({ type }: { type: Notification['type'] }) {
   switch (type) {
@@ -144,6 +145,11 @@ function NotificationSkeleton() {
 }
 
 export default function Notifications() {
+  useSEO({
+    title: "Notifications",
+    description: "View your notifications on WordStack. Follows, likes, comments, and replies."
+  });
+
   const { notifications, unreadCount, isLoading, markAsRead, markAllAsRead, deleteNotification } = useNotifications();
 
   return (

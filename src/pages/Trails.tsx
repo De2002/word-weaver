@@ -11,8 +11,13 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useTrails } from '@/hooks/useTrails';
 import { useAuth } from '@/context/AuthProvider';
 import { TrailCategory } from '@/types/trail';
+import { useSEO } from '@/hooks/useSEO';
 
 export default function Trails() {
+  useSEO({
+    title: "Poetry Trails",
+    description: "Explore guided poetry journeys. Curated trails to walk through themed collections of poems."
+  });
   const { user } = useAuth();
   const [selectedCategory, setSelectedCategory] = useState<TrailCategory | null>(null);
   const [selectedMood, setSelectedMood] = useState<string | null>(null);

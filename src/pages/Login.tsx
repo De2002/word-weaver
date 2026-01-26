@@ -5,8 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useSEO } from "@/hooks/useSEO";
 
 export default function Login() {
+  useSEO({
+    title: "Sign In",
+    description: "Sign in to WordStack to share your poetry, connect with poets, and discover new voices."
+  });
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
