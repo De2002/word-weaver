@@ -7,8 +7,9 @@ import { useSEO } from "@/hooks/useSEO";
 
 export default function Start() {
   useSEO({
-    title: "Home",
-    description: "A home for poets. Share drafts, publish poetry, and build a following around your voice with optional audio readings and poet-friendly tools."
+    title: "WordStack | Social Poetry Platform for Poets & Poetry Lovers",
+    description: "Write and publish poems on WordStack, listen to audio poetry, follow poets, share events, message creators, and explore chapbooks.",
+    fullTitle: true
   });
   const { user } = useAuth();
 
