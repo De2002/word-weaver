@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Feather, Sparkles, TrendingUp, Users } from "lucide-react";
+import { Sparkles, TrendingUp, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthProvider";
 import { useSEO } from "@/hooks/useSEO";
@@ -17,11 +17,8 @@ export default function Start() {
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
         <div className="flex items-center justify-between h-14 px-4 max-w-2xl mx-auto">
-          <div className="flex items-center gap-2">
-            <div className="bg-gradient-to-r from-primary to-warm-gold p-1.5 rounded-lg">
-              <Feather className="h-5 w-5 text-white" />
-            </div>
-            <span className="font-poem text-xl font-semibold text-gradient-warm">WordStack</span>
+          <div className="flex items-center">
+            <img src="/favicon.png" alt="WordStack" className="h-8 w-8" />
           </div>
           <div className="flex items-center gap-2">
             {user ? (
