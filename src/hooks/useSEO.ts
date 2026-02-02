@@ -3,6 +3,8 @@ import { useEffect } from 'react';
 interface SEOOptions {
   title: string;
   description?: string;
+  /** If true, uses title as-is without appending site name */
+  fullTitle?: boolean;
 }
 
 const DEFAULT_TITLE = 'WordStack';
@@ -15,11 +17,11 @@ const DEFAULT_DESCRIPTION = 'A home for poets. Share drafts, publish poetry, and
  * @param options.title - Page title (will be appended with "| WordStack")
  * @param options.description - Meta description for the page
  */
-export function useSEO({ title, description }: SEOOptions) {
+export function useSEO({ title, description, fullTitle: useFullTitle }: SEOOptions) {
   useEffect(() => {
     // Set document title
-    const fullTitle = title ? `${title} | ${DEFAULT_TITLE}` : DEFAULT_TITLE;
-    document.title = fullTitle;
+    const pageTitle = useFullTitle ? title : (title ? `${title} | ${DEFAULT_TITLE}` : DEFAULT_TITLE);
+    document.title = pageTitle;
 
     // Set meta description
     const metaDescription = document.querySelector('meta[name="description"]');
@@ -32,7 +34,7 @@ export function useSEO({ title, description }: SEOOptions) {
     // Set Open Graph title
     const ogTitle = document.querySelector('meta[property="og:title"]');
     if (ogTitle) {
-      ogTitle.setAttribute('content', fullTitle);
+      ogTitle.setAttribute('content', pageTitle);
     }
 
     // Set Open Graph description
