@@ -108,10 +108,15 @@ function NotificationItem({ notification, onMarkAsRead, onDelete }: Notification
             onClick={(e) => e.stopPropagation()}
           >
             {notification.actor.name}
-          </Link>{' '}
-          <Link to={link} className="text-muted-foreground hover:text-foreground">
-            {message}
           </Link>
+          <Link 
+            to={`/poet/${notification.actor.username}`} 
+            className="text-xs text-muted-foreground hover:text-primary ml-1"
+            onClick={(e) => e.stopPropagation()}
+          >
+            @{notification.actor.username}
+          </Link>{' '}
+          <span className="text-muted-foreground">{message}</span>
         </p>
         <p className="text-xs text-muted-foreground mt-0.5">
           {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
