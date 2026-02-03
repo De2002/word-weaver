@@ -47,28 +47,38 @@ export function useSearch(): UseSearchReturn {
   }, []);
 
   const searchPoems = useCallback(async (searchQuery: string): Promise<SearchResult[]> => {
-    const { data, error } = await supabase
+    // First, search poems
+    const { data: poemsData, error: poemsError } = await supabase
       .from('poems')
-      .select(`
-        id,
-        title,
-        content,
-        user_id,
-        profiles!inner(username, display_name)
-      `)
+      .select('id, title, content, user_id')
       .eq('status', 'published')
       .or(`title.ilike.%${searchQuery}%,content.ilike.%${searchQuery}%`)
       .limit(5);
 
-    if (error || !data) return [];
+    if (poemsError || !poemsData || poemsData.length === 0) return [];
 
-    return data.map((poem: any) => ({
-      type: 'poem' as const,
-      id: poem.id,
-      title: poem.title || 'Untitled',
-      subtitle: `by ${poem.profiles?.display_name || poem.profiles?.username || 'Anonymous'}`,
-      href: `/poem/${poem.id}`,
-    }));
+    // Get unique user IDs and fetch profiles
+    const userIds = [...new Set(poemsData.map(p => p.user_id))];
+    const { data: profilesData } = await supabase
+      .from('profiles')
+      .select('user_id, username, display_name')
+      .in('user_id', userIds);
+
+    const profilesMap = new Map<string, { username: string | null; display_name: string | null }>();
+    (profilesData || []).forEach((p) => {
+      profilesMap.set(p.user_id, { username: p.username, display_name: p.display_name });
+    });
+
+    return poemsData.map((poem) => {
+      const profile = profilesMap.get(poem.user_id);
+      return {
+        type: 'poem' as const,
+        id: poem.id,
+        title: poem.title || 'Untitled',
+        subtitle: `by ${profile?.display_name || profile?.username || 'Anonymous'}`,
+        href: `/poem/${poem.id}`,
+      };
+    });
   }, []);
 
   const searchTags = useCallback(async (searchQuery: string): Promise<SearchResult[]> => {
