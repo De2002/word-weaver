@@ -100,15 +100,23 @@ function NotificationItem({ notification, onMarkAsRead, onDelete }: Notification
         </div>
       </Link>
 
-      <Link to={link} onClick={handleClick} className="flex-1 min-w-0">
+      <div className="flex-1 min-w-0" onClick={handleClick}>
         <p className="text-sm">
-          <span className="font-medium text-foreground">{notification.actor.name}</span>{' '}
-          <span className="text-muted-foreground">{message}</span>
+          <Link 
+            to={`/poet/${notification.actor.username}`} 
+            className="font-medium text-foreground hover:text-primary hover:underline"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {notification.actor.name}
+          </Link>{' '}
+          <Link to={link} className="text-muted-foreground hover:text-foreground">
+            {message}
+          </Link>
         </p>
         <p className="text-xs text-muted-foreground mt-0.5">
           {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
         </p>
-      </Link>
+      </div>
 
       <div className="flex items-center gap-1">
         {!notification.isRead && (
