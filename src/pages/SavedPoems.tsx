@@ -4,12 +4,17 @@ import { Bookmark, ArrowLeft } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Header } from '@/components/Header';
 import { CreateButton } from '@/components/CreateButton';
-import { PoemCard } from '@/components/PoemCard';
 import { useAuth } from '@/context/AuthProvider';
 import { db } from '@/lib/db';
 import { Button } from '@/components/ui/button';
-import { Poem } from '@/types/poem';
 import { useSEO } from '@/hooks/useSEO';
+
+interface SavedPoem {
+  id: string;
+  title: string | null;
+  poetName: string;
+  poetUsername: string;
+}
 
 export default function SavedPoems() {
   useSEO({
@@ -21,7 +26,7 @@ export default function SavedPoems() {
 
   const { data: savedPoems, isLoading } = useQuery({
     queryKey: ['saved-poems', user?.id],
-    queryFn: async (): Promise<Poem[]> => {
+    queryFn: async (): Promise<SavedPoem[]> => {
       if (!user?.id) return [];
 
       // First get saved poem IDs
@@ -36,10 +41,10 @@ export default function SavedPoems() {
 
       const poemIds = saves.map((s: { poem_id: string }) => s.poem_id);
 
-      // Fetch poems without inner join to avoid RLS issues
+      // Fetch poems
       const { data: poems, error: poemsError } = await db
         .from('poems')
-        .select('id, title, content, tags, created_at, user_id')
+        .select('id, title, user_id')
         .in('id', poemIds)
         .eq('status', 'published');
 
@@ -50,14 +55,14 @@ export default function SavedPoems() {
       const userIds = [...new Set(poems.map((p: any) => p.user_id))];
       const { data: profiles } = await db
         .from('profiles')
-        .select('user_id, display_name, username, avatar_url')
+        .select('user_id, display_name, username')
         .in('user_id', userIds);
 
       const profileMap = new Map<string, any>(
         (profiles || []).map((p: any) => [p.user_id, p])
       );
 
-      // Sort poems by the order they were saved and transform to Poem type
+      // Sort poems by the order they were saved
       const poemMap = new Map<string, any>(poems.map((p: any) => [p.id, p]));
       return saves
         .map((s: { poem_id: string }) => {
@@ -66,31 +71,12 @@ export default function SavedPoems() {
           const profile = profileMap.get(p.user_id);
           return {
             id: p.id,
-            title: p.title || undefined,
-            text: p.content,
-            tags: p.tags || [],
-            createdAt: p.created_at,
-            language: 'en',
-            upvotes: 0,
-            comments: 0,
-            saves: 0,
-            reads: 0,
-            poet: {
-              id: p.user_id,
-              name: profile?.display_name || 'Anonymous',
-              username: profile?.username || 'anonymous',
-              avatar: profile?.avatar_url || '',
-              bio: '',
-              languages: [],
-              totalReads: 0,
-              totalUpvotes: 0,
-              totalPoems: 0,
-              followersCount: 0,
-              badges: [],
-            },
-          } as Poem;
+            title: p.title,
+            poetName: profile?.display_name || 'Anonymous',
+            poetUsername: profile?.username || 'anonymous',
+          } as SavedPoem;
         })
-        .filter(Boolean) as Poem[];
+        .filter(Boolean) as SavedPoem[];
     },
     enabled: !!user?.id,
   });
@@ -123,11 +109,11 @@ export default function SavedPoems() {
         </div>
 
         {isLoading ? (
-          <div className="space-y-4">
-            {[1, 2, 3].map((i) => (
+          <div className="space-y-2">
+            {[1, 2, 3, 4, 5].map((i) => (
               <div
                 key={i}
-                className="h-48 rounded-xl bg-muted animate-pulse"
+                className="h-16 rounded-lg bg-muted animate-pulse"
               />
             ))}
           </div>
@@ -154,7 +140,7 @@ export default function SavedPoems() {
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="space-y-4"
+            className="space-y-2"
           >
             <p className="text-sm text-muted-foreground mb-4">
               {savedPoems.length} saved poem{savedPoems.length !== 1 ? 's' : ''}
@@ -162,11 +148,24 @@ export default function SavedPoems() {
             {savedPoems.map((poem, index) => (
               <motion.div
                 key={poem.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.05 }}
+                transition={{ delay: index * 0.03 }}
               >
-                <PoemCard poem={poem} index={index} />
+                <Link
+                  to={`/poem/${poem.id}`}
+                  className="flex items-center justify-between p-4 rounded-lg border border-border bg-card hover:bg-secondary transition-colors group"
+                >
+                  <div className="min-w-0 flex-1">
+                    <h3 className="text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
+                      {poem.title || 'Untitled'}
+                    </h3>
+                    <p className="text-xs text-muted-foreground truncate">
+                      by {poem.poetName}
+                    </p>
+                  </div>
+                  <Bookmark className="h-4 w-4 text-primary flex-shrink-0 ml-3" />
+                </Link>
               </motion.div>
             ))}
           </motion.div>

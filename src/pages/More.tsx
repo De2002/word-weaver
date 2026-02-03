@@ -32,6 +32,7 @@ interface MenuItem {
   label: string;
   href: string;
   description?: string;
+  comingSoon?: boolean;
 }
 
 interface MenuSection {
@@ -46,7 +47,7 @@ const menuSections: MenuSection[] = [
     items: [
       { icon: Users, label: 'Meet', href: '/meet', description: 'Introduce yourself' },
       { icon: Calendar, label: 'Events', href: '/events', description: 'Poetry events worldwide' },
-      { icon: Headphones, label: 'Podcast', href: '/podcast', description: 'Platform podcasts' },
+      { icon: Headphones, label: 'Poetry Radio', href: '/poetry-radio', description: 'Listen to poetry', comingSoon: true },
     ],
   },
   {
@@ -61,7 +62,7 @@ const menuSections: MenuSection[] = [
     items: [
       { icon: Map, label: 'Trails', href: '/trails', description: 'Poetry journeys' },
       { icon: BookOpen, label: 'Chapbooks Store', href: '/chapbooks', description: 'Browse collections' },
-      { icon: Award, label: 'Poets of the Month', href: '/poets-of-the-month', description: 'Featured poets' },
+      { icon: Award, label: 'Poets of the Month', href: '/poets-of-the-month', description: 'Featured poets', comingSoon: true },
       { icon: Newspaper, label: 'Poet Journals', href: '/journals', description: 'Stories & reflections' },
     ],
   },
@@ -131,44 +132,52 @@ export default function More() {
               </div>
               
               <div className="grid grid-cols-2 gap-2">
-                {section.items.map((item, itemIndex) => (
-                  <Link
-                    key={item.label}
-                    to={section.comingSoon ? '#' : item.href}
-                    className={cn(
-                      "group flex flex-col p-4 rounded-xl border border-border bg-card transition-all",
-                      section.comingSoon 
-                        ? "opacity-60 cursor-not-allowed" 
-                        : "hover:bg-secondary hover:border-primary/20 hover:shadow-sm"
-                    )}
-                    onClick={section.comingSoon ? (e) => e.preventDefault() : undefined}
-                  >
-                    <div className="flex items-start justify-between mb-2">
-                      <div className={cn(
-                        "p-2 rounded-lg transition-colors",
-                        section.comingSoon 
-                          ? "bg-muted" 
-                          : "bg-primary/10 group-hover:bg-primary/20"
-                      )}>
-                        <item.icon className={cn(
-                          "h-5 w-5",
-                          section.comingSoon ? "text-muted-foreground" : "text-primary"
-                        )} />
-                      </div>
-                      {!section.comingSoon && (
-                        <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                {section.items.map((item, itemIndex) => {
+                  const isDisabled = section.comingSoon || item.comingSoon;
+                  return (
+                    <Link
+                      key={item.label}
+                      to={isDisabled ? '#' : item.href}
+                      className={cn(
+                        "group flex flex-col p-4 rounded-xl border border-border bg-card transition-all",
+                        isDisabled 
+                          ? "opacity-60 cursor-not-allowed" 
+                          : "hover:bg-secondary hover:border-primary/20 hover:shadow-sm"
                       )}
-                    </div>
-                    <h3 className="text-sm font-medium text-foreground mb-0.5">
-                      {item.label}
-                    </h3>
-                    {item.description && (
-                      <p className="text-xs text-muted-foreground line-clamp-1">
-                        {item.description}
-                      </p>
-                    )}
-                  </Link>
-                ))}
+                      onClick={isDisabled ? (e) => e.preventDefault() : undefined}
+                    >
+                      <div className="flex items-start justify-between mb-2">
+                        <div className={cn(
+                          "p-2 rounded-lg transition-colors",
+                          isDisabled 
+                            ? "bg-muted" 
+                            : "bg-primary/10 group-hover:bg-primary/20"
+                        )}>
+                          <item.icon className={cn(
+                            "h-5 w-5",
+                            isDisabled ? "text-muted-foreground" : "text-primary"
+                          )} />
+                        </div>
+                        {item.comingSoon && !section.comingSoon && (
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary/10 text-primary font-medium">
+                            Soon
+                          </span>
+                        )}
+                        {!isDisabled && (
+                          <ChevronRight className="h-4 w-4 text-muted-foreground opacity-0 group-hover:opacity-100 transition-opacity" />
+                        )}
+                      </div>
+                      <h3 className="text-sm font-medium text-foreground mb-0.5">
+                        {item.label}
+                      </h3>
+                      {item.description && (
+                        <p className="text-xs text-muted-foreground line-clamp-1">
+                          {item.description}
+                        </p>
+                      )}
+                    </Link>
+                  );
+                })}
               </div>
             </motion.section>
           ))}
