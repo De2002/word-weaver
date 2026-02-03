@@ -1,6 +1,5 @@
 import { motion } from 'framer-motion';
-import { Sparkles, TrendingUp, Sprout, Search, ArrowLeft, Loader2 } from 'lucide-react';
-import { Input } from '@/components/ui/input';
+import { Sparkles, TrendingUp, Sprout, ArrowLeft } from 'lucide-react';
 import { PoetCard } from '@/components/PoetCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useDiscoverPoets } from '@/hooks/useDiscoverPoets';
@@ -66,25 +65,14 @@ export default function Discover() {
       {/* Header */}
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border">
         <div className="flex items-center gap-3 px-4 py-3">
-            <motion.a
-              href="/home"
+          <motion.a
+            href="/home"
             whileTap={{ scale: 0.95 }}
             className="p-2 -ml-2 rounded-full hover:bg-secondary transition-colors"
           >
             <ArrowLeft className="h-5 w-5" />
           </motion.a>
           <h1 className="text-xl font-semibold">Discover</h1>
-        </div>
-        
-        {/* Search Bar */}
-        <div className="px-4 pb-3">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            <Input 
-              placeholder="Search poets, poems, tags..."
-              className="pl-10 bg-secondary/50 border-0 focus-visible:ring-1 focus-visible:ring-primary"
-            />
-          </div>
         </div>
       </header>
 
