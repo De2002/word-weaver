@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Users, FileText, Calendar, BookOpen, MessageSquare, Flag, Shield, TrendingUp } from "lucide-react";
+import { ArrowLeft, Users, FileText, Calendar, BookOpen, MessageSquare, Flag, Shield, TrendingUp, Loader2 } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/context/AuthProvider";
 import { useSEO } from "@/hooks/useSEO";
+import { useAdminStats } from "@/hooks/useAdminStats";
 
 export default function AdminDashboard() {
   useSEO({
@@ -15,12 +16,13 @@ export default function AdminDashboard() {
 
   const { profile } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
+  const { data: stats, isLoading: statsLoading } = useAdminStats();
 
-  const stats = [
-    { label: "Total Users", value: "—", icon: Users, color: "text-blue-500" },
-    { label: "Published Poems", value: "—", icon: FileText, color: "text-green-500" },
-    { label: "Events", value: "—", icon: Calendar, color: "text-purple-500" },
-    { label: "Trails", value: "—", icon: BookOpen, color: "text-orange-500" },
+  const statCards = [
+    { label: "Total Users", value: stats?.totalUsers ?? 0, icon: Users, color: "text-blue-500" },
+    { label: "Published Poems", value: stats?.publishedPoems ?? 0, icon: FileText, color: "text-green-500" },
+    { label: "Events", value: stats?.approvedEvents ?? 0, icon: Calendar, color: "text-purple-500" },
+    { label: "Trails", value: stats?.publishedTrails ?? 0, icon: BookOpen, color: "text-orange-500" },
   ];
 
   const quickActions = [
@@ -70,7 +72,7 @@ export default function AdminDashboard() {
           <TabsContent value="overview" className="mt-6 space-y-6">
             {/* Stats Grid */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {stats.map((stat) => (
+              {statCards.map((stat) => (
                 <Card key={stat.label}>
                   <CardHeader className="flex flex-row items-center justify-between pb-2">
                     <CardTitle className="text-sm font-medium text-muted-foreground">
@@ -79,7 +81,11 @@ export default function AdminDashboard() {
                     <stat.icon className={`h-4 w-4 ${stat.color}`} />
                   </CardHeader>
                   <CardContent>
-                    <div className="text-2xl font-bold">{stat.value}</div>
+                    {statsLoading ? (
+                      <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                    ) : (
+                      <div className="text-2xl font-bold">{stat.value.toLocaleString()}</div>
+                    )}
                   </CardContent>
                 </Card>
               ))}
