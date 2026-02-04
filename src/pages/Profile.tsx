@@ -16,7 +16,7 @@ export default function Profile() {
     title: "Your Profile",
     description: "Manage your WordStack profile. Update your username, bio, avatar, and poet settings."
   });
-  const { user, profile, isPoet, refreshProfile, refreshRoles, signOut } = useAuth();
+  const { user, profile, isPoet, roles, refreshProfile, refreshRoles, signOut } = useAuth();
   const { toast } = useToast();
 
   const profileLinks = (profile?.links || {}) as Record<string, string>;
@@ -144,6 +144,11 @@ export default function Profile() {
               </Button>
             ) : (
               <Button variant="outline" onClick={enablePoet}>Enable Poet mode</Button>
+            )}
+            {roles.includes("admin") && (
+              <Button asChild variant="outline" className="border-primary/50 text-primary hover:bg-primary/10">
+                <Link to="/admin">Admin Dashboard</Link>
+              </Button>
             )}
           </div>
         </div>
