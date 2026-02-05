@@ -9,6 +9,7 @@ const PAGE_SIZE = 10;
 
 interface DbPoem {
   id: string;
+  slug: string;
   title: string | null;
   content: string;
   tags: string[];
@@ -45,6 +46,7 @@ function mapDbPoemToPoem(dbPoem: DbPoem, profile: DbProfile | null, audioUrl?: s
 
   return {
     id: dbPoem.id,
+    slug: dbPoem.slug,
     title: dbPoem.title || undefined,
     text: dbPoem.content,
     poet,
@@ -91,7 +93,7 @@ export function useFollowingPoems() {
 
       const { data: poemsData, error: poemsError } = await db
         .from('poems')
-        .select('id, title, content, tags, status, created_at, updated_at, user_id')
+        .select('id, slug, title, content, tags, status, created_at, updated_at, user_id')
         .in('user_id', followingIds)
         .eq('status', 'published')
         .order('created_at', { ascending: false })

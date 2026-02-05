@@ -6,6 +6,7 @@ import { sortByRising } from '@/lib/ranking';
 
 interface DbPoem {
   id: string;
+  slug: string;
   title: string | null;
   content: string;
   tags: string[];
@@ -141,6 +142,7 @@ export function useRisingPoems(): UseRisingPoemsReturn {
 
         return {
           id: poem.id,
+          slug: poem.slug,
           title: poem.title || 'Untitled',
           text: poem.content,
           language: 'en',

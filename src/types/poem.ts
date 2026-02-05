@@ -20,6 +20,7 @@ export interface Poet {
 
 export interface Poem {
   id: string;
+  slug?: string;
   title?: string;
   text: string;
   poet: Poet;

@@ -710,6 +710,7 @@ export type Database = {
           content: string
           created_at: string
           id: string
+          slug: string
           status: Database["public"]["Enums"]["poem_status"]
           tags: string[]
           title: string | null
@@ -720,6 +721,7 @@ export type Database = {
           content: string
           created_at?: string
           id?: string
+          slug: string
           status?: Database["public"]["Enums"]["poem_status"]
           tags?: string[]
           title?: string | null
@@ -730,6 +732,7 @@ export type Database = {
           content?: string
           created_at?: string
           id?: string
+          slug?: string
           status?: Database["public"]["Enums"]["poem_status"]
           tags?: string[]
           title?: string | null
@@ -996,6 +999,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      generate_poem_slug: {
+        Args: { exclude_poem_id?: string; title_input: string }
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

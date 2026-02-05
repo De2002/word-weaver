@@ -6,6 +6,7 @@ import { sortByHot } from '@/lib/ranking';
 
 interface DbPoem {
   id: string;
+  slug: string;
   title: string | null;
   content: string;
   user_id: string;
@@ -110,6 +111,7 @@ export function useTrendingPoems(): UseTrendingPoemsReturn {
         const profile = profileMap.get(dbPoem.user_id);
         return {
           id: dbPoem.id,
+          slug: dbPoem.slug,
           title: dbPoem.title || undefined,
           text: dbPoem.content,
           language: 'en',

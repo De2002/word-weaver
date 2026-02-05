@@ -22,22 +22,22 @@ import { useNativeShare } from '@/hooks/useNativeShare';
 import { db } from '@/lib/db';
 import { Poem } from '@/types/poem';
 export default function PoemDetail() {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const [showShareMenu, setShowShareMenu] = useState(false);
   const shareMenuRef = useRef<HTMLDivElement>(null);
 
   // Fetch poem from database (using separate queries like feed to handle missing profiles)
   const { data: poem, isLoading, error } = useQuery({
-    queryKey: ['poem-detail', id],
+    queryKey: ['poem-detail', slug],
     queryFn: async (): Promise<Poem | null> => {
-      if (!id) return null;
+      if (!slug) return null;
 
       // First fetch the poem
       const { data: poemData, error: poemError } = await db
         .from('poems')
-        .select('id, title, content, tags, created_at, user_id')
-        .eq('id', id)
+        .select('id, slug, title, content, tags, created_at, user_id')
+        .or(`slug.eq.${slug},id.eq.${slug}`)
         .eq('status', 'published')
         .maybeSingle();
 
@@ -64,6 +64,7 @@ export default function PoemDetail() {
 
       return {
         id: poemData.id,
+        slug: poemData.slug,
         title: poemData.title || undefined,
         text: poemData.content,
         tags: poemData.tags || [],
@@ -88,7 +89,7 @@ export default function PoemDetail() {
         },
       } as Poem;
     },
-    enabled: !!id,
+    enabled: !!slug,
   });
 
   // Set SEO title dynamically
@@ -111,17 +112,17 @@ export default function PoemDetail() {
     toggleUpvote,
     toggleSave,
     recordRead,
-  } = usePoemInteractions(id || '');
+  } = usePoemInteractions(poem?.id || '');
 
-  const { commentCount } = useComments(id || '');
+  const { commentCount } = useComments(poem?.id || '');
   const { share, copyToClipboard, shareToTwitter, shareToFacebook, shareToWhatsApp } = useNativeShare();
   // Subscribe to real-time updates for this poem
-  usePoemRealtime(id || '');
+  usePoemRealtime(poem?.id || '');
   useEffect(() => {
-    if (id) {
+    if (poem?.id) {
       recordRead();
     }
-  }, [id]);
+  }, [poem?.id]);
 
   // Close share menu when clicking outside
   useEffect(() => {
@@ -182,7 +183,7 @@ export default function PoemDetail() {
     );
   }
 
-  const poemUrl = `${window.location.origin}/poem/${poem.id}`;
+  const poemUrl = `${window.location.origin}/poem/${poem.slug || poem.id}`;
   const shareText = `"${poem.title || 'Untitled'}" by ${poem.poet.name} - ${poem.text.slice(0, 100)}...`;
 
   const handleShare = async (e: React.MouseEvent) => {
