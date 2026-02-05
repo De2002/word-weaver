@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { db } from '@/lib/db';
 import { Poem } from '@/types/poem';
 import { sortByHot } from '@/lib/ranking';
+ import { fetchPoemAudioUrls } from '@/lib/poemAudio';
 
 interface DbPoem {
   id: string;
@@ -101,6 +102,9 @@ export function useTrendingPoems(): UseTrendingPoemsReturn {
       const profileMap = new Map<string, DbProfile>();
       profilesResult.data?.forEach(p => profileMap.set(p.user_id, p));
 
+      // Fetch audio URLs for all poems
+      const audioMap = await fetchPoemAudioUrls(poemIds);
+
       // Map to Poem type with engagement data
       const mappedPoems: Poem[] = (poemsData as DbPoem[]).map(dbPoem => {
         const profile = profileMap.get(dbPoem.user_id);
@@ -115,6 +119,7 @@ export function useTrendingPoems(): UseTrendingPoemsReturn {
           comments: commentCounts.get(dbPoem.id) || 0,
           saves: saveCounts.get(dbPoem.id) || 0,
           reads: readCounts.get(dbPoem.id) || 0,
+          audioUrl: audioMap.get(dbPoem.id),
           poet: {
             id: dbPoem.user_id,
             name: profile?.display_name || profile?.username || 'Anonymous',

@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { db } from '@/lib/db';
 import { Poem, Poet, Badge } from '@/types/poem';
+ import { fetchPoemAudioUrls } from '@/lib/poemAudio';
 
 interface UsePoetProfileResult {
   poet: Poet | null;
@@ -102,6 +103,17 @@ export function usePoetProfile(username: string): UsePoetProfileResult {
     enabled: !!poemsData && poemsData.length > 0,
   });
 
+  // Fetch audio URLs for this poet's poems
+  const { data: audioMap } = useQuery({
+    queryKey: ['poet-poems-audio', profile?.user_id],
+    queryFn: async () => {
+      if (!poemsData || poemsData.length === 0) return new Map<string, string>();
+      const poemIds = poemsData.map((p: any) => p.id);
+      return fetchPoemAudioUrls(poemIds);
+    },
+    enabled: !!poemsData && poemsData.length > 0,
+  });
+
   // Transform to app types
   const poet: Poet | null = profile
     ? {
@@ -127,7 +139,7 @@ export function usePoetProfile(username: string): UsePoetProfileResult {
     text: p.content,
     poet: poet!,
     imageUrl: undefined,
-    audioUrl: undefined,
+    audioUrl: audioMap?.get(p.id),
     language: 'en',
     tags: p.tags || [],
     upvotes: 0,

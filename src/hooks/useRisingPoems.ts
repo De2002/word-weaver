@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { Poem, BadgeType } from '@/types/poem';
 import { sortByRising } from '@/lib/ranking';
+ import { fetchPoemAudioUrls } from '@/lib/poemAudio';
 
 interface DbPoem {
   id: string;
@@ -124,6 +125,9 @@ export function useRisingPoems(): UseRisingPoemsReturn {
         followerCounts.set(f.following_id, (followerCounts.get(f.following_id) || 0) + 1);
       });
 
+      // Fetch audio URLs for all poems
+      const audioMap = await fetchPoemAudioUrls(poemIds);
+
       // Transform to Poem type
       const transformedPoems: Poem[] = (poemsData as DbPoem[]).map(poem => {
         const profile = profileMap.get(poem.user_id);
@@ -162,6 +166,7 @@ export function useRisingPoems(): UseRisingPoemsReturn {
           createdAt: poem.created_at,
           isUpvoted: false,
           isSaved: false,
+          audioUrl: audioMap.get(poem.id),
         };
       });
 

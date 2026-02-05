@@ -3,6 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { db } from '@/lib/db';
 import { useAuth } from '@/context/AuthProvider';
 import { Poem, Poet } from '@/types/poem';
+ import { fetchPoemAudioUrls } from '@/lib/poemAudio';
 
 const PAGE_SIZE = 10;
 
@@ -26,7 +27,7 @@ interface DbProfile {
   links: Record<string, string>;
 }
 
-function mapDbPoemToPoem(dbPoem: DbPoem, profile: DbProfile | null): Poem {
+function mapDbPoemToPoem(dbPoem: DbPoem, profile: DbProfile | null, audioUrl?: string): Poem {
   const poet: Poet = {
     id: dbPoem.user_id,
     name: profile?.display_name || profile?.username || 'Anonymous',
@@ -56,6 +57,7 @@ function mapDbPoemToPoem(dbPoem: DbPoem, profile: DbProfile | null): Poem {
     createdAt: dbPoem.created_at,
     isUpvoted: false,
     isSaved: false,
+    audioUrl,
   };
 }
 
@@ -113,8 +115,12 @@ export function useFollowingPoems() {
         profilesMap.set(p.user_id, p);
       });
 
+      // Fetch audio URLs for all poems
+      const poemIds = poemsData.map((p: DbPoem) => p.id);
+      const audioMap = await fetchPoemAudioUrls(poemIds);
+
       const mappedPoems = poemsData.map((poem: DbPoem) =>
-        mapDbPoemToPoem(poem, profilesMap.get(poem.user_id) || null)
+        mapDbPoemToPoem(poem, profilesMap.get(poem.user_id) || null, audioMap.get(poem.id))
       );
 
       return {
