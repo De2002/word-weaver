@@ -73,7 +73,7 @@ const App = () => (
             <Route path="/discover" element={<Discover />} />
             <Route path="/search" element={<Search />} />
             <Route path="/poet/:username" element={<PoetProfile />} />
-            <Route path="/poem/:id" element={<PoemDetail />} />
+            <Route path="/poem/:slug" element={<PoemDetail />} />
             <Route path="/tag/:tag" element={<TagPage />} />
             <Route path="/more" element={<More />} />
             <Route path="/meet" element={<Meet />} />

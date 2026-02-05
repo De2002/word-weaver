@@ -59,7 +59,7 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [showShareMenu]);
 
-  const poemUrl = `${window.location.origin}/poem/${poem.id}`;
+  const poemUrl = `${window.location.origin}/poem/${poem.slug || poem.id}`;
   const shareText = `"${poem.title}" by ${poem.poet.name} - ${poem.text.slice(0, 100)}...`;
 
   const handleShare = async (e: React.MouseEvent) => {
@@ -130,7 +130,7 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
   };
 
   const handlePoemClick = () => {
-    navigate(`/poem/${poem.id}`);
+    navigate(`/poem/${poem.slug || poem.id}`);
   };
 
   const poetBadge = poem.poet.badges[0];

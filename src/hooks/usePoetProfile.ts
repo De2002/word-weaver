@@ -135,6 +135,7 @@ export function usePoetProfile(username: string): UsePoetProfileResult {
 
   const poems: Poem[] = (poemsData || []).map((p: any) => ({
     id: p.id,
+    slug: p.slug,
     title: p.title || undefined,
     text: p.content,
     poet: poet!,

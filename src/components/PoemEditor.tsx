@@ -145,6 +145,13 @@ export function PoemEditor({ initial }: Props) {
       let poemId = initial?.id;
 
       if (!poemId) {
+        // Generate slug from title on first publish
+        const { data: slugData, error: slugError } = await db.rpc('generate_poem_slug', {
+          title_input: title.trim() || 'poem'
+        });
+        if (slugError) throw slugError;
+        const generatedSlug = slugData as string;
+
         const { data, error } = await db
           .from("poems")
           .insert({
@@ -153,6 +160,7 @@ export function PoemEditor({ initial }: Props) {
             content: poemText,
             tags,
             status,
+            slug: generatedSlug,
           })
           .select("id")
           .single();
