@@ -163,8 +163,8 @@ export default function Rules() {
             </p>
             <p className="text-muted-foreground text-sm">
               If you believe your content was removed in error, you may appeal by contacting us at{' '}
-              <a href="mailto:appeals@wordstack.app" className="text-primary hover:underline">
-                appeals@wordstack.app
+              <a href="mailto:appeals@wordstack.io" className="text-primary hover:underline">
+                appeals@wordstack.io
               </a>
             </p>
           </section>
