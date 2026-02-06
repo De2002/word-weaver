@@ -151,8 +151,8 @@ export default function UserAgreement() {
             <h3 className="text-lg font-semibold text-foreground">Contact Us</h3>
             <p className="text-muted-foreground text-sm">
               If you have questions about these Terms, please contact us at{' '}
-              <a href="mailto:legal@wordstack.app" className="text-primary hover:underline">
-                legal@wordstack.app
+              <a href="mailto:legal@wordstack.io" className="text-primary hover:underline">
+                legal@wordstack.io
               </a>
             </p>
           </section>

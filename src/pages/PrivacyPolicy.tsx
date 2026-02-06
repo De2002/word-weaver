@@ -179,8 +179,8 @@ export default function PrivacyPolicy() {
             <h3 className="text-lg font-semibold text-foreground">Contact Us</h3>
             <p className="text-muted-foreground text-sm">
               If you have questions about this Privacy Policy or our data practices, please contact us at{' '}
-              <a href="mailto:privacy@wordstack.app" className="text-primary hover:underline">
-                privacy@wordstack.app
+              <a href="mailto:privacy@wordstack.io" className="text-primary hover:underline">
+                privacy@wordstack.io
               </a>
             </p>
           </section>

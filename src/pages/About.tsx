@@ -98,8 +98,8 @@ export default function About() {
             <h3 className="text-lg font-semibold text-foreground mb-2">Get in Touch</h3>
             <p className="text-muted-foreground text-sm">
               Have questions, feedback, or just want to say hello? We'd love to hear from you at{' '}
-              <a href="mailto:hello@wordstack.app" className="text-primary hover:underline">
-                hello@wordstack.app
+              <a href="mailto:hello@wordstack.io" className="text-primary hover:underline">
+                hello@wordstack.io
               </a>
             </p>
           </section>
