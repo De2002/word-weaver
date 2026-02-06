@@ -123,8 +123,8 @@ export default function PoetProfile() {
   return (
     <div className="min-h-screen bg-background pb-24">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-border px-4 py-3">
-        <div className="flex items-center gap-3">
+      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-border">
+        <div className="max-w-3xl mx-auto px-6 py-3 flex items-center gap-3">
           <Link to="/discover" className="p-2 -ml-2 hover:bg-secondary rounded-full transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </Link>
@@ -132,6 +132,7 @@ export default function PoetProfile() {
         </div>
       </header>
 
+      <div className="max-w-3xl mx-auto">
       {/* Profile Hero */}
       <motion.section
         initial={{ opacity: 0, y: 20 }}
@@ -208,7 +209,7 @@ export default function PoetProfile() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.1 }}
-        className="grid grid-cols-4 gap-2 px-4 mb-6"
+        className="grid grid-cols-4 gap-2 px-6 mb-6"
       >
         {[
           { icon: FileText, label: 'Poems', value: poet?.totalPoems || 0 },
@@ -261,7 +262,7 @@ export default function PoetProfile() {
       )}
 
       {/* Poems Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="px-4">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="px-6">
         <div className="flex items-center justify-between mb-4">
           <TabsList className="grid grid-cols-2">
             <TabsTrigger value="all">All Poems</TabsTrigger>
@@ -303,7 +304,7 @@ export default function PoetProfile() {
             <div className={cn(
               viewMode === 'grid' && !isMobile
                 ? "grid grid-cols-2 gap-4"
-                : "space-y-4"
+                : "space-y-4 max-w-xl mx-auto"
             )}>
               {sortedPoems.map((poem, index) => (
                 <PoemCard key={poem.id} poem={poem} index={index} />
@@ -322,7 +323,7 @@ export default function PoetProfile() {
             <div className={cn(
               viewMode === 'grid' && !isMobile
                 ? "grid grid-cols-2 gap-4"
-                : "space-y-4"
+                : "space-y-4 max-w-xl mx-auto"
             )}>
               {sortedPoems.map((poem, index) => (
                 <PoemCard key={poem.id} poem={poem} index={index} />
@@ -331,6 +332,7 @@ export default function PoetProfile() {
           )}
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
 }
