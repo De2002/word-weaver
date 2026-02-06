@@ -33,13 +33,20 @@ export default function PoemDetail() {
     queryFn: async (): Promise<Poem | null> => {
       if (!slug) return null;
 
-      // First fetch the poem
-      const { data: poemData, error: poemError } = await db
+      // First fetch the poem - only query by UUID if slug looks like one
+      const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slug);
+      let query = db
         .from('poems')
         .select('id, slug, title, content, tags, created_at, user_id')
-        .or(`slug.eq.${slug},id.eq.${slug}`)
-        .eq('status', 'published')
-        .maybeSingle();
+        .eq('status', 'published');
+      
+      if (isUuid) {
+        query = query.or(`slug.eq.${slug},id.eq.${slug}`);
+      } else {
+        query = query.eq('slug', slug);
+      }
+      
+      const { data: poemData, error: poemError } = await query.maybeSingle();
 
       if (poemError) throw poemError;
       if (!poemData) return null;
