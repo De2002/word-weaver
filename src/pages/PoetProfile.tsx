@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, FileText, Eye, Heart, Users, ExternalLink, Sparkles, TrendingUp, MessageCircle, Coffee } from 'lucide-react';
+import { ArrowLeft, FileText, Eye, Heart, Users, ExternalLink, Sparkles, TrendingUp, MessageCircle, Coffee, LayoutGrid, LayoutList } from 'lucide-react';
 import { usePoetProfile } from '@/hooks/usePoetProfile';
 import { useAuth } from '@/context/AuthProvider';
 import { PoemCard } from '@/components/PoemCard';
@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 import { useSEO } from '@/hooks/useSEO';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export default function PoetProfile() {
   const { username } = useParams<{ username: string }>();
@@ -21,6 +22,8 @@ export default function PoetProfile() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState('all');
+  const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+  const isMobile = useIsMobile();
 
   // Dynamic SEO based on poet data
   useEffect(() => {
@@ -259,10 +262,36 @@ export default function PoetProfile() {
 
       {/* Poems Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="px-4">
-        <TabsList className="grid w-full grid-cols-2 mb-4">
-          <TabsTrigger value="all">All Poems</TabsTrigger>
-          <TabsTrigger value="popular">Popular</TabsTrigger>
-        </TabsList>
+        <div className="flex items-center justify-between mb-4">
+          <TabsList className="grid grid-cols-2">
+            <TabsTrigger value="all">All Poems</TabsTrigger>
+            <TabsTrigger value="popular">Popular</TabsTrigger>
+          </TabsList>
+          {!isMobile && (
+            <div className="flex items-center gap-1 border border-border rounded-lg p-0.5">
+              <button
+                onClick={() => setViewMode('list')}
+                className={cn(
+                  "p-1.5 rounded-md transition-colors",
+                  viewMode === 'list' ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"
+                )}
+                title="List view"
+              >
+                <LayoutList className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => setViewMode('grid')}
+                className={cn(
+                  "p-1.5 rounded-md transition-colors",
+                  viewMode === 'grid' ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground"
+                )}
+                title="Grid view"
+              >
+                <LayoutGrid className="h-4 w-4" />
+              </button>
+            </div>
+          )}
+        </div>
 
         <TabsContent value="all" className="mt-0">
           {poems.length === 0 ? (
@@ -271,7 +300,11 @@ export default function PoetProfile() {
               <p className="text-muted-foreground">No poems published yet</p>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className={cn(
+              viewMode === 'grid' && !isMobile
+                ? "grid grid-cols-2 gap-4"
+                : "space-y-4"
+            )}>
               {sortedPoems.map((poem, index) => (
                 <PoemCard key={poem.id} poem={poem} index={index} />
               ))}
@@ -286,7 +319,11 @@ export default function PoetProfile() {
               <p className="text-muted-foreground">No poems published yet</p>
             </div>
           ) : (
-            <div className="space-y-4">
+            <div className={cn(
+              viewMode === 'grid' && !isMobile
+                ? "grid grid-cols-2 gap-4"
+                : "space-y-4"
+            )}>
               {sortedPoems.map((poem, index) => (
                 <PoemCard key={poem.id} poem={poem} index={index} />
               ))}
