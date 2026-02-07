@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Send, Trash2, CornerDownRight, Loader2, LogIn } from 'lucide-react';
@@ -16,6 +16,7 @@ interface CommentSectionProps {
   poemId: string;
   onViewAll?: () => void;
   maxComments?: number;
+  highlightCommentId?: string | null;
 }
 
 interface CommentItemProps {
@@ -25,12 +26,30 @@ interface CommentItemProps {
   onReply: (parentId: string) => void;
   currentUserId?: string;
   depth?: number;
+  highlightCommentId?: string | null;
 }
 
-function CommentItem({ comment, onLike, onDelete, onReply, currentUserId, depth = 0 }: CommentItemProps) {
+function CommentItem({ comment, onLike, onDelete, onReply, currentUserId, depth = 0, highlightCommentId }: CommentItemProps) {
   const isOwner = currentUserId === comment.userId;
-  const maxDepth = 2; // Limit nesting depth
+  const maxDepth = 2;
   const navigate = useNavigate();
+  const isHighlighted = highlightCommentId === comment.id;
+  const commentRef = useRef<HTMLDivElement>(null);
+  const [showHighlight, setShowHighlight] = useState(false);
+
+  useEffect(() => {
+    if (isHighlighted && commentRef.current) {
+      const scrollTimer = setTimeout(() => {
+        commentRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setShowHighlight(true);
+      }, 300);
+      const fadeTimer = setTimeout(() => setShowHighlight(false), 3300);
+      return () => {
+        clearTimeout(scrollTimer);
+        clearTimeout(fadeTimer);
+      };
+    }
+  }, [isHighlighted]);
 
   const handleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -68,9 +87,16 @@ function CommentItem({ comment, onLike, onDelete, onReply, currentUserId, depth 
 
   return (
     <motion.div
+      ref={commentRef}
+      id={`comment-${comment.id}`}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className={cn("flex gap-3", depth > 0 && "ml-8 mt-2")}
+      className={cn(
+        "flex gap-3 rounded-lg transition-colors duration-500",
+        depth > 0 && "ml-8 mt-2",
+        showHighlight && "bg-primary/10 ring-1 ring-primary/30 p-2 -m-2",
+        !showHighlight && isHighlighted && "p-2 -m-2"
+      )}
     >
       <Link to={`/poet/${comment.author.username}`} onClick={(e) => e.stopPropagation()}>
         <Avatar className={cn("flex-shrink-0", depth === 0 ? "h-8 w-8" : "h-6 w-6")}>
@@ -133,6 +159,7 @@ function CommentItem({ comment, onLike, onDelete, onReply, currentUserId, depth 
                 onReply={onReply}
                 currentUserId={currentUserId}
                 depth={depth + 1}
+                highlightCommentId={highlightCommentId}
               />
             ))}
           </div>
@@ -142,7 +169,7 @@ function CommentItem({ comment, onLike, onDelete, onReply, currentUserId, depth 
   );
 }
 
-export function CommentSection({ poemId, onViewAll, maxComments = 3 }: CommentSectionProps) {
+export function CommentSection({ poemId, onViewAll, maxComments = 3, highlightCommentId }: CommentSectionProps) {
   const { session } = useAuth();
   const navigate = useNavigate();
   const { comments, commentCount, isLoading, addComment, deleteComment, toggleLike, isAddingComment } = useComments(poemId);
@@ -194,7 +221,8 @@ export function CommentSection({ poemId, onViewAll, maxComments = 3 }: CommentSe
     setCommentText('');
   };
 
-  const displayedComments = comments.slice(0, maxComments);
+  // Show all comments when deep-linking to a specific comment
+  const displayedComments = highlightCommentId ? comments : comments.slice(0, maxComments);
 
   return (
     <motion.div
@@ -293,6 +321,7 @@ export function CommentSection({ poemId, onViewAll, maxComments = 3 }: CommentSe
                 onDelete={deleteComment}
                 onReply={handleReply}
                 currentUserId={session?.user?.id}
+                highlightCommentId={highlightCommentId}
               />
             ))}
           </AnimatePresence>
