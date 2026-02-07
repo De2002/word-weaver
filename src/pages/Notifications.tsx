@@ -43,14 +43,16 @@ function getNotificationMessage(notification: Notification): string {
 }
 
 function getNotificationLink(notification: Notification): string {
-  const { type, poemId, actorId } = notification;
+  const { type, poemId, commentId } = notification;
 
   switch (type) {
     case 'follow':
       return `/poet/${notification.actor.username}`;
-    case 'upvote':
     case 'comment':
     case 'reply':
+      if (poemId && commentId) return `/poem/${poemId}#comment-${commentId}`;
+      return poemId ? `/poem/${poemId}` : '/';
+    case 'upvote':
       return poemId ? `/poem/${poemId}` : '/';
     default:
       return '/';

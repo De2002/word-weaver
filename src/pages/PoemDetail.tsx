@@ -1,5 +1,5 @@
-import { useEffect, useState, useRef } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useEffect, useState, useRef, useMemo } from 'react';
+import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -24,8 +24,18 @@ import { Poem } from '@/types/poem';
 export default function PoemDetail() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
   const [showShareMenu, setShowShareMenu] = useState(false);
   const shareMenuRef = useRef<HTMLDivElement>(null);
+
+  // Extract comment ID from URL hash (e.g., #comment-abc123)
+  const highlightCommentId = useMemo(() => {
+    const hash = location.hash;
+    if (hash.startsWith('#comment-')) {
+      return hash.replace('#comment-', '');
+    }
+    return null;
+  }, [location.hash]);
 
   // Fetch poem from database (using separate queries like feed to handle missing profiles)
   const { data: poem, isLoading, error } = useQuery({
@@ -435,7 +445,7 @@ export default function PoemDetail() {
           <Separator className="my-4" />
 
           {/* Full Comments Section - Always visible on detail page */}
-          <CommentSection poemId={poem.id} />
+          <CommentSection poemId={poem.id} highlightCommentId={highlightCommentId} />
         </motion.article>
       </main>
     </div>
