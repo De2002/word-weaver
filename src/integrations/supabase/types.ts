@@ -743,36 +743,53 @@ export type Database = {
       }
       profiles: {
         Row: {
+          about: string | null
           avatar_url: string | null
           bio: string | null
           created_at: string
           display_name: string | null
+          header_image: string | null
           links: Json
+          pinned_poem_id: string | null
           updated_at: string
           user_id: string
           username: string | null
         }
         Insert: {
+          about?: string | null
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
           display_name?: string | null
+          header_image?: string | null
           links?: Json
+          pinned_poem_id?: string | null
           updated_at?: string
           user_id: string
           username?: string | null
         }
         Update: {
+          about?: string | null
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
           display_name?: string | null
+          header_image?: string | null
           links?: Json
+          pinned_poem_id?: string | null
           updated_at?: string
           user_id?: string
           username?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_pinned_poem_id_fkey"
+            columns: ["pinned_poem_id"]
+            isOneToOne: false
+            referencedRelation: "poems"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       trail_progress: {
         Row: {
@@ -1012,7 +1029,7 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "user" | "poet" | "moderator" | "admin"
+      app_role: "user" | "poet" | "moderator" | "admin" | "pro"
       poem_status: "draft" | "published"
     }
     CompositeTypes: {
@@ -1141,7 +1158,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["user", "poet", "moderator", "admin"],
+      app_role: ["user", "poet", "moderator", "admin", "pro"],
       poem_status: ["draft", "published"],
     },
   },

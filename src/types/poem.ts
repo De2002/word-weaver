@@ -4,15 +4,22 @@ export interface Poet {
   username: string;
   avatar: string;
   bio: string;
+  about?: string;
+  headerImage?: string;
+  pinnedPoemId?: string | null;
   languages: string[];
   totalReads: number;
   totalUpvotes: number;
+  totalSaves?: number;
   totalPoems: number;
   followersCount: number;
   supportLinks?: {
     buyMeACoffee?: string;
     paypal?: string;
     kofi?: string;
+    twitter?: string;
+    instagram?: string;
+    website?: string;
   };
   badges: Badge[];
   isFollowing?: boolean;
