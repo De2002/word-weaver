@@ -171,6 +171,7 @@ export function usePoetProfile(username: string): UsePoetProfileResult {
   });
 
   // Transform to app types
+  const profileAny = profile as any;
   const poet: Poet | null = profile
     ? {
         id: profile.user_id,
@@ -178,16 +179,16 @@ export function usePoetProfile(username: string): UsePoetProfileResult {
         username: profile.username || 'unknown',
         avatar: profile.avatar_url || '',
         bio: profile.bio || '',
-        about: (profile as any).about || '',
-        headerImage: (profile as any).header_image || '',
-        pinnedPoemId: (profile as any).pinned_poem_id || null,
+        about: profileAny.about || '',
+        headerImage: profileAny.header_image || '',
+        pinnedPoemId: profileAny.pinned_poem_id || null,
         languages: [],
         totalReads: totalReads || 0,
         totalUpvotes: totalUpvotes || 0,
         totalSaves: totalSaves || 0,
         totalPoems: poemsData?.length || 0,
         followersCount: followerCount || 0,
-        supportLinks: profile.links || {},
+        supportLinks: (profile.links as Record<string, string>) || {},
         badges: [] as Badge[],
         isFollowing: false,
       }
