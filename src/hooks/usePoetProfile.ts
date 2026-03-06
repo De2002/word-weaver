@@ -1,11 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
 import { db } from '@/lib/db';
 import { Poem, Poet, Badge } from '@/types/poem';
- import { fetchPoemAudioUrls } from '@/lib/poemAudio';
+import { fetchPoemAudioUrls } from '@/lib/poemAudio';
 
 interface UsePoetProfileResult {
   poet: Poet | null;
   poems: Poem[];
+  pinnedPoem: Poem | null;
+  isPro: boolean;
   isLoading: boolean;
   error: Error | null;
   notFound: boolean;
@@ -33,6 +35,24 @@ export function usePoetProfile(username: string): UsePoetProfileResult {
     enabled: !!username,
   });
 
+  // Check if poet has pro role
+  const { data: proRole } = useQuery({
+    queryKey: ['poet-pro-role', profile?.user_id],
+    queryFn: async () => {
+      const { data, error } = await db
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', profile!.user_id)
+        .eq('role', 'pro' as any)
+        .maybeSingle();
+      if (error) return null;
+      return data;
+    },
+    enabled: !!profile?.user_id,
+  });
+
+  const isPro = !!proRole;
+
   // Fetch published poems for this poet
   const {
     data: poemsData,
@@ -44,7 +64,7 @@ export function usePoetProfile(username: string): UsePoetProfileResult {
       const { data, error } = await db
         .from('poems')
         .select('*')
-        .eq('user_id', profile.user_id)
+        .eq('user_id', profile!.user_id)
         .eq('status', 'published')
         .order('created_at', { ascending: false });
 
@@ -61,7 +81,7 @@ export function usePoetProfile(username: string): UsePoetProfileResult {
       const { count, error } = await db
         .from('follows')
         .select('*', { count: 'exact', head: true })
-        .eq('following_id', profile.user_id);
+        .eq('following_id', profile!.user_id);
 
       if (error) throw error;
       return count || 0;
@@ -103,6 +123,22 @@ export function usePoetProfile(username: string): UsePoetProfileResult {
     enabled: !!poemsData && poemsData.length > 0,
   });
 
+  // Fetch total saves for pro analytics
+  const { data: totalSaves } = useQuery({
+    queryKey: ['poet-total-saves', profile?.user_id],
+    queryFn: async () => {
+      if (!poemsData || poemsData.length === 0) return 0;
+      const poemIds = poemsData.map((p: any) => p.id);
+      const { count, error } = await db
+        .from('poem_saves')
+        .select('*', { count: 'exact', head: true })
+        .in('poem_id', poemIds);
+      if (error) throw error;
+      return count || 0;
+    },
+    enabled: !!poemsData && poemsData.length > 0,
+  });
+
   // Fetch audio URLs for this poet's poems
   const { data: audioMap } = useQuery({
     queryKey: ['poet-poems-audio', profile?.user_id],
@@ -114,31 +150,13 @@ export function usePoetProfile(username: string): UsePoetProfileResult {
     enabled: !!poemsData && poemsData.length > 0,
   });
 
-  // Transform to app types
-  const poet: Poet | null = profile
-    ? {
-        id: profile.user_id,
-        name: profile.display_name || profile.username || 'Anonymous',
-        username: profile.username || 'unknown',
-        avatar: profile.avatar_url || '',
-        bio: profile.bio || '',
-        languages: [],
-        totalReads: totalReads || 0,
-        totalUpvotes: totalUpvotes || 0,
-        totalPoems: poemsData?.length || 0,
-        followersCount: followerCount || 0,
-        supportLinks: profile.links || {},
-        badges: [] as Badge[],
-        isFollowing: false,
-      }
-    : null;
-
-  const poems: Poem[] = (poemsData || []).map((p: any) => ({
+  // Transform poems to app types helper
+  const transformPoem = (p: any, poetRef: Poet): Poem => ({
     id: p.id,
     slug: p.slug,
     title: p.title || undefined,
     text: p.content,
-    poet: poet!,
+    poet: poetRef,
     imageUrl: undefined,
     audioUrl: audioMap?.get(p.id),
     language: 'en',
@@ -150,11 +168,43 @@ export function usePoetProfile(username: string): UsePoetProfileResult {
     createdAt: p.created_at,
     isUpvoted: false,
     isSaved: false,
-  }));
+  });
+
+  // Transform to app types
+  const poet: Poet | null = profile
+    ? {
+        id: profile.user_id,
+        name: profile.display_name || profile.username || 'Anonymous',
+        username: profile.username || 'unknown',
+        avatar: profile.avatar_url || '',
+        bio: profile.bio || '',
+        about: (profile as any).about || '',
+        headerImage: (profile as any).header_image || '',
+        pinnedPoemId: (profile as any).pinned_poem_id || null,
+        languages: [],
+        totalReads: totalReads || 0,
+        totalUpvotes: totalUpvotes || 0,
+        totalSaves: totalSaves || 0,
+        totalPoems: poemsData?.length || 0,
+        followersCount: followerCount || 0,
+        supportLinks: profile.links || {},
+        badges: [] as Badge[],
+        isFollowing: false,
+      }
+    : null;
+
+  const poems: Poem[] = (poemsData || []).map((p: any) => transformPoem(p, poet!));
+
+  // Find pinned poem
+  const pinnedPoem = poet?.pinnedPoemId
+    ? poems.find(p => p.id === poet.pinnedPoemId) || null
+    : null;
 
   return {
     poet,
     poems,
+    pinnedPoem,
+    isPro,
     isLoading: profileLoading || poemsLoading,
     error: (profileError || poemsError) as Error | null,
     notFound: !profileLoading && !profile,
