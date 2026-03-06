@@ -491,7 +491,7 @@ export default function PoetProfile() {
                   rel="noopener noreferrer"
                   className="flex items-center gap-4 p-4 bg-secondary rounded-2xl hover:bg-secondary/80 transition-colors group border border-border"
                 >
-                  <Coffee className="h-5 w-5 text-[#FF5E5B] shrink-0" />
+                  <Coffee className="h-5 w-5 text-soft-coral shrink-0" />
                   <span className="text-sm font-semibold flex-1">Ko-fi</span>
                   <ExternalLink className="h-3.5 w-3.5 text-muted-foreground group-hover:text-foreground transition-colors" />
                 </a>
