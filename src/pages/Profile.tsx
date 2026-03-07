@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,7 @@ import { useAuth } from "@/context/AuthProvider";
 import { db } from "@/lib/db";
 import { useSEO } from "@/hooks/useSEO";
 import { AvatarUpload } from "@/components/AvatarUpload";
+import { HeaderImageUpload } from "@/components/HeaderImageUpload";
 
 export default function Profile() {
   useSEO({
