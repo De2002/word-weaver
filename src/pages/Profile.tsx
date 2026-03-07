@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,6 +10,7 @@ import { useAuth } from "@/context/AuthProvider";
 import { db } from "@/lib/db";
 import { useSEO } from "@/hooks/useSEO";
 import { AvatarUpload } from "@/components/AvatarUpload";
+import { HeaderImageUpload } from "@/components/HeaderImageUpload";
 
 export default function Profile() {
   useSEO({
@@ -19,12 +20,14 @@ export default function Profile() {
   const { user, profile, isPoet, roles, refreshProfile, refreshRoles, signOut } = useAuth();
   const { toast } = useToast();
 
+  const isPro = roles.includes("pro");
   const profileLinks = (profile?.links || {}) as Record<string, string>;
   
   const [username, setUsername] = useState(profile?.username ?? "");
   const [displayName, setDisplayName] = useState(profile?.display_name ?? "");
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url ?? "");
   const [bio, setBio] = useState(profile?.bio ?? "");
+  const [headerImage, setHeaderImage] = useState<string | null>(profile?.header_image ?? null);
   const [buyMeACoffeeUrl, setBuyMeACoffeeUrl] = useState(profileLinks.buyMeACoffee ?? "");
   const [saving, setSaving] = useState(false);
 
@@ -34,6 +37,7 @@ export default function Profile() {
     setDisplayName(profile?.display_name ?? "");
     setAvatarUrl(profile?.avatar_url ?? "");
     setBio(profile?.bio ?? "");
+    setHeaderImage(profile?.header_image ?? null);
     setBuyMeACoffeeUrl(links.buyMeACoffee ?? "");
   }, [profile?.user_id]);
 
@@ -57,6 +61,7 @@ export default function Profile() {
         avatar_url: avatarUrl.trim() || null,
         bio: bio.trim() || null,
         links: updatedLinks,
+        header_image: headerImage || null,
       })
       .eq("user_id", user.id);
     setSaving(false);
@@ -96,6 +101,25 @@ export default function Profile() {
 
       <main className="max-w-lg mx-auto px-4 pb-24">
         <div className="pt-6 pb-4 space-y-4">
+          {/* Pro Banner Upload */}
+          {isPro && (
+            <div className="space-y-2 pb-4 border-b border-border">
+              <div className="flex items-center gap-2 mb-1">
+                <Sparkles className="h-4 w-4 text-primary" />
+                <Label className="text-sm font-semibold">Profile Banner</Label>
+                <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">PRO</span>
+              </div>
+              <p className="text-xs text-muted-foreground mb-2">
+                This banner appears at the top of your public poet profile.
+              </p>
+              <HeaderImageUpload
+                userId={user.id}
+                currentHeaderUrl={headerImage}
+                onUploadComplete={(url) => setHeaderImage(url)}
+              />
+            </div>
+          )}
+
           {/* Avatar Upload */}
           <div className="flex flex-col items-center gap-3 pb-4 border-b border-border">
             <AvatarUpload

@@ -3,7 +3,7 @@ import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { db } from "@/lib/db";
 
-export type UserRole = "user" | "poet" | "moderator" | "admin";
+export type UserRole = "user" | "poet" | "moderator" | "admin" | "pro";
 
 type ProfileRow = {
   user_id: string;
@@ -12,6 +12,7 @@ type ProfileRow = {
   avatar_url: string | null;
   bio: string | null;
   links: Record<string, unknown>;
+  header_image: string | null;
 };
 
 type AuthContextValue = {
@@ -31,7 +32,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 async function fetchProfile(userId: string): Promise<ProfileRow | null> {
   const { data, error } = await db
     .from("profiles")
-    .select("user_id, username, display_name, avatar_url, bio, links")
+    .select("user_id, username, display_name, avatar_url, bio, links, header_image")
     .eq("user_id", userId)
     .maybeSingle();
 
