@@ -33,7 +33,7 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 async function fetchProfile(userId: string): Promise<ProfileRow | null> {
   const { data, error } = await db
     .from("profiles")
-    .select("user_id, username, display_name, avatar_url, bio, links, header_image")
+    .select("user_id, username, display_name, avatar_url, bio, about, links, header_image")
     .eq("user_id", userId)
     .maybeSingle();
 
