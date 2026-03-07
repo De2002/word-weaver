@@ -11,6 +11,7 @@ type ProfileRow = {
   display_name: string | null;
   avatar_url: string | null;
   bio: string | null;
+  about: string | null;
   links: Record<string, unknown>;
   header_image: string | null;
 };
