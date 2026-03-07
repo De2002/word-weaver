@@ -23,13 +23,17 @@ export default function Profile() {
 
   const isPro = roles.includes("pro");
   const profileLinks = (profile?.links || {}) as Record<string, string>;
-  
+
   const [username, setUsername] = useState(profile?.username ?? "");
   const [displayName, setDisplayName] = useState(profile?.display_name ?? "");
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url ?? "");
   const [bio, setBio] = useState(profile?.bio ?? "");
+  const [about, setAbout] = useState((profile as any)?.about ?? "");
   const [headerImage, setHeaderImage] = useState<string | null>(profile?.header_image ?? null);
   const [buyMeACoffeeUrl, setBuyMeACoffeeUrl] = useState(profileLinks.buyMeACoffee ?? "");
+  const [twitterUrl, setTwitterUrl] = useState(profileLinks.twitter ?? "");
+  const [instagramUrl, setInstagramUrl] = useState(profileLinks.instagram ?? "");
+  const [websiteUrl, setWebsiteUrl] = useState(profileLinks.website ?? "");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -38,22 +42,24 @@ export default function Profile() {
     setDisplayName(profile?.display_name ?? "");
     setAvatarUrl(profile?.avatar_url ?? "");
     setBio(profile?.bio ?? "");
+    setAbout((profile as any)?.about ?? "");
     setHeaderImage(profile?.header_image ?? null);
     setBuyMeACoffeeUrl(links.buyMeACoffee ?? "");
+    setTwitterUrl(links.twitter ?? "");
+    setInstagramUrl(links.instagram ?? "");
+    setWebsiteUrl(links.website ?? "");
   }, [profile?.user_id]);
 
   const saveProfile = async () => {
     if (!user) return;
     setSaving(true);
-    const updatedLinks = {
-      ...profileLinks,
-      buyMeACoffee: buyMeACoffeeUrl.trim() || undefined,
-    };
-    // Remove undefined values
-    Object.keys(updatedLinks).forEach(key => {
-      if (updatedLinks[key] === undefined) delete updatedLinks[key];
-    });
-    
+
+    const updatedLinks: Record<string, string> = {};
+    if (buyMeACoffeeUrl.trim()) updatedLinks.buyMeACoffee = buyMeACoffeeUrl.trim();
+    if (twitterUrl.trim()) updatedLinks.twitter = twitterUrl.trim();
+    if (instagramUrl.trim()) updatedLinks.instagram = instagramUrl.trim();
+    if (websiteUrl.trim()) updatedLinks.website = websiteUrl.trim();
+
     const { error } = await db
       .from("profiles")
       .update({
@@ -61,9 +67,10 @@ export default function Profile() {
         display_name: displayName.trim() || null,
         avatar_url: avatarUrl.trim() || null,
         bio: bio.trim() || null,
+        about: about.trim() || null,
         links: updatedLinks,
         header_image: headerImage || null,
-      })
+      } as any)
       .eq("user_id", user.id);
     setSaving(false);
 
@@ -101,10 +108,11 @@ export default function Profile() {
       </header>
 
       <main className="max-w-lg mx-auto px-4 pb-24">
-        <div className="pt-6 pb-4 space-y-4">
+        <div className="pt-6 pb-4 space-y-5">
+
           {/* Pro Banner Upload */}
           {isPro && (
-            <div className="space-y-2 pb-4 border-b border-border">
+            <div className="space-y-2 pb-5 border-b border-border">
               <div className="flex items-center gap-2 mb-1">
                 <Sparkles className="h-4 w-4 text-primary" />
                 <Label className="text-sm font-semibold">Profile Banner</Label>
@@ -122,19 +130,18 @@ export default function Profile() {
           )}
 
           {/* Avatar Upload */}
-          <div className="flex flex-col items-center gap-3 pb-4 border-b border-border">
+          <div className="flex flex-col items-center gap-3 pb-5 border-b border-border">
             <AvatarUpload
               userId={user.id}
               currentAvatarUrl={avatarUrl}
               displayName={displayName || username || "User"}
-              onUploadComplete={(url) => {
-                setAvatarUrl(url);
-              }}
+              onUploadComplete={(url) => setAvatarUrl(url)}
               size="lg"
             />
             <p className="text-sm text-muted-foreground">Tap to change your photo</p>
           </div>
 
+          {/* Basic info */}
           <div className="space-y-2">
             <Label htmlFor="username">Username</Label>
             <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="e.g. quietink" />
@@ -146,22 +153,97 @@ export default function Profile() {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="coffee">Buy Me a Coffee URL</Label>
-            <Input 
-              id="coffee" 
-              value={buyMeACoffeeUrl} 
-              onChange={(e) => setBuyMeACoffeeUrl(e.target.value)} 
-              placeholder="https://buymeacoffee.com/yourname" 
-            />
-            <p className="text-xs text-muted-foreground">Add your tip link so readers can support you</p>
+            <Label htmlFor="bio">Short bio</Label>
+            <Textarea id="bio" value={bio} onChange={(e) => setBio(e.target.value)} className="bg-secondary/50 resize-none" rows={2} placeholder="Tell readers about your voice…" />
           </div>
 
+          {/* Pro: About section */}
+          {isPro && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Label htmlFor="about">About</Label>
+                <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">PRO</span>
+              </div>
+              <Textarea
+                id="about"
+                value={about}
+                onChange={(e) => setAbout(e.target.value)}
+                className="bg-secondary/50 resize-none"
+                rows={4}
+                placeholder="Write a longer description about yourself, your poetry journey, influences…"
+              />
+              <p className="text-xs text-muted-foreground">Shown on the About tab of your public profile.</p>
+            </div>
+          )}
+
+          <Separator />
+
+          {/* Support link (all poets) */}
           <div className="space-y-2">
-            <Label htmlFor="bio">Bio</Label>
-            <Textarea id="bio" value={bio} onChange={(e) => setBio(e.target.value)} className="bg-secondary/50" placeholder="Tell readers about your voice…" />
+            <div className="flex items-center gap-2">
+              <Coffee className="h-4 w-4 text-muted-foreground" />
+              <Label htmlFor="coffee">Buy Me a Coffee URL</Label>
+            </div>
+            <Input
+              id="coffee"
+              value={buyMeACoffeeUrl}
+              onChange={(e) => setBuyMeACoffeeUrl(e.target.value)}
+              placeholder="https://buymeacoffee.com/yourname"
+            />
           </div>
 
-          <div className="flex flex-wrap gap-2">
+          {/* Pro: Social links */}
+          {isPro && (
+            <div className="space-y-4 p-4 rounded-xl bg-secondary/30 border border-border">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-primary" />
+                <p className="text-sm font-semibold">Social Links</p>
+                <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">PRO</span>
+              </div>
+              <p className="text-xs text-muted-foreground -mt-2">These appear on the Links tab of your public profile.</p>
+
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Twitter className="h-4 w-4 text-muted-foreground shrink-0" />
+                  <Label htmlFor="twitter" className="text-sm">Twitter / X</Label>
+                </div>
+                <Input
+                  id="twitter"
+                  value={twitterUrl}
+                  onChange={(e) => setTwitterUrl(e.target.value)}
+                  placeholder="https://twitter.com/yourhandle"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Instagram className="h-4 w-4 text-muted-foreground shrink-0" />
+                  <Label htmlFor="instagram" className="text-sm">Instagram</Label>
+                </div>
+                <Input
+                  id="instagram"
+                  value={instagramUrl}
+                  onChange={(e) => setInstagramUrl(e.target.value)}
+                  placeholder="https://instagram.com/yourhandle"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-center gap-2">
+                  <Globe className="h-4 w-4 text-muted-foreground shrink-0" />
+                  <Label htmlFor="website" className="text-sm">Website</Label>
+                </div>
+                <Input
+                  id="website"
+                  value={websiteUrl}
+                  onChange={(e) => setWebsiteUrl(e.target.value)}
+                  placeholder="https://yourwebsite.com"
+                />
+              </div>
+            </div>
+          )}
+
+          <div className="flex flex-wrap gap-2 pt-1">
             <Button onClick={saveProfile} disabled={saving}>{saving ? 'Saving…' : 'Save profile'}</Button>
             {isPoet ? (
               <Button asChild variant="outline">
