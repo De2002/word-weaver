@@ -37,6 +37,7 @@ export default function Profile() {
     setDisplayName(profile?.display_name ?? "");
     setAvatarUrl(profile?.avatar_url ?? "");
     setBio(profile?.bio ?? "");
+    setHeaderImage(profile?.header_image ?? null);
     setBuyMeACoffeeUrl(links.buyMeACoffee ?? "");
   }, [profile?.user_id]);
 
