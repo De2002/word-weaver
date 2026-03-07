@@ -61,6 +61,7 @@ export default function Profile() {
         avatar_url: avatarUrl.trim() || null,
         bio: bio.trim() || null,
         links: updatedLinks,
+        header_image: headerImage || null,
       })
       .eq("user_id", user.id);
     setSaving(false);
