@@ -22,13 +22,12 @@ export default function Profile() {
 
   const isPro = roles.includes("pro");
   const profileLinks = (profile?.links || {}) as Record<string, string>;
-  const profileAny = profile as any;
   
   const [username, setUsername] = useState(profile?.username ?? "");
   const [displayName, setDisplayName] = useState(profile?.display_name ?? "");
   const [avatarUrl, setAvatarUrl] = useState(profile?.avatar_url ?? "");
   const [bio, setBio] = useState(profile?.bio ?? "");
-  const [headerImage, setHeaderImage] = useState<string | null>(profileAny?.header_image ?? null);
+  const [headerImage, setHeaderImage] = useState<string | null>(profile?.header_image ?? null);
   const [buyMeACoffeeUrl, setBuyMeACoffeeUrl] = useState(profileLinks.buyMeACoffee ?? "");
   const [saving, setSaving] = useState(false);
 
