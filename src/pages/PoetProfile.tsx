@@ -41,6 +41,8 @@ export default function PoetProfile() {
   const [profileTab, setProfileTab] = useState<ProfileTab>('Poems');
   const [sortTab, setSortTab] = useState<SortTab>('all');
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+  const [showReportDialog, setShowReportDialog] = useState(false);
+  const [showBlockDialog, setShowBlockDialog] = useState(false);
   const isMobile = useIsMobile();
   const { share } = useNativeShare();
 

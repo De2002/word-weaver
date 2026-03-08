@@ -273,19 +273,7 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="moderation" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Content Moderation</CardTitle>
-                <CardDescription>Review reported poems, comments, and users</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12 text-muted-foreground">
-                  <Flag className="h-10 w-10 mx-auto mb-3 opacity-50" />
-                  <p className="font-medium">No pending reports</p>
-                  <p className="text-sm mt-1">Reported content will appear here for review</p>
-                </div>
-              </CardContent>
-            </Card>
+            <ModerationPanel />
           </TabsContent>
 
           <TabsContent value="settings" className="mt-6">
