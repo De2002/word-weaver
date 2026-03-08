@@ -63,6 +63,7 @@ export default function Profile() {
     setBio(profile?.bio ?? "");
     setAbout((profile as any)?.about ?? "");
     setHeaderImage(profile?.header_image ?? null);
+    setPinnedPoemId((profile as any)?.pinned_poem_id ?? "none");
     setBuyMeACoffeeUrl(links.buyMeACoffee ?? "");
     setTwitterUrl(links.twitter ?? "");
     setInstagramUrl(links.instagram ?? "");
@@ -89,6 +90,7 @@ export default function Profile() {
         about: about.trim() || null,
         links: updatedLinks,
         header_image: headerImage || null,
+        pinned_poem_id: (pinnedPoemId && pinnedPoemId !== "none") ? pinnedPoemId : null,
       } as any)
       .eq("user_id", user.id);
     setSaving(false);
