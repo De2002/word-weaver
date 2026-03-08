@@ -96,6 +96,74 @@ export function PoemEditor({ initial }: Props) {
     })();
   }, [user?.id]);
 
+  // ── Auto-save logic ────────────────────────────────────────────────────────
+  const autoSave = useCallback(async () => {
+    if (!user || !canWritePoems || !poemText.trim()) return;
+    const isSameContent =
+      lastSavedRef.current.title === title &&
+      lastSavedRef.current.content === poemText;
+    if (isSameContent) return;
+
+    setSaveStatus("saving");
+    try {
+      let poemId = draftPoemId;
+      if (!poemId) {
+        const { data: slugData, error: slugError } = await db.rpc("generate_poem_slug", {
+          title_input: title.trim() || "poem",
+        });
+        if (slugError) throw slugError;
+        const { data, error } = await db
+          .from("poems")
+          .insert({
+            user_id: user.id,
+            title: title.trim() || null,
+            content: poemText,
+            tags,
+            status: "draft",
+            slug: slugData as string,
+            copyright: isPro && copyright.trim() ? copyright.trim() : null,
+          })
+          .select("id")
+          .single();
+        if (error) throw error;
+        poemId = data?.id ?? null;
+        if (poemId) setDraftPoemId(poemId);
+      } else {
+        const { error } = await db
+          .from("poems")
+          .update({
+            title: title.trim() || null,
+            content: poemText,
+            tags,
+            copyright: isPro && copyright.trim() ? copyright.trim() : null,
+          })
+          .eq("id", poemId);
+        if (error) throw error;
+      }
+      lastSavedRef.current = { title, content: poemText };
+      setSaveStatus("saved");
+      // Reset back to idle after 3s
+      setTimeout(() => setSaveStatus((s) => (s === "saved" ? "idle" : s)), 3000);
+    } catch {
+      setSaveStatus("error");
+      setTimeout(() => setSaveStatus((s) => (s === "error" ? "idle" : s)), 3000);
+    }
+  }, [user, canWritePoems, poemText, title, tags, isPro, copyright, draftPoemId]);
+
+  // Debounce: save 3s after last keystroke
+  useEffect(() => {
+    if (!poemText.trim()) return;
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    debounceTimerRef.current = setTimeout(() => { autoSave(); }, AUTOSAVE_DEBOUNCE_MS);
+    return () => { if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current); };
+  }, [poemText, title]);
+
+  // Interval: also save every 30s regardless
+  useEffect(() => {
+    intervalTimerRef.current = setInterval(() => { autoSave(); }, AUTOSAVE_INTERVAL_MS);
+    return () => { if (intervalTimerRef.current) clearInterval(intervalTimerRef.current); };
+  }, [autoSave]);
+
   const tagCountLabel = useMemo(() => `${tags.length}/${MAX_TAGS}`, [tags.length]);
 
   const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
