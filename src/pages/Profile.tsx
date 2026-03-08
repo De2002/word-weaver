@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, Sparkles, Twitter, Instagram, Globe, Coffee } from "lucide-react";
+import { ArrowLeft, Sparkles, Twitter, Instagram, Globe, Coffee, Pin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthProvider";
 import { db } from "@/lib/db";
 import { useSEO } from "@/hooks/useSEO";
 import { AvatarUpload } from "@/components/AvatarUpload";
 import { HeaderImageUpload } from "@/components/HeaderImageUpload";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Profile() {
   useSEO({
@@ -30,11 +32,28 @@ export default function Profile() {
   const [bio, setBio] = useState(profile?.bio ?? "");
   const [about, setAbout] = useState((profile as any)?.about ?? "");
   const [headerImage, setHeaderImage] = useState<string | null>(profile?.header_image ?? null);
+  const [pinnedPoemId, setPinnedPoemId] = useState<string>((profile as any)?.pinned_poem_id ?? "none");
   const [buyMeACoffeeUrl, setBuyMeACoffeeUrl] = useState(profileLinks.buyMeACoffee ?? "");
   const [twitterUrl, setTwitterUrl] = useState(profileLinks.twitter ?? "");
   const [instagramUrl, setInstagramUrl] = useState(profileLinks.instagram ?? "");
   const [websiteUrl, setWebsiteUrl] = useState(profileLinks.website ?? "");
   const [saving, setSaving] = useState(false);
+
+  // Fetch published poems for the pin selector
+  const { data: publishedPoems = [] } = useQuery({
+    queryKey: ["my-published-poems", user?.id],
+    queryFn: async () => {
+      const { data, error } = await db
+        .from("poems")
+        .select("id, title, slug, content")
+        .eq("user_id", user!.id)
+        .eq("status", "published")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!user && isPro,
+  });
 
   useEffect(() => {
     const links = (profile?.links || {}) as Record<string, string>;
@@ -44,6 +63,7 @@ export default function Profile() {
     setBio(profile?.bio ?? "");
     setAbout((profile as any)?.about ?? "");
     setHeaderImage(profile?.header_image ?? null);
+    setPinnedPoemId((profile as any)?.pinned_poem_id ?? "none");
     setBuyMeACoffeeUrl(links.buyMeACoffee ?? "");
     setTwitterUrl(links.twitter ?? "");
     setInstagramUrl(links.instagram ?? "");
@@ -70,6 +90,7 @@ export default function Profile() {
         about: about.trim() || null,
         links: updatedLinks,
         header_image: headerImage || null,
+        pinned_poem_id: (pinnedPoemId && pinnedPoemId !== "none") ? pinnedPoemId : null,
       } as any)
       .eq("user_id", user.id);
     setSaving(false);
@@ -173,6 +194,31 @@ export default function Profile() {
                 placeholder="Write a longer description about yourself, your poetry journey, influences…"
               />
               <p className="text-xs text-muted-foreground">Shown on the About tab of your public profile.</p>
+            </div>
+          )}
+
+          {/* Pro: Pin a poem */}
+          {isPro && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Pin className="h-4 w-4 text-primary" />
+                <Label htmlFor="pinned-poem">Pinned Poem</Label>
+                <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">PRO</span>
+              </div>
+              <Select value={pinnedPoemId} onValueChange={setPinnedPoemId}>
+                <SelectTrigger id="pinned-poem" className="bg-secondary/50">
+                  <SelectValue placeholder="Choose a poem to pin…" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">— No pinned poem —</SelectItem>
+                  {publishedPoems.map((poem: any) => (
+                    <SelectItem key={poem.id} value={poem.id}>
+                      {poem.title || poem.content.slice(0, 40) + "…"}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">This poem appears pinned at the top of your public profile.</p>
             </div>
           )}
 
