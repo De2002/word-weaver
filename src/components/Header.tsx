@@ -104,34 +104,14 @@ export function Header({ activeTab = 'for-you', onTabChange, showTabs = false }:
               </span>
             </motion.div>
 
-            {/* Right: Upgrade crown (non-pro) or Bell (pro) */}
+            {/* Right: Upgrade crown for non-pro / empty spacer for pro (bell is in Profile Drawer) */}
             <div className="flex-none flex items-center gap-1">
-              {user && roles.includes('pro') && (
+              {user && !roles.includes('pro') && (
                 <motion.div
                   initial={{ opacity: 0, x: 10 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.03 }}
                 >
-                  <Link
-                    to="/notifications"
-                    className="relative p-2 rounded-full hover:bg-secondary transition-colors block"
-                  >
-                    <Bell className="h-5 w-5 text-muted-foreground" />
-                    {unreadCount > 0 && (
-                      <span className={cn(
-                        "absolute top-1 right-1 flex items-center justify-center rounded-full bg-soft-coral text-white text-xs font-bold",
-                        unreadCount > 9 ? "h-5 w-5 -top-0.5 -right-0.5" : "h-4 w-4"
-                      )}>
-                        {unreadCount > 99 ? '99+' : unreadCount}
-                      </span>
-                    )}
-                  </Link>
-                </motion.div>
-              )}
-              {user && !roles.includes('pro') && (
-                <motion.div
-                  initial={{ opacity: 0, x: 10 }}
-                  animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.03 }}
                 >
                   <Link
