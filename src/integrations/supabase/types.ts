@@ -744,6 +744,7 @@ export type Database = {
       notifications: {
         Row: {
           actor_id: string
+          challenge_id: string | null
           comment_id: string | null
           created_at: string
           id: string
@@ -755,6 +756,7 @@ export type Database = {
         }
         Insert: {
           actor_id: string
+          challenge_id?: string | null
           comment_id?: string | null
           created_at?: string
           id?: string
@@ -766,6 +768,7 @@ export type Database = {
         }
         Update: {
           actor_id?: string
+          challenge_id?: string | null
           comment_id?: string | null
           created_at?: string
           id?: string
@@ -776,6 +779,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "notifications_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "notifications_comment_id_fkey"
             columns: ["comment_id"]

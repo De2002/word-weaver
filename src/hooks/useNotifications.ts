@@ -6,11 +6,12 @@ import { useAuth } from '@/context/AuthProvider';
 export interface Notification {
   id: string;
   userId: string;
-  type: 'follow' | 'upvote' | 'comment' | 'reply' | 'qa_answer';
+  type: 'follow' | 'upvote' | 'comment' | 'reply' | 'qa_answer' | 'challenge_open' | 'challenge_winner';
   actorId: string;
   poemId: string | null;
   commentId: string | null;
   questionId: string | null;
+  challengeId: string | null;
   isRead: boolean;
   createdAt: string;
   actor: {
@@ -26,6 +27,10 @@ export interface Notification {
     id: string;
     title: string;
   };
+  challenge?: {
+    id: string;
+    title: string;
+  };
 }
 
 interface DbNotification {
@@ -36,6 +41,7 @@ interface DbNotification {
   poem_id: string | null;
   comment_id: string | null;
   question_id: string | null;
+  challenge_id: string | null;
   is_read: boolean;
   created_at: string;
 }
@@ -63,18 +69,19 @@ interface UseNotificationsResult {
   refetch: () => void;
 }
 
+const dbAny = db as any;
+
 export function useNotifications(): UseNotificationsResult {
   const { session } = useAuth();
   const queryClient = useQueryClient();
   const userId = session?.user?.id;
 
-  // Fetch notifications
   const { data, isLoading, error, refetch } = useQuery({
     queryKey: ['notifications', userId],
     queryFn: async () => {
       if (!userId) return [];
 
-      const { data: notificationsData, error: notificationsError } = await db
+      const { data: notificationsData, error: notificationsError } = await dbAny
         .from('notifications')
         .select('*')
         .eq('user_id', userId)
@@ -84,9 +91,8 @@ export function useNotifications(): UseNotificationsResult {
       if (notificationsError) throw notificationsError;
       if (!notificationsData || notificationsData.length === 0) return [];
 
-      // Get unique actor IDs and fetch profiles
       const actorIds = [...new Set(notificationsData.map((n: DbNotification) => n.actor_id))];
-      const { data: profilesData } = await db
+      const { data: profilesData } = await dbAny
         .from('profiles')
         .select('user_id, username, display_name, avatar_url')
         .in('user_id', actorIds);
@@ -96,45 +102,50 @@ export function useNotifications(): UseNotificationsResult {
         profilesMap.set(p.user_id, p);
       });
 
-      // Get poem titles for poem-related notifications
+      // Poem titles
       const poemIds = notificationsData
         .filter((n: DbNotification) => n.poem_id)
         .map((n: DbNotification) => n.poem_id as string);
-      
       const poemsMap = new Map<string, DbPoem>();
       if (poemIds.length > 0) {
-        const { data: poemsData } = await db
+        const { data: poemsData } = await dbAny
           .from('poems')
           .select('id, title')
           .in('id', poemIds);
-
-        (poemsData || []).forEach((p: DbPoem) => {
-          poemsMap.set(p.id, p);
-        });
+        (poemsData || []).forEach((p: DbPoem) => poemsMap.set(p.id, p));
       }
 
-      // Get question titles for Q&A notifications
+      // Question titles
       const questionIds = notificationsData
         .filter((n: DbNotification) => n.question_id)
         .map((n: DbNotification) => n.question_id as string);
-
       const questionsMap = new Map<string, { id: string; title: string }>();
       if (questionIds.length > 0) {
-        const { data: questionsData } = await db
+        const { data: questionsData } = await dbAny
           .from('qa_questions')
           .select('id, title')
           .in('id', questionIds);
-
-        (questionsData || []).forEach((q: { id: string; title: string }) => {
-          questionsMap.set(q.id, q);
-        });
+        (questionsData || []).forEach((q: { id: string; title: string }) => questionsMap.set(q.id, q));
       }
 
-      // Transform notifications
+      // Challenge titles
+      const challengeIds = notificationsData
+        .filter((n: DbNotification) => n.challenge_id)
+        .map((n: DbNotification) => n.challenge_id as string);
+      const challengesMap = new Map<string, { id: string; title: string }>();
+      if (challengeIds.length > 0) {
+        const { data: challengesData } = await dbAny
+          .from('challenges')
+          .select('id, title')
+          .in('id', challengeIds);
+        (challengesData || []).forEach((c: { id: string; title: string }) => challengesMap.set(c.id, c));
+      }
+
       const transformedNotifications: Notification[] = notificationsData.map((n: DbNotification) => {
         const actorProfile = profilesMap.get(n.actor_id);
         const poem = n.poem_id ? poemsMap.get(n.poem_id) : undefined;
         const question = n.question_id ? questionsMap.get(n.question_id) : undefined;
+        const challenge = n.challenge_id ? challengesMap.get(n.challenge_id) : undefined;
 
         return {
           id: n.id,
@@ -144,35 +155,35 @@ export function useNotifications(): UseNotificationsResult {
           poemId: n.poem_id,
           commentId: n.comment_id,
           questionId: n.question_id,
+          challengeId: n.challenge_id,
           isRead: n.is_read,
           createdAt: n.created_at,
           actor: {
-            name: actorProfile?.display_name || actorProfile?.username || 'Someone',
-            username: actorProfile?.username || 'unknown',
+            name: actorProfile?.display_name || actorProfile?.username || 'WordStack',
+            username: actorProfile?.username || 'wordstack',
             avatar: actorProfile?.avatar_url || '',
           },
           poem: poem ? { id: poem.id, title: poem.title } : undefined,
           question: question ? { id: question.id, title: question.title } : undefined,
+          challenge: challenge ? { id: challenge.id, title: challenge.title } : undefined,
         };
       });
 
       return transformedNotifications;
     },
     enabled: !!userId,
-    refetchInterval: 30000, // Poll every 30 seconds for new notifications
+    refetchInterval: 30000,
   });
 
-  // Get unread count
   const { data: unreadCount } = useQuery({
     queryKey: ['notifications-unread-count', userId],
     queryFn: async () => {
       if (!userId) return 0;
-      const { count, error } = await db
+      const { count, error } = await dbAny
         .from('notifications')
         .select('*', { count: 'exact', head: true })
         .eq('user_id', userId)
         .eq('is_read', false);
-
       if (error) throw error;
       return count || 0;
     },
@@ -180,10 +191,9 @@ export function useNotifications(): UseNotificationsResult {
     refetchInterval: 30000,
   });
 
-  // Mark single notification as read
   const markAsReadMutation = useMutation({
     mutationFn: async (notificationId: string) => {
-      const { error } = await db
+      const { error } = await dbAny
         .from('notifications')
         .update({ is_read: true })
         .eq('id', notificationId);
@@ -195,11 +205,10 @@ export function useNotifications(): UseNotificationsResult {
     },
   });
 
-  // Mark all as read
   const markAllAsReadMutation = useMutation({
     mutationFn: async () => {
       if (!userId) throw new Error('Not authenticated');
-      const { error } = await db
+      const { error } = await dbAny
         .from('notifications')
         .update({ is_read: true })
         .eq('user_id', userId)
@@ -212,10 +221,9 @@ export function useNotifications(): UseNotificationsResult {
     },
   });
 
-  // Delete notification
   const deleteNotificationMutation = useMutation({
     mutationFn: async (notificationId: string) => {
-      const { error } = await db
+      const { error } = await dbAny
         .from('notifications')
         .delete()
         .eq('id', notificationId);
