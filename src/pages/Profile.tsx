@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, Sparkles, Twitter, Instagram, Globe, Coffee } from "lucide-react";
+import { ArrowLeft, Sparkles, Twitter, Instagram, Globe, Coffee, Pin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/context/AuthProvider";
 import { db } from "@/lib/db";
 import { useSEO } from "@/hooks/useSEO";
 import { AvatarUpload } from "@/components/AvatarUpload";
 import { HeaderImageUpload } from "@/components/HeaderImageUpload";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Profile() {
   useSEO({
@@ -30,11 +32,28 @@ export default function Profile() {
   const [bio, setBio] = useState(profile?.bio ?? "");
   const [about, setAbout] = useState((profile as any)?.about ?? "");
   const [headerImage, setHeaderImage] = useState<string | null>(profile?.header_image ?? null);
+  const [pinnedPoemId, setPinnedPoemId] = useState<string>((profile as any)?.pinned_poem_id ?? "none");
   const [buyMeACoffeeUrl, setBuyMeACoffeeUrl] = useState(profileLinks.buyMeACoffee ?? "");
   const [twitterUrl, setTwitterUrl] = useState(profileLinks.twitter ?? "");
   const [instagramUrl, setInstagramUrl] = useState(profileLinks.instagram ?? "");
   const [websiteUrl, setWebsiteUrl] = useState(profileLinks.website ?? "");
   const [saving, setSaving] = useState(false);
+
+  // Fetch published poems for the pin selector
+  const { data: publishedPoems = [] } = useQuery({
+    queryKey: ["my-published-poems", user?.id],
+    queryFn: async () => {
+      const { data, error } = await db
+        .from("poems")
+        .select("id, title, slug, content")
+        .eq("user_id", user!.id)
+        .eq("status", "published")
+        .order("created_at", { ascending: false });
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!user && isPro,
+  });
 
   useEffect(() => {
     const links = (profile?.links || {}) as Record<string, string>;
