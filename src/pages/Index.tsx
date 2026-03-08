@@ -213,26 +213,17 @@ const Index = () => {
             </div>
           )}
 
-          {/* Empty State for Trending Tab */}
-          {activeTab === 'trending' && !currentData.loading && !currentData.error && currentData.poems.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <TrendingUp className="w-12 h-12 text-muted-foreground mb-4" />
-              <p className="text-lg font-medium text-foreground mb-2">No trending poems yet</p>
-              <p className="text-muted-foreground mb-4">Check back later for popular poetry!</p>
-            </div>
-          )}
-
-          {/* Empty State for Rising Tab */}
-          {activeTab === 'rising' && !currentData.loading && !currentData.error && currentData.poems.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <Zap className="w-12 h-12 text-muted-foreground mb-4" />
-              <p className="text-lg font-medium text-foreground mb-2">No rising poems yet</p>
-              <p className="text-muted-foreground mb-4">New poems with high engagement velocity will appear here!</p>
-            </div>
-          )}
-
-          {/* Empty State for For You Tab */}
+          {/* Empty State for For You Tab (no Pro poems) */}
           {activeTab === 'for-you' && !currentData.loading && !currentData.error && currentData.poems.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <Star className="w-12 h-12 text-muted-foreground mb-4" />
+              <p className="text-lg font-medium text-foreground mb-2">No Pro poems yet</p>
+              <p className="text-muted-foreground mb-4">Pro poet poems will appear here.</p>
+            </div>
+          )}
+
+          {/* Empty State for Recent Tab */}
+          {activeTab === 'recent' && !currentData.loading && !currentData.error && currentData.poems.length === 0 && (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <p className="text-lg font-medium text-foreground mb-2">No poems yet</p>
               <p className="text-muted-foreground mb-4">Be the first to share your poetry!</p>
