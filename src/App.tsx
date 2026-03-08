@@ -211,6 +211,10 @@ const App = () => (
             {/* Upgrade */}
             <Route path="/upgrade" element={<Upgrade />} />
 
+            {/* Challenges */}
+            <Route path="/challenges" element={<Challenges />} />
+            <Route path="/challenges/:id" element={<ChallengeDetail />} />
+
             {/* Admin Routes */}
             <Route
               path="/admin"
