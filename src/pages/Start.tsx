@@ -59,14 +59,16 @@ const proFeatures = [
   "Pro badge on your public profile",
 ];
 
-const staggerContainer = {
+import type { Variants } from "framer-motion";
+
+const staggerContainer: Variants = {
   hidden: {},
   show: { transition: { staggerChildren: 0.07 } },
 };
 
-const fadeUp = {
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 18 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: "easeOut" } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.45 } },
 };
 
 export default function Start() {
