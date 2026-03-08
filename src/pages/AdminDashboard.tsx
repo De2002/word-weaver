@@ -270,6 +270,10 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
+          <TabsContent value="challenges" className="mt-6">
+            <ChallengesAdminPanel />
+          </TabsContent>
+
           <TabsContent value="classics" className="mt-6">
             <ClassicsAdminPanel />
           </TabsContent>
