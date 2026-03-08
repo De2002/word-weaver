@@ -277,22 +277,54 @@ export default function PoemDetail() {
           animate={{ opacity: 1, y: 0 }}
           className="bg-card border-b border-border/50 p-5 md:p-6"
         >
-          {/* Poet Header - Same as PoemCard */}
-          <header className="flex items-center justify-between mb-4">
+          {/* Title + Audio */}
+          <div className="mb-4">
+            <div className="flex items-start justify-between gap-3">
+              {poem.title && (
+                <h1 className="font-serif text-3xl md:text-4xl font-semibold text-foreground leading-tight">
+                  {poem.title}
+                </h1>
+              )}
+              {poem.audioUrl && (
+                <AudioPlayButton
+                  audioUrl={poem.audioUrl}
+                  size="sm"
+                  className="flex-shrink-0 mt-1"
+                />
+              )}
+            </div>
+          </div>
+
+          {/* Poem Full Text */}
+          <div className="mb-5">
+            <div className="font-serif text-lg leading-relaxed text-foreground whitespace-pre-line">
+              {poem.text}
+            </div>
+          </div>
+
+          {/* Tags */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            {poem.tags.map(tag => (
+              <TagBadge key={tag} tag={tag} />
+            ))}
+          </div>
+
+          {/* Poet Info */}
+          <div className="flex items-center justify-between mb-3">
             <Link
               to={`/poet/${poem.poet.username}`}
               className="flex items-center gap-3 hover:opacity-80 transition-opacity"
             >
               <div className="relative">
-                <Avatar className="h-10 w-10 ring-2 ring-border">
+                <Avatar className="h-8 w-8 ring-2 ring-border">
                   <AvatarImage src={poem.poet.avatar} alt={poem.poet.name} />
-                  <AvatarFallback className="bg-secondary font-medium text-sm">
+                  <AvatarFallback className="bg-secondary font-medium text-xs">
                     {poem.poet.name.charAt(0)}
                   </AvatarFallback>
                 </Avatar>
                 {poetBadge && (
                   <span className={cn(
-                    "absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full flex items-center justify-center ring-2 ring-background",
+                    "absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full flex items-center justify-center ring-2 ring-background",
                     poetBadge.type === 'trending' && 'bg-gradient-to-br from-primary to-warm-gold',
                     poetBadge.type === 'new' && 'bg-sage',
                     poetBadge.type === 'rising' && 'bg-soft-coral',
@@ -309,39 +341,10 @@ export default function PoemDetail() {
               </div>
             </Link>
             <FollowButton poetUserId={poem.poet.id} variant="outline" />
-          </header>
-
-          {/* Poem Content - Full display */}
-          <div className="space-y-3 mb-4">
-            <div className="flex items-start justify-between gap-3">
-              {poem.title && (
-                <h1 className="font-serif text-xl md:text-2xl font-semibold text-foreground">
-                  {poem.title}
-                </h1>
-              )}
-              {poem.audioUrl && (
-                <AudioPlayButton 
-                  audioUrl={poem.audioUrl} 
-                  size="sm"
-                  className="flex-shrink-0 mt-1"
-                />
-              )}
-            </div>
-            
-            <div className="font-serif text-lg leading-relaxed text-foreground whitespace-pre-line">
-              {poem.text}
-            </div>
-          </div>
-
-          {/* Tags */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            {poem.tags.map(tag => (
-              <TagBadge key={tag} tag={tag} />
-            ))}
           </div>
 
           {/* Meta Info */}
-          <div className="text-sm text-muted-foreground mb-4">
+          <div className="text-xs text-muted-foreground mb-4">
             <span>{readCount.toLocaleString()} reads</span>
             <span className="mx-2">·</span>
             <span>{formatDistanceToNow(new Date(poem.createdAt), { addSuffix: true })}</span>
