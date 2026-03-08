@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Users, FileText, Calendar, BookOpen, MessageSquare, Flag, Shield, TrendingUp, Loader2, HelpCircle, MessageCircleQuestion, CheckCircle, Crown, Feather } from "lucide-react";
+import { ArrowLeft, Users, FileText, Calendar, BookOpen, MessageSquare, Flag, Shield, TrendingUp, Loader2, HelpCircle, MessageCircleQuestion, CheckCircle, Crown } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +10,7 @@ import { useAuth } from "@/context/AuthProvider";
 import { useSEO } from "@/hooks/useSEO";
 import { useAdminStats, useAdminQAStats, useAdminTopAnswerers } from "@/hooks/useAdminStats";
 import { ClassicsAdminPanel } from "@/components/classics/ClassicsAdminPanel";
+import { ModerationPanel } from "@/components/admin/ModerationPanel";
 
 export default function AdminDashboard() {
   useSEO({

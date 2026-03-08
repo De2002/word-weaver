@@ -23,8 +23,11 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { ReportUserDialog } from '@/components/ReportUserDialog';
+import { BlockUserDialog } from '@/components/messages/BlockUserDialog';
 
 type ProfileTab = 'Poems' | 'About' | 'Links';
 type SortTab = 'all' | 'popular';
