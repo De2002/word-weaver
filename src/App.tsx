@@ -48,6 +48,10 @@ import EditJournal from "./pages/EditJournal";
 import AdminDashboard from "./pages/AdminDashboard";
 import QA from "./pages/QA";
 import QADetail from "./pages/QADetail";
+import Classics from "./pages/Classics";
+import ClassicPoetsList from "./pages/ClassicPoetPage";
+import ClassicPoetDetail from "./pages/ClassicPoetDetail";
+import ClassicPoemDetail from "./pages/ClassicPoemDetail";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -194,6 +198,12 @@ const App = () => (
             {/* Q&A Routes */}
             <Route path="/qa" element={<QA />} />
             <Route path="/qa/:id" element={<QADetail />} />
+
+            {/* Classic Poetry Library */}
+            <Route path="/classics" element={<Classics />} />
+            <Route path="/classics/poets" element={<ClassicPoetsList />} />
+            <Route path="/classics/poet/:slug" element={<ClassicPoetDetail />} />
+            <Route path="/classics/poem/:slug" element={<ClassicPoemDetail />} />
 
             {/* Admin Routes */}
             <Route
