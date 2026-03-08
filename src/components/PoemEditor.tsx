@@ -2,7 +2,7 @@ import { useMemo, useRef, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Loader2, Music, Upload, X, Copyright, AlignLeft, AlignCenter,
-  ChevronDown, ChevronUp, Tag, Check, BookOpen
+  ChevronDown, ChevronUp, Tag, Check, BookOpen, Cloud, CloudOff
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,8 @@ import { AddToTrailModal } from "@/components/trails/AddToTrailModal";
 const MAX_TITLE_LENGTH = 100;
 const MAX_POEM_LENGTH = 5000;
 const MAX_TAGS = 10;
+const AUTOSAVE_DEBOUNCE_MS = 3000;   // save 3s after last keystroke
+const AUTOSAVE_INTERVAL_MS = 30000;  // also save every 30s regardless
 
 export type PoemEditorInitial = {
   id?: string;
@@ -30,6 +32,8 @@ export type PoemEditorInitial = {
   audioPath?: string | null;
   copyright?: string | null;
 };
+
+type SaveStatus = "idle" | "saving" | "saved" | "error";
 
 type Props = {
   initial?: PoemEditorInitial;
@@ -55,6 +59,13 @@ export function PoemEditor({ initial }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showTrailModal, setShowTrailModal] = useState(false);
   const [publishedPoemId, setPublishedPoemId] = useState<string | null>(null);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
+  const [draftPoemId, setDraftPoemId] = useState<string | null>(initial?.id ?? null);
+
+  // track last saved content to avoid unnecessary saves
+  const lastSavedRef = useRef({ title: initial?.title ?? "", content: initial?.content ?? "" });
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const intervalTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const isEdit = Boolean(initial?.id);
   const canSubmit = poemText.trim().length > 0;
