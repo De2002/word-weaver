@@ -45,7 +45,13 @@ export function PoemEditor({ initial }: Props) {
   const [tags, setTags] = useState<string[]>(initial?.tags ?? []);
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [existingAudioPath, setExistingAudioPath] = useState<string | null>(initial?.audioPath ?? null);
-  const [copyright, setCopyright] = useState(initial?.copyright ?? "");
+  const [copyright, setCopyright] = useState(() => {
+    if (initial?.copyright != null) return initial.copyright;
+    if (roles.includes("pro")) {
+      return `© ${new Date().getFullYear()} ${user?.email?.split('@')[0] || 'Your Name'} — All rights reserved`;
+    }
+    return "";
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showTrailModal, setShowTrailModal] = useState(false);
   const [publishedPoemId, setPublishedPoemId] = useState<string | null>(null);
