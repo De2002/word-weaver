@@ -9,7 +9,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { icon: Home, label: 'Feed', href: '/home' },
+  { icon: LayoutList, label: 'Feed', href: '/home' },
   { icon: HelpCircle, label: 'Q&A', href: '/qa' },
   { icon: Search, label: 'Search', href: '/search' },
   { icon: MoreHorizontal, label: 'More', href: '/more' },
