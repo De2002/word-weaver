@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Bell, Heart, MessageCircle, UserPlus, Reply, Check, Trash2, Loader2, HelpCircle } from 'lucide-react';
+import { ArrowLeft, Bell, Heart, MessageCircle, UserPlus, Reply, Check, Trash2, Loader2, HelpCircle, Trophy, Crown } from 'lucide-react';
 import { useNotifications, Notification } from '@/hooks/useNotifications';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -21,15 +21,20 @@ function NotificationIcon({ type }: { type: Notification['type'] }) {
       return <Reply className="h-4 w-4 text-warm-gold" />;
     case 'qa_answer':
       return <HelpCircle className="h-4 w-4 text-amber-500" />;
+    case 'challenge_open':
+      return <Trophy className="h-4 w-4 text-primary" />;
+    case 'challenge_winner':
+      return <Crown className="h-4 w-4 text-amber-500" />;
     default:
       return <Bell className="h-4 w-4" />;
   }
 }
 
 function getNotificationMessage(notification: Notification): string {
-  const { type, actor, poem, question } = notification;
+  const { type, poem, question, challenge } = notification;
   const poemTitle = poem?.title ? `"${poem.title}"` : 'your poem';
   const questionTitle = question?.title ? `"${question.title}"` : 'your question';
+  const challengeTitle = challenge?.title ? `"${challenge.title}"` : 'a challenge';
 
   switch (type) {
     case 'follow':
@@ -42,13 +47,17 @@ function getNotificationMessage(notification: Notification): string {
       return `replied to your comment on ${poemTitle}`;
     case 'qa_answer':
       return `answered ${questionTitle}`;
+    case 'challenge_open':
+      return `A new challenge is open: ${challengeTitle}`;
+    case 'challenge_winner':
+      return `🏆 You won ${challengeTitle}! Congratulations!`;
     default:
       return 'interacted with you';
   }
 }
 
 function getNotificationLink(notification: Notification): string {
-  const { type, poemId, commentId, questionId } = notification;
+  const { type, poemId, commentId, questionId, challengeId } = notification;
 
   switch (type) {
     case 'follow':
@@ -61,9 +70,17 @@ function getNotificationLink(notification: Notification): string {
       return poemId ? `/poem/${poemId}` : '/';
     case 'qa_answer':
       return questionId ? `/qa/${questionId}` : '/qa';
+    case 'challenge_open':
+    case 'challenge_winner':
+      return challengeId ? `/challenges/${challengeId}` : '/challenges';
     default:
       return '/';
   }
+}
+
+// For challenge notifications the "actor" is the system/admin — show differently
+function isChallengeNotification(type: Notification['type']) {
+  return type === 'challenge_open' || type === 'challenge_winner';
 }
 
 interface NotificationItemProps {
@@ -75,11 +92,10 @@ interface NotificationItemProps {
 function NotificationItem({ notification, onMarkAsRead, onDelete }: NotificationItemProps) {
   const link = getNotificationLink(notification);
   const message = getNotificationMessage(notification);
+  const isChallenge = isChallengeNotification(notification.type);
 
   const handleClick = () => {
-    if (!notification.isRead) {
-      onMarkAsRead(notification.id);
-    }
+    if (!notification.isRead) onMarkAsRead(notification.id);
   };
 
   return (
@@ -92,17 +108,30 @@ function NotificationItem({ notification, onMarkAsRead, onDelete }: Notification
         !notification.isRead && "bg-primary/5"
       )}
     >
-      {/* Unread indicator */}
       {!notification.isRead && (
         <div className="absolute left-1 top-1/2 -translate-y-1/2 w-2 h-2 rounded-full bg-primary" />
       )}
 
       <Link to={link} onClick={handleClick} className="flex-shrink-0">
         <div className="relative">
-          <Avatar className="h-10 w-10">
-            <AvatarImage src={notification.actor.avatar} alt={notification.actor.name} />
-            <AvatarFallback>{notification.actor.name.charAt(0)}</AvatarFallback>
-          </Avatar>
+          {isChallenge ? (
+            <div className={cn(
+              "h-10 w-10 rounded-full flex items-center justify-center",
+              notification.type === 'challenge_winner'
+                ? "bg-amber-500/15"
+                : "bg-primary/10"
+            )}>
+              {notification.type === 'challenge_winner'
+                ? <Crown className="h-5 w-5 text-amber-500" />
+                : <Trophy className="h-5 w-5 text-primary" />
+              }
+            </div>
+          ) : (
+            <Avatar className="h-10 w-10">
+              <AvatarImage src={notification.actor.avatar} alt={notification.actor.name} />
+              <AvatarFallback>{notification.actor.name.charAt(0)}</AvatarFallback>
+            </Avatar>
+          )}
           <span className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full bg-background border-2 border-background flex items-center justify-center">
             <NotificationIcon type={notification.type} />
           </span>
@@ -111,21 +140,29 @@ function NotificationItem({ notification, onMarkAsRead, onDelete }: Notification
 
       <div className="flex-1 min-w-0" onClick={handleClick}>
         <p className="text-sm">
-          <Link 
-            to={`/poet/${notification.actor.username}`} 
-            className="font-medium text-foreground hover:text-primary hover:underline"
-            onClick={(e) => e.stopPropagation()}
-          >
-            {notification.actor.name}
-          </Link>
-          <Link 
-            to={`/poet/${notification.actor.username}`} 
-            className="text-xs text-muted-foreground hover:text-primary ml-1"
-            onClick={(e) => e.stopPropagation()}
-          >
-            @{notification.actor.username}
-          </Link>{' '}
-          <span className="text-muted-foreground">{message}</span>
+          {isChallenge ? (
+            <Link to={link} className="text-muted-foreground">
+              {message}
+            </Link>
+          ) : (
+            <>
+              <Link
+                to={`/poet/${notification.actor.username}`}
+                className="font-medium text-foreground hover:text-primary hover:underline"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {notification.actor.name}
+              </Link>
+              <Link
+                to={`/poet/${notification.actor.username}`}
+                className="text-xs text-muted-foreground hover:text-primary ml-1"
+                onClick={(e) => e.stopPropagation()}
+              >
+                @{notification.actor.username}
+              </Link>{' '}
+              <span className="text-muted-foreground">{message}</span>
+            </>
+          )}
         </p>
         <p className="text-xs text-muted-foreground mt-0.5">
           {formatDistanceToNow(new Date(notification.createdAt), { addSuffix: true })}
@@ -176,7 +213,6 @@ export default function Notifications() {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      {/* Header */}
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-border px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -198,7 +234,6 @@ export default function Notifications() {
         </div>
       </header>
 
-      {/* Loading State */}
       {isLoading && (
         <div>
           <NotificationSkeleton />
@@ -208,7 +243,6 @@ export default function Notifications() {
         </div>
       )}
 
-      {/* Empty State */}
       {!isLoading && notifications.length === 0 && (
         <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
           <div className="h-16 w-16 rounded-full bg-secondary flex items-center justify-center mb-4">
@@ -216,12 +250,11 @@ export default function Notifications() {
           </div>
           <h2 className="text-lg font-medium mb-2">No notifications yet</h2>
           <p className="text-muted-foreground text-sm max-w-xs">
-            When someone follows you, likes your poems, or comments on your work, you'll see it here.
+            When someone follows you, likes your poems, or a new challenge opens, you'll see it here.
           </p>
         </div>
       )}
 
-      {/* Notifications List */}
       {!isLoading && notifications.length > 0 && (
         <div>
           <AnimatePresence>
