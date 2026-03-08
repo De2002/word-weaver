@@ -267,6 +267,10 @@ export default function AdminDashboard() {
             </Card>
           </TabsContent>
 
+          <TabsContent value="classics" className="mt-6">
+            <ClassicsAdminPanel />
+          </TabsContent>
+
           <TabsContent value="moderation" className="mt-6">
             <Card>
               <CardHeader>
