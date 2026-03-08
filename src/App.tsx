@@ -191,6 +191,10 @@ const App = () => (
               }
             />
 
+            {/* Q&A Routes */}
+            <Route path="/qa" element={<QA />} />
+            <Route path="/qa/:id" element={<QADetail />} />
+
             {/* Admin Routes */}
             <Route
               path="/admin"
