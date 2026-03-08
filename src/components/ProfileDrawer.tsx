@@ -98,7 +98,8 @@ export function ProfileDrawer({ open, onClose }: ProfileDrawerProps) {
             animate={{ x: 0 }}
             exit={{ x: '-100%' }}
             transition={{ type: 'spring', damping: 28, stiffness: 280 }}
-            className="fixed left-0 top-0 bottom-0 z-50 w-[80vw] max-w-xs bg-background flex flex-col shadow-2xl"
+            className="fixed left-0 top-0 z-50 w-[80vw] max-w-xs bg-background flex flex-col shadow-2xl"
+            style={{ bottom: 'calc(3.5rem + env(safe-area-inset-bottom))' }}
           >
             {/* Header area */}
             <div className="p-5 pt-12">
