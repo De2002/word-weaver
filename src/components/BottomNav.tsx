@@ -1,4 +1,4 @@
-import { LayoutList, HelpCircle, Search, MoreHorizontal } from 'lucide-react';
+import { LayoutList, HelpCircle, Search, Feather } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
@@ -12,7 +12,7 @@ const navItems: NavItem[] = [
   { icon: LayoutList, label: 'Feed', href: '/home' },
   { icon: HelpCircle, label: 'Q&A', href: '/qa' },
   { icon: Search, label: 'Search', href: '/search' },
-  { icon: MoreHorizontal, label: 'More', href: '/more' },
+  { icon: Feather, label: 'Classics', href: '/classics' },
 ];
 
 export function BottomNav() {
