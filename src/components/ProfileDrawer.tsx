@@ -29,6 +29,35 @@ export function ProfileDrawer({ open, onClose }: ProfileDrawerProps) {
   const displayName = profile?.display_name || profile?.username || user?.email || 'You';
   const username = profile?.username;
   const avatarUrl = profile?.avatar_url || undefined;
+  const userId = user?.id;
+
+  // Live follower count — people following me
+  const { data: followerCount = 0 } = useQuery({
+    queryKey: ['follower-count', userId],
+    queryFn: async () => {
+      const { count, error } = await db
+        .from('follows')
+        .select('*', { count: 'exact', head: true })
+        .eq('following_id', userId!);
+      if (error) throw error;
+      return count ?? 0;
+    },
+    enabled: !!userId && open,
+  });
+
+  // Live following count — people I follow
+  const { data: followingCount = 0 } = useQuery({
+    queryKey: ['following-count', userId],
+    queryFn: async () => {
+      const { count, error } = await db
+        .from('follows')
+        .select('*', { count: 'exact', head: true })
+        .eq('follower_id', userId!);
+      if (error) throw error;
+      return count ?? 0;
+    },
+    enabled: !!userId && open,
+  });
 
   const handleSignOut = async () => {
     onClose();
