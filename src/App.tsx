@@ -46,6 +46,8 @@ import JournalDetail from "./pages/JournalDetail";
 import CreateJournal from "./pages/CreateJournal";
 import EditJournal from "./pages/EditJournal";
 import AdminDashboard from "./pages/AdminDashboard";
+import QA from "./pages/QA";
+import QADetail from "./pages/QADetail";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -188,6 +190,10 @@ const App = () => (
                 </ProtectedRoute>
               }
             />
+
+            {/* Q&A Routes */}
+            <Route path="/qa" element={<QA />} />
+            <Route path="/qa/:id" element={<QADetail />} />
 
             {/* Admin Routes */}
             <Route

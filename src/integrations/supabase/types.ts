@@ -791,6 +791,120 @@ export type Database = {
           },
         ]
       }
+      qa_answer_votes: {
+        Row: {
+          answer_id: string
+          created_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          answer_id: string
+          created_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          answer_id?: string
+          created_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qa_answer_votes_answer_id_fkey"
+            columns: ["answer_id"]
+            isOneToOne: false
+            referencedRelation: "qa_answers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      qa_answers: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          is_accepted: boolean
+          question_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          is_accepted?: boolean
+          question_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          is_accepted?: boolean
+          question_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qa_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "qa_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      qa_questions: {
+        Row: {
+          accepted_answer_id: string | null
+          category: string
+          created_at: string
+          details: string | null
+          id: string
+          is_featured: boolean
+          title: string
+          updated_at: string
+          user_id: string
+          views: number
+        }
+        Insert: {
+          accepted_answer_id?: string | null
+          category?: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          is_featured?: boolean
+          title: string
+          updated_at?: string
+          user_id: string
+          views?: number
+        }
+        Update: {
+          accepted_answer_id?: string | null
+          category?: string
+          created_at?: string
+          details?: string | null
+          id?: string
+          is_featured?: boolean
+          title?: string
+          updated_at?: string
+          user_id?: string
+          views?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "qa_questions_accepted_answer_id_fkey"
+            columns: ["accepted_answer_id"]
+            isOneToOne: false
+            referencedRelation: "qa_answers"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       trail_progress: {
         Row: {
           completed: boolean
