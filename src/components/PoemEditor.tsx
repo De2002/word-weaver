@@ -2,7 +2,7 @@ import { useMemo, useRef, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Loader2, Music, Upload, X, Copyright, AlignLeft, AlignCenter,
-  ChevronDown, ChevronUp, Tag, Check, BookOpen
+  ChevronDown, ChevronUp, Tag, Check, BookOpen, Cloud, CloudOff
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,8 @@ import { AddToTrailModal } from "@/components/trails/AddToTrailModal";
 const MAX_TITLE_LENGTH = 100;
 const MAX_POEM_LENGTH = 5000;
 const MAX_TAGS = 10;
+const AUTOSAVE_DEBOUNCE_MS = 3000;   // save 3s after last keystroke
+const AUTOSAVE_INTERVAL_MS = 30000;  // also save every 30s regardless
 
 export type PoemEditorInitial = {
   id?: string;
@@ -30,6 +32,8 @@ export type PoemEditorInitial = {
   audioPath?: string | null;
   copyright?: string | null;
 };
+
+type SaveStatus = "idle" | "saving" | "saved" | "error";
 
 type Props = {
   initial?: PoemEditorInitial;
@@ -55,6 +59,13 @@ export function PoemEditor({ initial }: Props) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showTrailModal, setShowTrailModal] = useState(false);
   const [publishedPoemId, setPublishedPoemId] = useState<string | null>(null);
+  const [saveStatus, setSaveStatus] = useState<SaveStatus>("idle");
+  const [draftPoemId, setDraftPoemId] = useState<string | null>(initial?.id ?? null);
+
+  // track last saved content to avoid unnecessary saves
+  const lastSavedRef = useRef({ title: initial?.title ?? "", content: initial?.content ?? "" });
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const intervalTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const isEdit = Boolean(initial?.id);
   const canSubmit = poemText.trim().length > 0;
@@ -84,6 +95,74 @@ export function PoemEditor({ initial }: Props) {
       setCopyright(`© ${new Date().getFullYear()} ${name} — All rights reserved`);
     })();
   }, [user?.id]);
+
+  // ── Auto-save logic ────────────────────────────────────────────────────────
+  const autoSave = useCallback(async () => {
+    if (!user || !canWritePoems || !poemText.trim()) return;
+    const isSameContent =
+      lastSavedRef.current.title === title &&
+      lastSavedRef.current.content === poemText;
+    if (isSameContent) return;
+
+    setSaveStatus("saving");
+    try {
+      let poemId = draftPoemId;
+      if (!poemId) {
+        const { data: slugData, error: slugError } = await db.rpc("generate_poem_slug", {
+          title_input: title.trim() || "poem",
+        });
+        if (slugError) throw slugError;
+        const { data, error } = await db
+          .from("poems")
+          .insert({
+            user_id: user.id,
+            title: title.trim() || null,
+            content: poemText,
+            tags,
+            status: "draft",
+            slug: slugData as string,
+            copyright: isPro && copyright.trim() ? copyright.trim() : null,
+          })
+          .select("id")
+          .single();
+        if (error) throw error;
+        poemId = data?.id ?? null;
+        if (poemId) setDraftPoemId(poemId);
+      } else {
+        const { error } = await db
+          .from("poems")
+          .update({
+            title: title.trim() || null,
+            content: poemText,
+            tags,
+            copyright: isPro && copyright.trim() ? copyright.trim() : null,
+          })
+          .eq("id", poemId);
+        if (error) throw error;
+      }
+      lastSavedRef.current = { title, content: poemText };
+      setSaveStatus("saved");
+      // Reset back to idle after 3s
+      setTimeout(() => setSaveStatus((s) => (s === "saved" ? "idle" : s)), 3000);
+    } catch {
+      setSaveStatus("error");
+      setTimeout(() => setSaveStatus((s) => (s === "error" ? "idle" : s)), 3000);
+    }
+  }, [user, canWritePoems, poemText, title, tags, isPro, copyright, draftPoemId]);
+
+  // Debounce: save 3s after last keystroke
+  useEffect(() => {
+    if (!poemText.trim()) return;
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    debounceTimerRef.current = setTimeout(() => { autoSave(); }, AUTOSAVE_DEBOUNCE_MS);
+    return () => { if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current); };
+  }, [poemText, title]);
+
+  // Interval: also save every 30s regardless
+  useEffect(() => {
+    intervalTimerRef.current = setInterval(() => { autoSave(); }, AUTOSAVE_INTERVAL_MS);
+    return () => { if (intervalTimerRef.current) clearInterval(intervalTimerRef.current); };
+  }, [autoSave]);
 
   const tagCountLabel = useMemo(() => `${tags.length}/${MAX_TAGS}`, [tags.length]);
 
@@ -248,8 +327,48 @@ export function PoemEditor({ initial }: Props) {
           </button>
         </div>
 
+        {/* Auto-save status indicator */}
+        <AnimatePresence mode="wait">
+          {saveStatus === "saving" && (
+            <motion.span
+              key="saving"
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              className="flex items-center gap-1.5 text-xs text-muted-foreground"
+            >
+              <Loader2 className="h-3 w-3 animate-spin" />
+              Saving…
+            </motion.span>
+          )}
+          {saveStatus === "saved" && (
+            <motion.span
+              key="saved"
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              className="flex items-center gap-1.5 text-xs text-muted-foreground"
+            >
+              <Cloud className="h-3 w-3" />
+              Saved
+            </motion.span>
+          )}
+          {saveStatus === "error" && (
+            <motion.span
+              key="error"
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              className="flex items-center gap-1.5 text-xs text-destructive/70"
+            >
+              <CloudOff className="h-3 w-3" />
+              Not saved
+            </motion.span>
+          )}
+        </AnimatePresence>
+
         {/* Character count */}
-        <span className="text-xs text-muted-foreground tabular-nums">
+        <span className="text-xs text-muted-foreground tabular-nums ml-auto">
           {poemText.length}/{MAX_POEM_LENGTH}
         </span>
 
