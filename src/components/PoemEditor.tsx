@@ -26,6 +26,7 @@ export type PoemEditorInitial = {
   tags?: string[] | null;
   status?: "draft" | "published";
   audioPath?: string | null;
+  copyright?: string | null;
 };
 
 type Props = {
