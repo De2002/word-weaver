@@ -164,6 +164,7 @@ export function PoemEditor({ initial }: Props) {
             tags,
             status,
             slug: generatedSlug,
+            copyright: isPro && copyright.trim() ? copyright.trim() : null,
           })
           .select("id")
           .single();
