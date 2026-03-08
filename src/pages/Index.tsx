@@ -237,7 +237,7 @@ const Index = () => {
           {!currentData.loading && !currentData.error && currentData.poems.length > 0 && (
             <div>
               {currentData.poems.map((poem, index) => (
-                <PoemCard key={poem.id} poem={poem} index={index} />
+                <PoemCard key={poem.id} poem={poem} index={index} showProBadge={activeTab === 'for-you'} />
               ))}
             </div>
           )}
