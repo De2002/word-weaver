@@ -21,7 +21,7 @@ interface PoemCardProps {
   showProBadge?: boolean;
 }
 
-export function PoemCard({ poem, index = 0 }: PoemCardProps) {
+export function PoemCard({ poem, index = 0, showProBadge = false }: PoemCardProps) {
   const navigate = useNavigate();
   const {
     isUpvoted,
