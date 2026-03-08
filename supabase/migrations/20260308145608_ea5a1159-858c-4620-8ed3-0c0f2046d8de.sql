@@ -1,0 +1,3 @@
+
+ALTER TABLE public.poems
+  ADD COLUMN IF NOT EXISTS copyright TEXT DEFAULT NULL;

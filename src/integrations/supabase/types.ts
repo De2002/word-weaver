@@ -718,6 +718,7 @@ export type Database = {
       poems: {
         Row: {
           content: string
+          copyright: string | null
           created_at: string
           id: string
           slug: string
@@ -729,6 +730,7 @@ export type Database = {
         }
         Insert: {
           content: string
+          copyright?: string | null
           created_at?: string
           id?: string
           slug: string
@@ -740,6 +742,7 @@ export type Database = {
         }
         Update: {
           content?: string
+          copyright?: string | null
           created_at?: string
           id?: string
           slug?: string
