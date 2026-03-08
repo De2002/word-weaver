@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Loader2, Music, Upload, X, Copyright } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -45,13 +45,21 @@ export function PoemEditor({ initial }: Props) {
   const [tags, setTags] = useState<string[]>(initial?.tags ?? []);
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [existingAudioPath, setExistingAudioPath] = useState<string | null>(initial?.audioPath ?? null);
-  const [copyright, setCopyright] = useState(() => {
-    if (initial?.copyright != null) return initial.copyright;
-    if (roles.includes("pro")) {
-      return `© ${new Date().getFullYear()} ${user?.email?.split('@')[0] || 'Your Name'} — All rights reserved`;
-    }
-    return "";
-  });
+  const [copyright, setCopyright] = useState(initial?.copyright ?? "");
+
+  // Auto-populate copyright for new Pro poems using profile display name
+  useEffect(() => {
+    if (!roles.includes("pro") || initial?.copyright != null || !user?.id) return;
+    (async () => {
+      const { data } = await db
+        .from("profiles")
+        .select("display_name, username")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      const name = data?.display_name || data?.username || user.email?.split("@")[0] || "Your Name";
+      setCopyright(`© ${new Date().getFullYear()} ${name} — All rights reserved`);
+    })();
+  }, [user?.id, roles.includes("pro")]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showTrailModal, setShowTrailModal] = useState(false);
   const [publishedPoemId, setPublishedPoemId] = useState<string | null>(null);
