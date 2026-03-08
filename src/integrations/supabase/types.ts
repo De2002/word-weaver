@@ -35,6 +35,108 @@ export type Database = {
         }
         Relationships: []
       }
+      challenge_submissions: {
+        Row: {
+          challenge_id: string
+          id: string
+          is_winner: boolean
+          note: string | null
+          poem_id: string
+          status: string
+          submitted_at: string
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          id?: string
+          is_winner?: boolean
+          note?: string | null
+          poem_id: string
+          status?: string
+          submitted_at?: string
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          id?: string
+          is_winner?: boolean
+          note?: string | null
+          poem_id?: string
+          status?: string
+          submitted_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_submissions_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "challenge_submissions_poem_id_fkey"
+            columns: ["poem_id"]
+            isOneToOne: false
+            referencedRelation: "poems"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      challenges: {
+        Row: {
+          cover_url: string | null
+          created_at: string
+          created_by: string
+          description: string
+          end_date: string
+          id: string
+          month: string
+          prize_description: string | null
+          prompt: string
+          start_date: string
+          status: string
+          theme: string | null
+          title: string
+          updated_at: string
+          winner_submission_id: string | null
+        }
+        Insert: {
+          cover_url?: string | null
+          created_at?: string
+          created_by: string
+          description: string
+          end_date: string
+          id?: string
+          month: string
+          prize_description?: string | null
+          prompt: string
+          start_date: string
+          status?: string
+          theme?: string | null
+          title: string
+          updated_at?: string
+          winner_submission_id?: string | null
+        }
+        Update: {
+          cover_url?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string
+          end_date?: string
+          id?: string
+          month?: string
+          prize_description?: string | null
+          prompt?: string
+          start_date?: string
+          status?: string
+          theme?: string | null
+          title?: string
+          updated_at?: string
+          winner_submission_id?: string | null
+        }
+        Relationships: []
+      }
       chapbook_saves: {
         Row: {
           chapbook_id: string
