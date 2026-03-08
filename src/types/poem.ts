@@ -42,6 +42,7 @@ export interface Poem {
   createdAt: string;
   isUpvoted?: boolean;
   isSaved?: boolean;
+  copyright?: string | null;
 }
 
 export type BadgeType = 'trending' | 'new' | 'rising';

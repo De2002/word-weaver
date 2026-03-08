@@ -25,6 +25,7 @@ interface DbPoem {
   created_at: string;
   updated_at: string;
   user_id: string;
+  copyright: string | null;
 }
 
 interface DbProfile {
