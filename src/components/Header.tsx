@@ -105,13 +105,12 @@ export function Header({ activeTab = 'for-you', onTabChange, showTabs = false }:
             </motion.div>
 
             {/* Right: Upgrade crown for non-pro / empty spacer for pro (bell is in Profile Drawer) */}
+            {/* Right: Upgrade crown for non-pro / empty spacer for pro (bell is in Profile Drawer) */}
             <div className="flex-none flex items-center gap-1">
               {user && !roles.includes('pro') && (
                 <motion.div
                   initial={{ opacity: 0, x: 10 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.03 }}
-                >
                   transition={{ delay: 0.03 }}
                 >
                   <Link
