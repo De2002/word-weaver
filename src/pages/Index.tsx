@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2, RefreshCw, AlertCircle, Users, TrendingUp, Zap } from 'lucide-react';
+import { Loader2, RefreshCw, AlertCircle, Users, Star } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { CreateButton } from '@/components/CreateButton';
 import { PoemCard } from '@/components/PoemCard';
