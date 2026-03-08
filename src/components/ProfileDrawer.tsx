@@ -1,10 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, User, BookOpen, Bookmark, Bell, Settings, LogOut, Feather, Crown } from 'lucide-react';
+import { X, User, BookOpen, Bookmark, Bell, Settings, LogOut, Feather, Crown, Sun, Moon } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/context/AuthProvider';
 import { useQuery } from '@tanstack/react-query';
+import { useTheme } from 'next-themes';
 import { db } from '@/lib/db';
 
 interface ProfileDrawerProps {
