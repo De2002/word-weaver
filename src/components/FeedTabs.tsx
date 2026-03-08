@@ -4,9 +4,8 @@ import { cn } from '@/lib/utils';
 
 const tabs = [
   { id: 'for-you', label: 'For You' },
+  { id: 'recent', label: 'Recent' },
   { id: 'following', label: 'Following' },
-  { id: 'trending', label: 'Trending' },
-  { id: 'rising', label: 'Rising' },
 ];
 
 interface FeedTabsProps {

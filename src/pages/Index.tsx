@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2, RefreshCw, AlertCircle, Users, TrendingUp, Zap } from 'lucide-react';
+import { Loader2, RefreshCw, AlertCircle, Users, Star } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { CreateButton } from '@/components/CreateButton';
 import { PoemCard } from '@/components/PoemCard';
@@ -10,8 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { usePublishedPoems } from '@/hooks/usePublishedPoems';
 import { useFollowingPoems } from '@/hooks/useFollowingPoems';
-import { useTrendingPoems } from '@/hooks/useTrendingPoems';
-import { useRisingPoems } from '@/hooks/useRisingPoems';
+import { useProPoems } from '@/hooks/useProPoems';
 import { useDiscoverPoets } from '@/hooks/useDiscoverPoets';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { useSEO } from '@/hooks/useSEO';
@@ -47,87 +46,28 @@ const Index = () => {
   });
 
   const [activeTab, setActiveTab] = useState('for-you');
+
+  // For You = Pro poets poems
+  const { poems: proPoems, isLoading: proLoading, isLoadingMore: proLoadingMore, error: proError, hasMore: proHasMore, loadMore: loadMorePro, refresh: refreshPro } = useProPoems();
+  // Recent = all published poems
   const { poems, isLoading, isLoadingMore, error, hasMore, loadMore, refresh } = usePublishedPoems();
-  const { 
-    poems: followingPoems, 
-    isLoading: followingLoading, 
-    error: followingError, 
-    hasMore: followingHasMore, 
-    loadMore: loadMoreFollowing, 
-    refresh: refreshFollowing,
-    isAuthenticated,
-  } = useFollowingPoems();
-  const {
-    poems: trendingPoems,
-    isLoading: trendingLoading,
-    isLoadingMore: trendingLoadingMore,
-    error: trendingError,
-    hasMore: trendingHasMore,
-    loadMore: loadMoreTrending,
-    refresh: refreshTrending,
-  } = useTrendingPoems();
-  const {
-    poems: risingPoems,
-    isLoading: risingLoading,
-    isLoadingMore: risingLoadingMore,
-    error: risingError,
-    hasMore: risingHasMore,
-    loadMore: loadMoreRising,
-    refresh: refreshRising,
-  } = useRisingPoems();
-  const { 
-    trendingPoets, 
-    risingPoets, 
-    newPoets, 
-    isLoading: poetsLoading 
-  } = useDiscoverPoets();
+  // Following
+  const { poems: followingPoems, isLoading: followingLoading, error: followingError, hasMore: followingHasMore, loadMore: loadMoreFollowing, refresh: refreshFollowing, isAuthenticated } = useFollowingPoems();
+
+  const { trendingPoets, risingPoets, newPoets, isLoading: poetsLoading } = useDiscoverPoets();
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
   // Determine which data to show based on active tab
   const getCurrentData = useCallback(() => {
     switch (activeTab) {
+      case 'recent':
+        return { poems, loading: isLoading, loadingMore: isLoadingMore, error, hasMore, loadMore, refresh };
       case 'following':
-        return {
-          poems: followingPoems,
-          loading: followingLoading,
-          loadingMore: false,
-          error: followingError,
-          hasMore: followingHasMore,
-          loadMore: loadMoreFollowing,
-          refresh: refreshFollowing,
-        };
-      case 'trending':
-        return {
-          poems: trendingPoems,
-          loading: trendingLoading,
-          loadingMore: trendingLoadingMore,
-          error: trendingError,
-          hasMore: trendingHasMore,
-          loadMore: loadMoreTrending,
-          refresh: refreshTrending,
-        };
-      case 'rising':
-        return {
-          poems: risingPoems,
-          loading: risingLoading,
-          loadingMore: risingLoadingMore,
-          error: risingError,
-          hasMore: risingHasMore,
-          loadMore: loadMoreRising,
-          refresh: refreshRising,
-        };
-      default:
-        return {
-          poems,
-          loading: isLoading,
-          loadingMore: isLoadingMore,
-          error,
-          hasMore,
-          loadMore,
-          refresh,
-        };
+        return { poems: followingPoems, loading: followingLoading, loadingMore: false, error: followingError, hasMore: followingHasMore, loadMore: loadMoreFollowing, refresh: refreshFollowing };
+      default: // for-you
+        return { poems: proPoems, loading: proLoading, loadingMore: proLoadingMore, error: proError, hasMore: proHasMore, loadMore: loadMorePro, refresh: refreshPro };
     }
-  }, [activeTab, followingPoems, followingLoading, followingError, followingHasMore, loadMoreFollowing, refreshFollowing, trendingPoems, trendingLoading, trendingLoadingMore, trendingError, trendingHasMore, loadMoreTrending, refreshTrending, risingPoems, risingLoading, risingLoadingMore, risingError, risingHasMore, loadMoreRising, refreshRising, poems, isLoading, isLoadingMore, error, hasMore, loadMore, refresh]);
+  }, [activeTab, poems, isLoading, isLoadingMore, error, hasMore, loadMore, refresh, followingPoems, followingLoading, followingError, followingHasMore, loadMoreFollowing, refreshFollowing, proPoems, proLoading, proLoadingMore, proError, proHasMore, loadMorePro, refreshPro]);
 
   const currentData = getCurrentData();
 
@@ -273,26 +213,17 @@ const Index = () => {
             </div>
           )}
 
-          {/* Empty State for Trending Tab */}
-          {activeTab === 'trending' && !currentData.loading && !currentData.error && currentData.poems.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <TrendingUp className="w-12 h-12 text-muted-foreground mb-4" />
-              <p className="text-lg font-medium text-foreground mb-2">No trending poems yet</p>
-              <p className="text-muted-foreground mb-4">Check back later for popular poetry!</p>
-            </div>
-          )}
-
-          {/* Empty State for Rising Tab */}
-          {activeTab === 'rising' && !currentData.loading && !currentData.error && currentData.poems.length === 0 && (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <Zap className="w-12 h-12 text-muted-foreground mb-4" />
-              <p className="text-lg font-medium text-foreground mb-2">No rising poems yet</p>
-              <p className="text-muted-foreground mb-4">New poems with high engagement velocity will appear here!</p>
-            </div>
-          )}
-
-          {/* Empty State for For You Tab */}
+          {/* Empty State for For You Tab (no Pro poems) */}
           {activeTab === 'for-you' && !currentData.loading && !currentData.error && currentData.poems.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-12 text-center">
+              <Star className="w-12 h-12 text-muted-foreground mb-4" />
+              <p className="text-lg font-medium text-foreground mb-2">No Pro poems yet</p>
+              <p className="text-muted-foreground mb-4">Pro poet poems will appear here.</p>
+            </div>
+          )}
+
+          {/* Empty State for Recent Tab */}
+          {activeTab === 'recent' && !currentData.loading && !currentData.error && currentData.poems.length === 0 && (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <p className="text-lg font-medium text-foreground mb-2">No poems yet</p>
               <p className="text-muted-foreground mb-4">Be the first to share your poetry!</p>
