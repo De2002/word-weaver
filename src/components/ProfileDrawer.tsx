@@ -159,8 +159,18 @@ export function ProfileDrawer({ open, onClose }: ProfileDrawerProps) {
                     onClick={handleNavClick}
                     className="flex items-center gap-4 px-5 py-3.5 text-foreground hover:bg-secondary/60 transition-colors group"
                   >
-                    <item.icon className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
-                    <span className="font-medium text-base">{item.label}</span>
+                    <div className="relative">
+                      <item.icon className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
+                      {item.showBadge && unreadCount > 0 && (
+                        <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 px-0.5 flex items-center justify-center rounded-full bg-soft-coral text-white text-[10px] font-bold leading-none">
+                          {unreadCount > 99 ? '99+' : unreadCount}
+                        </span>
+                      )}
+                    </div>
+                    <span className="font-medium text-base flex-1">{item.label}</span>
+                    {item.showBadge && unreadCount > 0 && (
+                      <span className="text-xs font-medium text-soft-coral">{unreadCount}</span>
+                    )}
                   </Link>
                 );
               })}
