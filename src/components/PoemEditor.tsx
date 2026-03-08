@@ -425,6 +425,17 @@ export function PoemEditor({ initial }: Props) {
           onInput={(e) => autoGrow(e.currentTarget)}
         />
 
+        {/* Title char counter — only visible when close to limit */}
+        {title.length > 80 && (
+          <p className={cn(
+            "text-xs select-none -mt-1",
+            title.length >= MAX_TITLE_LENGTH ? "text-destructive/70" : "text-muted-foreground/50",
+            alignment === "center" && "text-center"
+          )}>
+            {title.length}/{MAX_TITLE_LENGTH}
+          </p>
+        )}
+
         {/* Subtle divider between title & poem */}
         <div className={cn("h-px bg-border/60 my-3 w-16", alignment === "center" && "self-center")} />
 
