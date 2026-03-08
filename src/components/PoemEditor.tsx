@@ -351,6 +351,24 @@ export function PoemEditor({ initial }: Props) {
         )}
       </div>
 
+      {/* Copyright — Pro only */}
+      {isPro && (
+        <div className="space-y-2">
+          <Label htmlFor="copyright" className="text-sm text-muted-foreground flex items-center gap-1.5">
+            <Copyright className="h-3.5 w-3.5" />
+            Copyright <span className="text-xs">(optional · Pro feature)</span>
+          </Label>
+          <Input
+            id="copyright"
+            placeholder={`© ${new Date().getFullYear()} ${user?.email?.split('@')[0] || 'Your Name'} — All rights reserved`}
+            value={copyright}
+            onChange={(e) => setCopyright(e.target.value.slice(0, 200))}
+            className="bg-secondary/50 border-border text-sm"
+          />
+          <p className="text-xs text-muted-foreground">Displayed under your poem to assert your copyright.</p>
+        </div>
+      )}
+
       {/* Add to Trail Modal */}
       {publishedPoemId && (
         <AddToTrailModal
