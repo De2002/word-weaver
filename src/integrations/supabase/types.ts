@@ -124,6 +124,107 @@ export type Database = {
         }
         Relationships: []
       }
+      classic_poems: {
+        Row: {
+          content: string
+          created_at: string
+          excerpt: string | null
+          featured: boolean
+          id: string
+          poet_id: string
+          published_year: number | null
+          slug: string
+          source: string | null
+          status: string
+          tags: string[]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          excerpt?: string | null
+          featured?: boolean
+          id?: string
+          poet_id: string
+          published_year?: number | null
+          slug: string
+          source?: string | null
+          status?: string
+          tags?: string[]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          excerpt?: string | null
+          featured?: boolean
+          id?: string
+          poet_id?: string
+          published_year?: number | null
+          slug?: string
+          source?: string | null
+          status?: string
+          tags?: string[]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "classic_poems_poet_id_fkey"
+            columns: ["poet_id"]
+            isOneToOne: false
+            referencedRelation: "classic_poets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      classic_poets: {
+        Row: {
+          about: string | null
+          bio: string | null
+          born_year: number | null
+          created_at: string
+          died_year: number | null
+          featured: boolean
+          id: string
+          image_url: string | null
+          name: string
+          nationality: string | null
+          slug: string
+          updated_at: string
+        }
+        Insert: {
+          about?: string | null
+          bio?: string | null
+          born_year?: number | null
+          created_at?: string
+          died_year?: number | null
+          featured?: boolean
+          id?: string
+          image_url?: string | null
+          name: string
+          nationality?: string | null
+          slug: string
+          updated_at?: string
+        }
+        Update: {
+          about?: string | null
+          bio?: string | null
+          born_year?: number | null
+          created_at?: string
+          died_year?: number | null
+          featured?: boolean
+          id?: string
+          image_url?: string | null
+          name?: string
+          nationality?: string | null
+          slug?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       comment_likes: {
         Row: {
           comment_id: string
