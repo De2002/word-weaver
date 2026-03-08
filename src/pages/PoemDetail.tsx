@@ -47,7 +47,7 @@ export default function PoemDetail() {
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slug);
       let query = db
         .from('poems')
-        .select('id, slug, title, content, tags, created_at, user_id')
+        .select('id, slug, title, content, tags, created_at, user_id, copyright')
         .eq('status', 'published');
       
       if (isUuid) {
