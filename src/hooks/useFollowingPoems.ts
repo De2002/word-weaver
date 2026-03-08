@@ -61,6 +61,7 @@ function mapDbPoemToPoem(dbPoem: DbPoem, profile: DbProfile | null, audioUrl?: s
     isUpvoted: false,
     isSaved: false,
     audioUrl,
+    copyright: dbPoem.copyright || null,
   };
 }
 
