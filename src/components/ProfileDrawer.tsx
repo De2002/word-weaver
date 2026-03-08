@@ -127,13 +127,13 @@ export function ProfileDrawer({ open, onClose }: ProfileDrawerProps) {
                   )}
                 </div>
 
-                {/* Follower counts placeholder row */}
+                {/* Live follower / following counts */}
                 <div className="flex gap-4 text-sm">
                   <span className="text-muted-foreground">
-                    <span className="font-semibold text-foreground">—</span> Following
+                    <span className="font-semibold text-foreground">{followingCount.toLocaleString()}</span> Following
                   </span>
                   <span className="text-muted-foreground">
-                    <span className="font-semibold text-foreground">—</span> Followers
+                    <span className="font-semibold text-foreground">{followerCount.toLocaleString()}</span> Followers
                   </span>
                 </div>
               </div>
