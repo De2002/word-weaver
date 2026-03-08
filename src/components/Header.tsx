@@ -25,7 +25,6 @@ interface HeaderProps {
 
 export function Header({ activeTab = 'for-you', onTabChange, showTabs = false }: HeaderProps) {
   const { user, profile, roles } = useAuth();
-  const { unreadCount } = useNotifications();
   const isVisible = useScrollDirection(15);
   const tabRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
