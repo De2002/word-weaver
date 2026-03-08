@@ -34,7 +34,7 @@ export default function Start() {
         </div>
       </header>
 
-      <main className="max-w-2xl mx-auto px-4 pb-10">
+      <main className="max-w-2xl mx-auto px-4 pb-24">
         <motion.section
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
