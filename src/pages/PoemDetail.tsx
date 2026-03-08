@@ -47,7 +47,7 @@ export default function PoemDetail() {
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slug);
       let query = db
         .from('poems')
-        .select('id, slug, title, content, tags, created_at, user_id')
+        .select('id, slug, title, content, tags, created_at, user_id, copyright')
         .eq('status', 'published');
       
       if (isUuid) {
@@ -91,6 +91,7 @@ export default function PoemDetail() {
         comments: 0,
         saves: 0,
         reads: 0,
+        copyright: (poemData as any).copyright || null,
         poet: {
           id: profileData?.user_id || poemData.user_id,
           name: profileData?.display_name || 'Anonymous',
@@ -344,11 +345,19 @@ export default function PoemDetail() {
           </div>
 
           {/* Meta Info */}
-          <div className="text-xs text-muted-foreground mb-4">
+          <div className="text-xs text-muted-foreground mb-3">
             <span>{readCount.toLocaleString()} reads</span>
             <span className="mx-2">·</span>
             <span>{formatDistanceToNow(new Date(poem.createdAt), { addSuffix: true })}</span>
           </div>
+
+          {/* Copyright */}
+          {poem.copyright && (
+            <p className="text-[11px] text-muted-foreground/70 italic mb-4 flex items-center gap-1.5">
+              <span className="shrink-0">©</span>
+              {poem.copyright}
+            </p>
+          )}
 
           <Separator className="mb-4" />
 

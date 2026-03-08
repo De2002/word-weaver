@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader2, Music, Upload, X } from "lucide-react";
+import { Loader2, Music, Upload, X, Copyright } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -26,6 +26,7 @@ export type PoemEditorInitial = {
   tags?: string[] | null;
   status?: "draft" | "published";
   audioPath?: string | null;
+  copyright?: string | null;
 };
 
 type Props = {
@@ -35,7 +36,7 @@ type Props = {
 export function PoemEditor({ initial }: Props) {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user, isPoet } = useAuth();
+  const { user, isPoet, roles } = useAuth();
   const audioInputRef = useRef<HTMLInputElement>(null);
 
   const [title, setTitle] = useState(initial?.title ?? "");
@@ -44,6 +45,7 @@ export function PoemEditor({ initial }: Props) {
   const [tags, setTags] = useState<string[]>(initial?.tags ?? []);
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [existingAudioPath, setExistingAudioPath] = useState<string | null>(initial?.audioPath ?? null);
+  const [copyright, setCopyright] = useState(initial?.copyright ?? "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showTrailModal, setShowTrailModal] = useState(false);
   const [publishedPoemId, setPublishedPoemId] = useState<string | null>(null);
@@ -51,6 +53,7 @@ export function PoemEditor({ initial }: Props) {
   const isEdit = Boolean(initial?.id);
   const canSubmit = poemText.trim().length > 0;
   const canWritePoems = isPoet;
+  const isPro = roles.includes("pro");
 
   const tagCountLabel = useMemo(() => `${tags.length}/${MAX_TAGS} tags`, [tags.length]);
 
@@ -161,6 +164,7 @@ export function PoemEditor({ initial }: Props) {
             tags,
             status,
             slug: generatedSlug,
+            copyright: isPro && copyright.trim() ? copyright.trim() : null,
           })
           .select("id")
           .single();
@@ -176,6 +180,7 @@ export function PoemEditor({ initial }: Props) {
             content: poemText,
             tags,
             status,
+            copyright: isPro && copyright.trim() ? copyright.trim() : null,
           })
           .eq("id", poemId);
 
@@ -345,6 +350,24 @@ export function PoemEditor({ initial }: Props) {
           </label>
         )}
       </div>
+
+      {/* Copyright — Pro only */}
+      {isPro && (
+        <div className="space-y-2">
+          <Label htmlFor="copyright" className="text-sm text-muted-foreground flex items-center gap-1.5">
+            <Copyright className="h-3.5 w-3.5" />
+            Copyright <span className="text-xs">(optional · Pro feature)</span>
+          </Label>
+          <Input
+            id="copyright"
+            placeholder={`© ${new Date().getFullYear()} ${user?.email?.split('@')[0] || 'Your Name'} — All rights reserved`}
+            value={copyright}
+            onChange={(e) => setCopyright(e.target.value.slice(0, 200))}
+            className="bg-secondary/50 border-border text-sm"
+          />
+          <p className="text-xs text-muted-foreground">Displayed under your poem to assert your copyright.</p>
+        </div>
+      )}
 
       {/* Add to Trail Modal */}
       {publishedPoemId && (

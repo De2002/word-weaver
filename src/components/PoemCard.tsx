@@ -199,6 +199,14 @@ export function PoemCard({ poem, index = 0, showProBadge = false }: PoemCardProp
         <span>{formatDistanceToNow(new Date(poem.createdAt), { addSuffix: true })}</span>
       </div>
 
+      {/* Copyright */}
+      {poem.copyright && (
+        <p className="text-[11px] text-muted-foreground/70 italic mb-3 flex items-center gap-1">
+          <Crown className="h-3 w-3 text-amber-500/70 shrink-0" />
+          {poem.copyright}
+        </p>
+      )}
+
       <Separator className="mb-3" />
 
       {/* Action bar */}
