@@ -180,7 +180,7 @@ const Index = () => {
         progress={progress} 
       />
       
-      <main className="max-w-2xl mx-auto pb-safe">
+      <main className="max-w-3xl mx-auto pb-safe">
 
         {/* Discover Sections - only show on For You tab */}
         {activeTab === 'for-you' && !poetsLoading && (
