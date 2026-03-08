@@ -52,6 +52,7 @@ import Classics from "./pages/Classics";
 import ClassicPoetsList from "./pages/ClassicPoetPage";
 import ClassicPoetDetail from "./pages/ClassicPoetDetail";
 import ClassicPoemDetail from "./pages/ClassicPoemDetail";
+import Upgrade from "./pages/Upgrade";
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -204,6 +205,9 @@ const App = () => (
             <Route path="/classics/poets" element={<ClassicPoetsList />} />
             <Route path="/classics/poet/:slug" element={<ClassicPoetDetail />} />
             <Route path="/classics/poem/:slug" element={<ClassicPoemDetail />} />
+
+            {/* Upgrade */}
+            <Route path="/upgrade" element={<Upgrade />} />
 
             {/* Admin Routes */}
             <Route
