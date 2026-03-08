@@ -174,9 +174,17 @@ export function PoemCard({ poem, index = 0, showProBadge = false }: PoemCardProp
             )}
           </div>
           <div className="flex flex-col">
-            <span className="font-medium text-sm text-foreground">{poem.poet.name}</span>
-            <span className="text-xs text-muted-foreground">@{poem.poet.username}</span>
-          </div>
+              <div className="flex items-center gap-1.5">
+                <span className="font-medium text-sm text-foreground">{poem.poet.name}</span>
+                {showProBadge && (
+                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-semibold bg-amber-500/15 text-amber-600 border border-amber-500/25 leading-none">
+                    <Crown className="h-2.5 w-2.5" />
+                    PRO
+                  </span>
+                )}
+              </div>
+              <span className="text-xs text-muted-foreground">@{poem.poet.username}</span>
+            </div>
         </Link>
         <div className="flex items-center gap-2">
           {poem.audioUrl && <AudioPlayButton audioUrl={poem.audioUrl} size="sm" />}
