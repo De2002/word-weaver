@@ -52,6 +52,7 @@ import Classics from "./pages/Classics";
 import ClassicPoetsList from "./pages/ClassicPoetPage";
 import ClassicPoetDetail from "./pages/ClassicPoetDetail";
 import ClassicPoemDetail from "./pages/ClassicPoemDetail";
+import Upgrade from "./pages/Upgrade";
 const queryClient = new QueryClient();
 
 const App = () => (
