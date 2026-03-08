@@ -107,26 +107,18 @@ export function Header({ activeTab = 'for-you', onTabChange, showTabs = false }:
             {/* Right: Upgrade crown for non-pro / empty spacer for pro (bell is in Profile Drawer) */}
             {/* Right: Upgrade crown for non-pro / empty spacer for pro (bell is in Profile Drawer) */}
             <div className="flex-none flex items-center gap-1">
-              {user && !roles.includes('pro') && (
-                <motion.div
-                  initial={{ opacity: 0, x: 10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.03 }}
-                >
+              {!roles.includes('pro') && (
+                <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.03 }}>
                   <Link
                     to="/upgrade"
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:opacity-90"
-                    style={{
-                      background: 'linear-gradient(135deg, hsl(24 80% 50%), hsl(38 80% 50%))',
-                      color: 'hsl(0 0% 100%)',
-                    }}
+                    style={{ background: 'linear-gradient(135deg, hsl(24 80% 50%), hsl(38 80% 50%))', color: 'hsl(0 0% 100%)' }}
                   >
                     <Crown className="h-3 w-3" />
                     Pro
                   </Link>
                 </motion.div>
               )}
-              {!user && <div className="w-9" />}
             </div>
           </div>
 
