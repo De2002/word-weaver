@@ -23,8 +23,11 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { ReportUserDialog } from '@/components/ReportUserDialog';
+import { BlockUserDialog } from '@/components/messages/BlockUserDialog';
 
 type ProfileTab = 'Poems' | 'About' | 'Links';
 type SortTab = 'all' | 'popular';
@@ -38,6 +41,8 @@ export default function PoetProfile() {
   const [profileTab, setProfileTab] = useState<ProfileTab>('Poems');
   const [sortTab, setSortTab] = useState<SortTab>('all');
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
+  const [showReportDialog, setShowReportDialog] = useState(false);
+  const [showBlockDialog, setShowBlockDialog] = useState(false);
   const isMobile = useIsMobile();
   const { share } = useNativeShare();
 
@@ -168,10 +173,17 @@ export default function PoetProfile() {
                   </button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-44 rounded-2xl">
-                  <DropdownMenuItem className="text-xs font-semibold uppercase tracking-wider cursor-pointer rounded-xl">
+                  <DropdownMenuItem
+                    className="text-xs font-semibold uppercase tracking-wider cursor-pointer rounded-xl"
+                    onClick={() => setShowReportDialog(true)}
+                  >
                     Report poet
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="text-xs font-semibold uppercase tracking-wider cursor-pointer text-destructive rounded-xl">
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="text-xs font-semibold uppercase tracking-wider cursor-pointer text-destructive rounded-xl"
+                    onClick={() => setShowBlockDialog(true)}
+                  >
                     Block poet
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -180,6 +192,23 @@ export default function PoetProfile() {
           </div>
         </div>
       </header>
+
+      {poet && (
+        <ReportUserDialog
+          open={showReportDialog}
+          onOpenChange={setShowReportDialog}
+          userId={poet.id}
+          userName={poet.name || poet.username || 'this poet'}
+        />
+      )}
+      {poet && (
+        <BlockUserDialog
+          open={showBlockDialog}
+          onOpenChange={setShowBlockDialog}
+          userId={poet.id}
+          userName={poet.name || poet.username || 'this poet'}
+        />
+      )}
 
       <div className="max-w-2xl mx-auto">
 

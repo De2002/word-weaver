@@ -33,13 +33,15 @@ export function useAdminStats() {
         poemsResult,
         eventsResult,
         trailsResult,
-        reportsResult,
+        msgReportsResult,
+        userReportsResult,
       ] = await Promise.all([
         supabase.from("profiles").select("user_id", { count: "exact", head: true }),
         supabase.from("poems").select("id", { count: "exact", head: true }).eq("status", "published"),
         supabase.from("events").select("id", { count: "exact", head: true }).eq("status", "approved"),
         supabase.from("trails").select("id", { count: "exact", head: true }).eq("status", "published"),
         supabase.from("message_reports").select("id", { count: "exact", head: true }).eq("status", "pending"),
+        db.from("user_reports").select("id", { count: "exact", head: true }).eq("status", "pending"),
       ]);
 
       return {
@@ -47,7 +49,7 @@ export function useAdminStats() {
         publishedPoems: poemsResult.count ?? 0,
         approvedEvents: eventsResult.count ?? 0,
         publishedTrails: trailsResult.count ?? 0,
-        pendingReports: reportsResult.count ?? 0,
+        pendingReports: (msgReportsResult.count ?? 0) + (userReportsResult.count ?? 0),
       };
     },
     staleTime: 30000,

@@ -858,6 +858,7 @@ export type Database = {
       profiles: {
         Row: {
           about: string | null
+          account_status: string
           avatar_url: string | null
           bio: string | null
           created_at: string
@@ -871,6 +872,7 @@ export type Database = {
         }
         Insert: {
           about?: string | null
+          account_status?: string
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
@@ -884,6 +886,7 @@ export type Database = {
         }
         Update: {
           about?: string | null
+          account_status?: string
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
@@ -1215,6 +1218,45 @@ export type Database = {
           title?: string
           updated_at?: string
           user_id?: string
+        }
+        Relationships: []
+      }
+      user_reports: {
+        Row: {
+          admin_note: string | null
+          created_at: string
+          details: string | null
+          id: string
+          reason: string
+          reported_user_id: string
+          reporter_id: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: string
+        }
+        Insert: {
+          admin_note?: string | null
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason: string
+          reported_user_id: string
+          reporter_id: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
+        }
+        Update: {
+          admin_note?: string | null
+          created_at?: string
+          details?: string | null
+          id?: string
+          reason?: string
+          reported_user_id?: string
+          reporter_id?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: string
         }
         Relationships: []
       }

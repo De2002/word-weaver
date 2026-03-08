@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Users, FileText, Calendar, BookOpen, MessageSquare, Flag, Shield, TrendingUp, Loader2, HelpCircle, MessageCircleQuestion, CheckCircle, Crown, Feather } from "lucide-react";
+import { ArrowLeft, Users, FileText, Calendar, BookOpen, MessageSquare, Flag, Shield, TrendingUp, Loader2, HelpCircle, MessageCircleQuestion, CheckCircle, Crown } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -10,6 +10,7 @@ import { useAuth } from "@/context/AuthProvider";
 import { useSEO } from "@/hooks/useSEO";
 import { useAdminStats, useAdminQAStats, useAdminTopAnswerers } from "@/hooks/useAdminStats";
 import { ClassicsAdminPanel } from "@/components/classics/ClassicsAdminPanel";
+import { ModerationPanel } from "@/components/admin/ModerationPanel";
 
 export default function AdminDashboard() {
   useSEO({
@@ -272,19 +273,7 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="moderation" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Content Moderation</CardTitle>
-                <CardDescription>Review reported poems, comments, and users</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12 text-muted-foreground">
-                  <Flag className="h-10 w-10 mx-auto mb-3 opacity-50" />
-                  <p className="font-medium">No pending reports</p>
-                  <p className="text-sm mt-1">Reported content will appear here for review</p>
-                </div>
-              </CardContent>
-            </Card>
+            <ModerationPanel />
           </TabsContent>
 
           <TabsContent value="settings" className="mt-6">
