@@ -8,8 +8,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from '@/components/ui/form';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useSubmitToChallenge } from '@/hooks/useChallenges';
-import { usePublishedPoems } from '@/hooks/usePublishedPoems';
 import { useToast } from '@/hooks/use-toast';
+import { useQuery } from '@tanstack/react-query';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/context/AuthProvider';
 
 const schema = z.object({
   poemId: z.string().min(1, 'Select a poem'),
@@ -24,8 +26,24 @@ interface SubmitToChallengeFormProps {
 
 export function SubmitToChallengeForm({ challengeId, onSuccess }: SubmitToChallengeFormProps) {
   const { toast } = useToast();
+  const { user } = useAuth();
   const submit = useSubmitToChallenge();
-  const { data: poems, isLoading: poemsLoading } = usePublishedPoems();
+
+  const { data: myPoems, isLoading: poemsLoading } = useQuery({
+    queryKey: ['my-published-poems', user?.id],
+    queryFn: async () => {
+      if (!user) return [];
+      const { data, error } = await supabase
+        .from('poems')
+        .select('id, title, slug')
+        .eq('user_id', user.id)
+        .eq('status', 'published')
+        .order('created_at', { ascending: false });
+      if (error) throw error;
+      return data || [];
+    },
+    enabled: !!user,
+  });
 
   const form = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -65,7 +83,7 @@ export function SubmitToChallengeForm({ challengeId, onSuccess }: SubmitToChalle
                     <SelectValue placeholder={poemsLoading ? 'Loading…' : 'Select published poem'} />
                   </SelectTrigger>
                   <SelectContent>
-                    {(poems || []).map((p) => (
+                    {(myPoems || []).map((p) => (
                       <SelectItem key={p.id} value={p.id}>
                         {p.title || 'Untitled'}
                       </SelectItem>
