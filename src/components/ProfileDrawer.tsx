@@ -1,10 +1,11 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, User, BookOpen, Bookmark, Bell, Settings, LogOut, ChevronRight, Feather, Crown } from 'lucide-react';
+import { X, User, BookOpen, Bookmark, Bell, Settings, LogOut, Feather, Crown } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/context/AuthProvider';
-import { cn } from '@/lib/utils';
+import { useQuery } from '@tanstack/react-query';
+import { db } from '@/lib/db';
 
 interface ProfileDrawerProps {
   open: boolean;
@@ -28,6 +29,35 @@ export function ProfileDrawer({ open, onClose }: ProfileDrawerProps) {
   const displayName = profile?.display_name || profile?.username || user?.email || 'You';
   const username = profile?.username;
   const avatarUrl = profile?.avatar_url || undefined;
+  const userId = user?.id;
+
+  // Live follower count — people following me
+  const { data: followerCount = 0 } = useQuery({
+    queryKey: ['follower-count', userId],
+    queryFn: async () => {
+      const { count, error } = await db
+        .from('follows')
+        .select('*', { count: 'exact', head: true })
+        .eq('following_id', userId!);
+      if (error) throw error;
+      return count ?? 0;
+    },
+    enabled: !!userId && open,
+  });
+
+  // Live following count — people I follow
+  const { data: followingCount = 0 } = useQuery({
+    queryKey: ['following-count', userId],
+    queryFn: async () => {
+      const { count, error } = await db
+        .from('follows')
+        .select('*', { count: 'exact', head: true })
+        .eq('follower_id', userId!);
+      if (error) throw error;
+      return count ?? 0;
+    },
+    enabled: !!userId && open,
+  });
 
   const handleSignOut = async () => {
     onClose();
@@ -97,13 +127,13 @@ export function ProfileDrawer({ open, onClose }: ProfileDrawerProps) {
                   )}
                 </div>
 
-                {/* Follower counts placeholder row */}
+                {/* Live follower / following counts */}
                 <div className="flex gap-4 text-sm">
                   <span className="text-muted-foreground">
-                    <span className="font-semibold text-foreground">—</span> Following
+                    <span className="font-semibold text-foreground">{followingCount.toLocaleString()}</span> Following
                   </span>
                   <span className="text-muted-foreground">
-                    <span className="font-semibold text-foreground">—</span> Followers
+                    <span className="font-semibold text-foreground">{followerCount.toLocaleString()}</span> Followers
                   </span>
                 </div>
               </div>
