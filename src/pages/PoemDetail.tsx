@@ -344,11 +344,19 @@ export default function PoemDetail() {
           </div>
 
           {/* Meta Info */}
-          <div className="text-xs text-muted-foreground mb-4">
+          <div className="text-xs text-muted-foreground mb-3">
             <span>{readCount.toLocaleString()} reads</span>
             <span className="mx-2">·</span>
             <span>{formatDistanceToNow(new Date(poem.createdAt), { addSuffix: true })}</span>
           </div>
+
+          {/* Copyright */}
+          {poem.copyright && (
+            <p className="text-[11px] text-muted-foreground/70 italic mb-4 flex items-center gap-1.5">
+              <span className="shrink-0">©</span>
+              {poem.copyright}
+            </p>
+          )}
 
           <Separator className="mb-4" />
 
