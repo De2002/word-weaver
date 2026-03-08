@@ -304,7 +304,7 @@ const Index = () => {
 
           {/* Poems List */}
           {!currentData.loading && !currentData.error && currentData.poems.length > 0 && (
-            <div className="space-y-4">
+            <div>
               {currentData.poems.map((poem, index) => (
                 <PoemCard key={poem.id} poem={poem} index={index} />
               ))}
