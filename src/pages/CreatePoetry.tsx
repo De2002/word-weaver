@@ -26,8 +26,8 @@ export default function CreatePoetry() {
         </div>
       </header>
 
-      {/* Form */}
-      <main className="p-4 pb-24 max-w-2xl mx-auto">
+      {/* Canvas */}
+      <main className="px-6 pt-8 pb-28 max-w-2xl mx-auto">
         <PoemEditor />
       </main>
     </div>

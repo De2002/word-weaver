@@ -74,7 +74,7 @@ export default function EditPoem() {
         </div>
       </header>
 
-      <main className="p-4 pb-24 max-w-2xl mx-auto">
+      <main className="px-6 pt-8 pb-28 max-w-2xl mx-auto">
         {loading ? <p className="text-sm text-muted-foreground">Loading…</p> : <PoemEditor initial={initial} />}
       </main>
     </div>
