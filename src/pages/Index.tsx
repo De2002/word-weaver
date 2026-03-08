@@ -46,87 +46,28 @@ const Index = () => {
   });
 
   const [activeTab, setActiveTab] = useState('for-you');
+
+  // For You = Pro poets poems
+  const { poems: proPoems, isLoading: proLoading, isLoadingMore: proLoadingMore, error: proError, hasMore: proHasMore, loadMore: loadMorePro, refresh: refreshPro } = useProPoems();
+  // Recent = all published poems
   const { poems, isLoading, isLoadingMore, error, hasMore, loadMore, refresh } = usePublishedPoems();
-  const { 
-    poems: followingPoems, 
-    isLoading: followingLoading, 
-    error: followingError, 
-    hasMore: followingHasMore, 
-    loadMore: loadMoreFollowing, 
-    refresh: refreshFollowing,
-    isAuthenticated,
-  } = useFollowingPoems();
-  const {
-    poems: trendingPoems,
-    isLoading: trendingLoading,
-    isLoadingMore: trendingLoadingMore,
-    error: trendingError,
-    hasMore: trendingHasMore,
-    loadMore: loadMoreTrending,
-    refresh: refreshTrending,
-  } = useTrendingPoems();
-  const {
-    poems: risingPoems,
-    isLoading: risingLoading,
-    isLoadingMore: risingLoadingMore,
-    error: risingError,
-    hasMore: risingHasMore,
-    loadMore: loadMoreRising,
-    refresh: refreshRising,
-  } = useRisingPoems();
-  const { 
-    trendingPoets, 
-    risingPoets, 
-    newPoets, 
-    isLoading: poetsLoading 
-  } = useDiscoverPoets();
+  // Following
+  const { poems: followingPoems, isLoading: followingLoading, error: followingError, hasMore: followingHasMore, loadMore: loadMoreFollowing, refresh: refreshFollowing, isAuthenticated } = useFollowingPoems();
+
+  const { trendingPoets, risingPoets, newPoets, isLoading: poetsLoading } = useDiscoverPoets();
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
   // Determine which data to show based on active tab
   const getCurrentData = useCallback(() => {
     switch (activeTab) {
+      case 'recent':
+        return { poems, loading: isLoading, loadingMore: isLoadingMore, error, hasMore, loadMore, refresh };
       case 'following':
-        return {
-          poems: followingPoems,
-          loading: followingLoading,
-          loadingMore: false,
-          error: followingError,
-          hasMore: followingHasMore,
-          loadMore: loadMoreFollowing,
-          refresh: refreshFollowing,
-        };
-      case 'trending':
-        return {
-          poems: trendingPoems,
-          loading: trendingLoading,
-          loadingMore: trendingLoadingMore,
-          error: trendingError,
-          hasMore: trendingHasMore,
-          loadMore: loadMoreTrending,
-          refresh: refreshTrending,
-        };
-      case 'rising':
-        return {
-          poems: risingPoems,
-          loading: risingLoading,
-          loadingMore: risingLoadingMore,
-          error: risingError,
-          hasMore: risingHasMore,
-          loadMore: loadMoreRising,
-          refresh: refreshRising,
-        };
-      default:
-        return {
-          poems,
-          loading: isLoading,
-          loadingMore: isLoadingMore,
-          error,
-          hasMore,
-          loadMore,
-          refresh,
-        };
+        return { poems: followingPoems, loading: followingLoading, loadingMore: false, error: followingError, hasMore: followingHasMore, loadMore: loadMoreFollowing, refresh: refreshFollowing };
+      default: // for-you
+        return { poems: proPoems, loading: proLoading, loadingMore: proLoadingMore, error: proError, hasMore: proHasMore, loadMore: loadMorePro, refresh: refreshPro };
     }
-  }, [activeTab, followingPoems, followingLoading, followingError, followingHasMore, loadMoreFollowing, refreshFollowing, trendingPoems, trendingLoading, trendingLoadingMore, trendingError, trendingHasMore, loadMoreTrending, refreshTrending, risingPoems, risingLoading, risingLoadingMore, risingError, risingHasMore, loadMoreRising, refreshRising, poems, isLoading, isLoadingMore, error, hasMore, loadMore, refresh]);
+  }, [activeTab, poems, isLoading, isLoadingMore, error, hasMore, loadMore, refresh, followingPoems, followingLoading, followingError, followingHasMore, loadMoreFollowing, refreshFollowing, proPoems, proLoading, proLoadingMore, proError, proHasMore, loadMorePro, refreshPro]);
 
   const currentData = getCurrentData();
 
