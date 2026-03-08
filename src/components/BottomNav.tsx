@@ -1,4 +1,4 @@
-import { Home, HelpCircle, Search, MoreHorizontal } from 'lucide-react';
+import { LayoutList, HelpCircle, Search, MoreHorizontal } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
