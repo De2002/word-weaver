@@ -187,8 +187,34 @@ export function ProfileDrawer({ open, onClose }: ProfileDrawerProps) {
               </Link>
             </nav>
 
-            {/* Sign out at bottom */}
-            <div className="p-4 border-t border-border">
+            {/* Bottom: theme toggle + sign out */}
+            <div className="p-4 border-t border-border flex flex-col gap-1">
+              {/* Dark / Light toggle */}
+              <div className="flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-secondary/60 transition-colors">
+                <div className="flex items-center gap-3 text-foreground">
+                  {theme === 'dark' ? (
+                    <Moon className="h-5 w-5 text-muted-foreground" />
+                  ) : (
+                    <Sun className="h-5 w-5 text-muted-foreground" />
+                  )}
+                  <span className="font-medium">{theme === 'dark' ? 'Dark mode' : 'Light mode'}</span>
+                </div>
+                {/* pill toggle */}
+                <button
+                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                  aria-label="Toggle theme"
+                  className={`relative w-11 h-6 rounded-full transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
+                    theme === 'dark' ? 'bg-primary' : 'bg-muted-foreground/30'
+                  }`}
+                >
+                  <span
+                    className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-background shadow transition-transform duration-300 ${
+                      theme === 'dark' ? 'translate-x-5' : 'translate-x-0'
+                    }`}
+                  />
+                </button>
+              </div>
+
               <button
                 onClick={handleSignOut}
                 className="flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-destructive hover:bg-destructive/10 transition-colors"
