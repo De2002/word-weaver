@@ -187,13 +187,17 @@ function PoemForm({
     resolver: zodResolver(poemSchema),
     defaultValues: initial
       ? {
-          ...initial,
+          title: initial.title,
+          slug: initial.slug,
+          content: initial.content,
           tags: initial.tags.join(', '),
           excerpt: initial.excerpt ?? '',
           source: initial.source ?? '',
           published_year: initial.published_year ?? undefined,
+          featured: initial.featured,
+          status: (initial.status as 'published' | 'draft') ?? 'published',
         }
-      : { featured: false, status: 'published' },
+      : { featured: false, status: 'published' as const },
   });
 
   const onSubmit = async (data: PoemFormData) => {
