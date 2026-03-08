@@ -98,7 +98,7 @@ export function useProPoems() {
 
       const { data: poemsData, error: fetchError } = await db
         .from('poems')
-        .select('id, slug, title, content, tags, status, created_at, updated_at, user_id')
+        .select('id, slug, title, content, tags, status, created_at, updated_at, user_id, copyright')
         .eq('status', 'published')
         .in('user_id', proUserIds)
         .order('created_at', { ascending: false })
