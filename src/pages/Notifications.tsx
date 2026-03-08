@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Bell, Heart, MessageCircle, UserPlus, Reply, Check, Trash2, Loader2 } from 'lucide-react';
+import { ArrowLeft, Bell, Heart, MessageCircle, UserPlus, Reply, Check, Trash2, Loader2, HelpCircle } from 'lucide-react';
 import { useNotifications, Notification } from '@/hooks/useNotifications';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
