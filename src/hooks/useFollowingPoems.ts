@@ -95,7 +95,7 @@ export function useFollowingPoems() {
 
       const { data: poemsData, error: poemsError } = await db
         .from('poems')
-        .select('id, slug, title, content, tags, status, created_at, updated_at, user_id')
+        .select('id, slug, title, content, tags, status, created_at, updated_at, user_id, copyright')
         .in('user_id', followingIds)
         .eq('status', 'published')
         .order('created_at', { ascending: false })
