@@ -18,6 +18,7 @@ import { useNativeShare } from '@/hooks/useNativeShare';
 interface PoemCardProps {
   poem: Poem;
   index?: number;
+  showProBadge?: boolean;
 }
 
 export function PoemCard({ poem, index = 0 }: PoemCardProps) {
