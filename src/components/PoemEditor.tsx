@@ -327,8 +327,48 @@ export function PoemEditor({ initial }: Props) {
           </button>
         </div>
 
+        {/* Auto-save status indicator */}
+        <AnimatePresence mode="wait">
+          {saveStatus === "saving" && (
+            <motion.span
+              key="saving"
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              className="flex items-center gap-1.5 text-xs text-muted-foreground"
+            >
+              <Loader2 className="h-3 w-3 animate-spin" />
+              Saving…
+            </motion.span>
+          )}
+          {saveStatus === "saved" && (
+            <motion.span
+              key="saved"
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              className="flex items-center gap-1.5 text-xs text-muted-foreground"
+            >
+              <Cloud className="h-3 w-3" />
+              Saved
+            </motion.span>
+          )}
+          {saveStatus === "error" && (
+            <motion.span
+              key="error"
+              initial={{ opacity: 0, y: 4 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -4 }}
+              className="flex items-center gap-1.5 text-xs text-destructive/70"
+            >
+              <CloudOff className="h-3 w-3" />
+              Not saved
+            </motion.span>
+          )}
+        </AnimatePresence>
+
         {/* Character count */}
-        <span className="text-xs text-muted-foreground tabular-nums">
+        <span className="text-xs text-muted-foreground tabular-nums ml-auto">
           {poemText.length}/{MAX_POEM_LENGTH}
         </span>
 
