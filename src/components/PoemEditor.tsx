@@ -180,6 +180,7 @@ export function PoemEditor({ initial }: Props) {
             content: poemText,
             tags,
             status,
+            copyright: isPro && copyright.trim() ? copyright.trim() : null,
           })
           .eq("id", poemId);
 
