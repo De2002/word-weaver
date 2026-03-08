@@ -446,6 +446,18 @@ export function PoemEditor({ initial }: Props) {
           )}
           onInput={(e) => autoGrow(e.currentTarget)}
         />
+
+        {/* Word & line count */}
+        {poemText.length > 0 && (
+          <div className={cn(
+            "flex gap-3 text-xs text-muted-foreground/50 mt-1 select-none",
+            alignment === "center" && "justify-center"
+          )}>
+            <span>{poemText.trim().split(/\s+/).filter(Boolean).length} words</span>
+            <span>·</span>
+            <span>{poemText.split("\n").length} lines</span>
+          </div>
+        )}
       </div>
 
       {/* ── Meta panel (tags, audio, copyright) ── */}
