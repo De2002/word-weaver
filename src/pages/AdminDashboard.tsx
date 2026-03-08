@@ -104,8 +104,9 @@ export default function AdminDashboard() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
-          <TabsList className="grid w-full grid-cols-4 lg:w-auto lg:inline-flex">
+          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-flex">
             <TabsTrigger value="overview">Overview</TabsTrigger>
+            <TabsTrigger value="challenges">Challenges</TabsTrigger>
             <TabsTrigger value="classics">Classics</TabsTrigger>
             <TabsTrigger value="moderation">Moderation</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
