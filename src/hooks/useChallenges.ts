@@ -236,6 +236,14 @@ export function useUpdateChallenge() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async ({ id, ...payload }: Partial<Challenge> & { id: string }) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
+      // Fetch old status before update to detect transition → active
+      const { data: old } = await db.from('challenges').select('status').eq('id', id).single() as any;
+      const wasActive = old?.status === 'active';
+      const willBeActive = (payload as any).status === 'active';
+
       const { data, error } = await db
         .from('challenges')
         .update(payload)
@@ -243,6 +251,28 @@ export function useUpdateChallenge() {
         .select()
         .single();
       if (error) throw error;
+
+      // Notify all Pro Poets when challenge transitions to active
+      if (!wasActive && willBeActive) {
+        const { data: proUsers } = await db
+          .from('user_roles')
+          .select('user_id')
+          .eq('role', 'pro') as any;
+
+        if (proUsers && proUsers.length > 0) {
+          const notifications = proUsers.map((u: { user_id: string }) => ({
+            user_id: u.user_id,
+            actor_id: user.id,
+            type: 'challenge_open',
+            challenge_id: id,
+          }));
+          // Insert in batches of 100
+          for (let i = 0; i < notifications.length; i += 100) {
+            await db.from('notifications').insert(notifications.slice(i, i + 100)) as any;
+          }
+        }
+      }
+
       return data;
     },
     onSuccess: (data) => {
@@ -267,6 +297,9 @@ export function useUpdateSubmissionStatus() {
       status: ChallengeSubmission['status'];
       isWinner?: boolean;
     }) => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('Not authenticated');
+
       const { data, error } = await db
         .from('challenge_submissions')
         .update({ status, is_winner: isWinner ?? false })
@@ -275,13 +308,22 @@ export function useUpdateSubmissionStatus() {
         .single();
       if (error) throw error;
 
-      // If declaring winner, also update challenge.winner_submission_id
+      // If declaring winner, update challenge and notify the winner
       if (isWinner) {
         await db
           .from('challenges')
           .update({ winner_submission_id: submissionId, status: 'closed' })
           .eq('id', challengeId);
+
+        // Insert winner notification for the submission owner
+        await db.from('notifications').insert({
+          user_id: (data as any).user_id,
+          actor_id: user.id,
+          type: 'challenge_winner',
+          challenge_id: challengeId,
+        }) as any;
       }
+
       return data;
     },
     onSuccess: (_, vars) => {
