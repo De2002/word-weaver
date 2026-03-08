@@ -1,6 +1,6 @@
 import { useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Loader2, Music, Upload, X } from "lucide-react";
+import { Loader2, Music, Upload, X, Copyright } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
