@@ -199,6 +199,12 @@ const App = () => (
             <Route path="/qa" element={<QA />} />
             <Route path="/qa/:id" element={<QADetail />} />
 
+            {/* Classic Poetry Library */}
+            <Route path="/classics" element={<Classics />} />
+            <Route path="/classics/poets" element={<ClassicPoetsList />} />
+            <Route path="/classics/poet/:slug" element={<ClassicPoetDetail />} />
+            <Route path="/classics/poem/:slug" element={<ClassicPoemDetail />} />
+
             {/* Admin Routes */}
             <Route
               path="/admin"
