@@ -206,6 +206,9 @@ const App = () => (
             <Route path="/classics/poet/:slug" element={<ClassicPoetDetail />} />
             <Route path="/classics/poem/:slug" element={<ClassicPoemDetail />} />
 
+            {/* Upgrade */}
+            <Route path="/upgrade" element={<Upgrade />} />
+
             {/* Admin Routes */}
             <Route
               path="/admin"
