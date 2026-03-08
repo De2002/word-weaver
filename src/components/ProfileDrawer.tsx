@@ -179,17 +179,6 @@ export function ProfileDrawer({ open, onClose }: ProfileDrawerProps) {
               <Separator className="my-2" />
 
               {/* Additional links */}
-              {isPoetRole && (
-                <Link
-                  to="/create/poetry"
-                  onClick={handleNavClick}
-                  className="flex items-center gap-4 px-5 py-3.5 text-foreground hover:bg-secondary/60 transition-colors group"
-                >
-                  <Feather className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
-                  <span className="font-medium text-base">Write a Poem</span>
-                </Link>
-              )}
-
               <Link
                 to="/more"
                 onClick={handleNavClick}
