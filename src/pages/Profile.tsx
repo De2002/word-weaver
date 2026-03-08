@@ -197,6 +197,31 @@ export default function Profile() {
             </div>
           )}
 
+          {/* Pro: Pin a poem */}
+          {isPro && (
+            <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Pin className="h-4 w-4 text-primary" />
+                <Label htmlFor="pinned-poem">Pinned Poem</Label>
+                <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">PRO</span>
+              </div>
+              <Select value={pinnedPoemId} onValueChange={setPinnedPoemId}>
+                <SelectTrigger id="pinned-poem" className="bg-secondary/50">
+                  <SelectValue placeholder="Choose a poem to pin…" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">— No pinned poem —</SelectItem>
+                  {publishedPoems.map((poem: any) => (
+                    <SelectItem key={poem.id} value={poem.id}>
+                      {poem.title || poem.content.slice(0, 40) + "…"}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <p className="text-xs text-muted-foreground">This poem appears pinned at the top of your public profile.</p>
+            </div>
+          )}
+
           <Separator />
 
           {/* Support link (all poets) */}
