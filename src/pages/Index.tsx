@@ -226,7 +226,6 @@ const Index = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="px-4 space-y-4"
         >
           
           {/* Loading State */}
@@ -305,7 +304,7 @@ const Index = () => {
 
           {/* Poems List */}
           {!currentData.loading && !currentData.error && currentData.poems.length > 0 && (
-            <div className="space-y-4">
+            <div>
               {currentData.poems.map((poem, index) => (
                 <PoemCard key={poem.id} poem={poem} index={index} />
               ))}
