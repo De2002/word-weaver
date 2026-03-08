@@ -4,6 +4,7 @@ import { X, User, BookOpen, Bookmark, Bell, Settings, LogOut, Feather, Crown, Su
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/context/AuthProvider';
+import { useNotifications } from '@/hooks/useNotifications';
 import { useQuery } from '@tanstack/react-query';
 import { useTheme } from 'next-themes';
 import { db } from '@/lib/db';
@@ -17,7 +18,7 @@ const menuItems = [
   { icon: User, label: 'Profile', href: '/poet/:username', dynamic: true },
   { icon: BookOpen, label: 'My Poems', href: '/my-poems' },
   { icon: Bookmark, label: 'Saved Poems', href: '/saved' },
-  { icon: Bell, label: 'Notifications', href: '/notifications' },
+  { icon: Bell, label: 'Notifications', href: '/notifications', showBadge: true },
   { icon: Settings, label: 'Edit Profile', href: '/profile' },
 ];
 
