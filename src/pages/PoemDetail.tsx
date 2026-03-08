@@ -91,6 +91,7 @@ export default function PoemDetail() {
         comments: 0,
         saves: 0,
         reads: 0,
+        copyright: (poemData as any).copyright || null,
         poet: {
           id: profileData?.user_id || poemData.user_id,
           name: profileData?.display_name || 'Anonymous',
