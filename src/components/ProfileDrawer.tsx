@@ -189,30 +189,33 @@ export function ProfileDrawer({ open, onClose }: ProfileDrawerProps) {
 
             {/* Bottom: theme toggle + sign out */}
             <div className="p-4 border-t border-border flex flex-col gap-1">
-              {/* Dark / Light toggle */}
-              <div className="flex items-center justify-between px-3 py-2.5 rounded-lg hover:bg-secondary/60 transition-colors">
-                <div className="flex items-center gap-3 text-foreground">
-                  {theme === 'dark' ? (
-                    <Moon className="h-5 w-5 text-muted-foreground" />
-                  ) : (
-                    <Sun className="h-5 w-5 text-muted-foreground" />
-                  )}
-                  <span className="font-medium">{theme === 'dark' ? 'Dark mode' : 'Light mode'}</span>
+              {/* Theme toggle: Light / System / Dark */}
+              <div className="flex flex-col gap-1.5 px-3 py-2.5">
+                <span className="text-xs font-medium text-muted-foreground uppercase tracking-wide">Theme</span>
+                <div className="flex items-center gap-1 bg-secondary rounded-lg p-0.5">
+                  {([
+                    { value: 'light', icon: Sun, label: 'Light' },
+                    { value: 'system', icon: null, label: 'Auto' },
+                    { value: 'dark', icon: Moon, label: 'Dark' },
+                  ] as const).map(({ value, icon: Icon, label }) => (
+                    <button
+                      key={value}
+                      onClick={() => setTheme(value)}
+                      aria-label={`${label} theme`}
+                      className={`flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-md text-xs font-medium transition-colors duration-200 ${
+                        theme === value
+                          ? 'bg-background text-foreground shadow-sm'
+                          : 'text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      {Icon && <Icon className="h-3.5 w-3.5" />}
+                      {!Icon && (
+                        <span className="h-3.5 w-3.5 flex items-center justify-center text-[10px]">⚙</span>
+                      )}
+                      {label}
+                    </button>
+                  ))}
                 </div>
-                {/* pill toggle */}
-                <button
-                  onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                  aria-label="Toggle theme"
-                  className={`relative w-11 h-6 rounded-full transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
-                    theme === 'dark' ? 'bg-primary' : 'bg-muted-foreground/30'
-                  }`}
-                >
-                  <span
-                    className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-background shadow transition-transform duration-300 ${
-                      theme === 'dark' ? 'translate-x-5' : 'translate-x-0'
-                    }`}
-                  />
-                </button>
               </div>
 
               <button
