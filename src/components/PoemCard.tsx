@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, MessageCircle, Bookmark, Share2, Sparkles, Twitter, Facebook, Link2, MessageSquare, TrendingUp } from 'lucide-react';
+import { Heart, MessageCircle, Bookmark, Share2, Sparkles, Twitter, Facebook, Link2, MessageSquare, TrendingUp, Crown } from 'lucide-react';
 import { Poem } from '@/types/poem';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { TagBadge } from '@/components/TagBadge';
@@ -18,9 +18,10 @@ import { useNativeShare } from '@/hooks/useNativeShare';
 interface PoemCardProps {
   poem: Poem;
   index?: number;
+  showProBadge?: boolean;
 }
 
-export function PoemCard({ poem, index = 0 }: PoemCardProps) {
+export function PoemCard({ poem, index = 0, showProBadge = false }: PoemCardProps) {
   const navigate = useNavigate();
   const {
     isUpvoted,
@@ -173,9 +174,17 @@ export function PoemCard({ poem, index = 0 }: PoemCardProps) {
             )}
           </div>
           <div className="flex flex-col">
-            <span className="font-medium text-sm text-foreground">{poem.poet.name}</span>
-            <span className="text-xs text-muted-foreground">@{poem.poet.username}</span>
-          </div>
+              <div className="flex items-center gap-1.5">
+                <span className="font-medium text-sm text-foreground">{poem.poet.name}</span>
+                {showProBadge && (
+                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full text-[9px] font-semibold bg-amber-500/15 text-amber-600 border border-amber-500/25 leading-none">
+                    <Crown className="h-2.5 w-2.5" />
+                    PRO
+                  </span>
+                )}
+              </div>
+              <span className="text-xs text-muted-foreground">@{poem.poet.username}</span>
+            </div>
         </Link>
         <div className="flex items-center gap-2">
           {poem.audioUrl && <AudioPlayButton audioUrl={poem.audioUrl} size="sm" />}
