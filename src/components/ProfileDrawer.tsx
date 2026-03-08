@@ -24,6 +24,7 @@ const menuItems = [
 export function ProfileDrawer({ open, onClose }: ProfileDrawerProps) {
   const { user, profile, roles, signOut } = useAuth();
   const navigate = useNavigate();
+  const { theme, setTheme } = useTheme();
   const isPro = roles.includes('pro');
   const isPoetRole = roles.includes('poet') || roles.includes('pro');
 
