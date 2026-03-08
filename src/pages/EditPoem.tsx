@@ -55,6 +55,7 @@ export default function EditPoem() {
         tags: poem.tags ?? [],
         status: poem.status,
         audioPath: audio?.storage_path ?? null,
+        copyright: (poem as any).copyright ?? null,
       });
       setLoading(false);
     })();
