@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Bell, Heart, MessageCircle, UserPlus, Reply, Check, Trash2, Loader2 } from 'lucide-react';
+import { ArrowLeft, Bell, Heart, MessageCircle, UserPlus, Reply, Check, Trash2, Loader2, HelpCircle } from 'lucide-react';
 import { useNotifications, Notification } from '@/hooks/useNotifications';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -19,14 +19,17 @@ function NotificationIcon({ type }: { type: Notification['type'] }) {
       return <MessageCircle className="h-4 w-4 text-sage" />;
     case 'reply':
       return <Reply className="h-4 w-4 text-warm-gold" />;
+    case 'qa_answer':
+      return <HelpCircle className="h-4 w-4 text-amber-500" />;
     default:
       return <Bell className="h-4 w-4" />;
   }
 }
 
 function getNotificationMessage(notification: Notification): string {
-  const { type, actor, poem } = notification;
+  const { type, actor, poem, question } = notification;
   const poemTitle = poem?.title ? `"${poem.title}"` : 'your poem';
+  const questionTitle = question?.title ? `"${question.title}"` : 'your question';
 
   switch (type) {
     case 'follow':
@@ -37,13 +40,15 @@ function getNotificationMessage(notification: Notification): string {
       return `commented on ${poemTitle}`;
     case 'reply':
       return `replied to your comment on ${poemTitle}`;
+    case 'qa_answer':
+      return `answered ${questionTitle}`;
     default:
       return 'interacted with you';
   }
 }
 
 function getNotificationLink(notification: Notification): string {
-  const { type, poemId, commentId } = notification;
+  const { type, poemId, commentId, questionId } = notification;
 
   switch (type) {
     case 'follow':
@@ -54,6 +59,8 @@ function getNotificationLink(notification: Notification): string {
       return poemId ? `/poem/${poemId}` : '/';
     case 'upvote':
       return poemId ? `/poem/${poemId}` : '/';
+    case 'qa_answer':
+      return questionId ? `/qa/${questionId}` : '/qa';
     default:
       return '/';
   }

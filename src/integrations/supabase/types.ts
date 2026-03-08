@@ -546,6 +546,7 @@ export type Database = {
           id: string
           is_read: boolean
           poem_id: string | null
+          question_id: string | null
           type: string
           user_id: string
         }
@@ -556,6 +557,7 @@ export type Database = {
           id?: string
           is_read?: boolean
           poem_id?: string | null
+          question_id?: string | null
           type: string
           user_id: string
         }
@@ -566,6 +568,7 @@ export type Database = {
           id?: string
           is_read?: boolean
           poem_id?: string | null
+          question_id?: string | null
           type?: string
           user_id?: string
         }
@@ -582,6 +585,13 @@ export type Database = {
             columns: ["poem_id"]
             isOneToOne: false
             referencedRelation: "poems"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "notifications_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "qa_questions"
             referencedColumns: ["id"]
           },
         ]

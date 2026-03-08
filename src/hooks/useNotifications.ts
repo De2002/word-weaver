@@ -6,10 +6,11 @@ import { useAuth } from '@/context/AuthProvider';
 export interface Notification {
   id: string;
   userId: string;
-  type: 'follow' | 'upvote' | 'comment' | 'reply';
+  type: 'follow' | 'upvote' | 'comment' | 'reply' | 'qa_answer';
   actorId: string;
   poemId: string | null;
   commentId: string | null;
+  questionId: string | null;
   isRead: boolean;
   createdAt: string;
   actor: {
@@ -21,6 +22,10 @@ export interface Notification {
     id: string;
     title: string | null;
   };
+  question?: {
+    id: string;
+    title: string;
+  };
 }
 
 interface DbNotification {
@@ -30,6 +35,7 @@ interface DbNotification {
   actor_id: string;
   poem_id: string | null;
   comment_id: string | null;
+  question_id: string | null;
   is_read: boolean;
   created_at: string;
 }
@@ -107,10 +113,28 @@ export function useNotifications(): UseNotificationsResult {
         });
       }
 
+      // Get question titles for Q&A notifications
+      const questionIds = notificationsData
+        .filter((n: DbNotification) => n.question_id)
+        .map((n: DbNotification) => n.question_id as string);
+
+      const questionsMap = new Map<string, { id: string; title: string }>();
+      if (questionIds.length > 0) {
+        const { data: questionsData } = await db
+          .from('qa_questions')
+          .select('id, title')
+          .in('id', questionIds);
+
+        (questionsData || []).forEach((q: { id: string; title: string }) => {
+          questionsMap.set(q.id, q);
+        });
+      }
+
       // Transform notifications
       const transformedNotifications: Notification[] = notificationsData.map((n: DbNotification) => {
         const actorProfile = profilesMap.get(n.actor_id);
         const poem = n.poem_id ? poemsMap.get(n.poem_id) : undefined;
+        const question = n.question_id ? questionsMap.get(n.question_id) : undefined;
 
         return {
           id: n.id,
@@ -119,6 +143,7 @@ export function useNotifications(): UseNotificationsResult {
           actorId: n.actor_id,
           poemId: n.poem_id,
           commentId: n.comment_id,
+          questionId: n.question_id,
           isRead: n.is_read,
           createdAt: n.created_at,
           actor: {
@@ -127,6 +152,7 @@ export function useNotifications(): UseNotificationsResult {
             avatar: actorProfile?.avatar_url || '',
           },
           poem: poem ? { id: poem.id, title: poem.title } : undefined,
+          question: question ? { id: question.id, title: question.title } : undefined,
         };
       });
 
