@@ -36,7 +36,7 @@ type Props = {
 export function PoemEditor({ initial }: Props) {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user, isPoet } = useAuth();
+  const { user, isPoet, roles } = useAuth();
   const audioInputRef = useRef<HTMLInputElement>(null);
 
   const [title, setTitle] = useState(initial?.title ?? "");
@@ -45,6 +45,7 @@ export function PoemEditor({ initial }: Props) {
   const [tags, setTags] = useState<string[]>(initial?.tags ?? []);
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [existingAudioPath, setExistingAudioPath] = useState<string | null>(initial?.audioPath ?? null);
+  const [copyright, setCopyright] = useState(initial?.copyright ?? "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showTrailModal, setShowTrailModal] = useState(false);
   const [publishedPoemId, setPublishedPoemId] = useState<string | null>(null);
@@ -52,6 +53,7 @@ export function PoemEditor({ initial }: Props) {
   const isEdit = Boolean(initial?.id);
   const canSubmit = poemText.trim().length > 0;
   const canWritePoems = isPoet;
+  const isPro = roles.includes("pro");
 
   const tagCountLabel = useMemo(() => `${tags.length}/${MAX_TAGS} tags`, [tags.length]);
 
