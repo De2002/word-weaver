@@ -119,7 +119,7 @@ export function PoemCard({ poem, index = 0, showProBadge = false }: PoemCardProp
       {poem.title && (
         <h2
           onClick={handlePoemClick}
-          className="font-serif font-semibold text-3xl md:text-4xl text-foreground leading-tight mb-3 cursor-pointer hover:opacity-80 transition-opacity"
+          className="font-serif font-semibold text-3xl md:text-4xl text-foreground leading-tight mb-3 cursor-pointer hover:opacity-80 transition-opacity break-words overflow-wrap-anywhere"
         >
           {poem.title}
         </h2>
