@@ -146,7 +146,7 @@ export function ProfileDrawer({ open, onClose }: ProfileDrawerProps) {
             <Separator />
 
             {/* Nav items */}
-            <nav className="flex-1 overflow-y-auto py-2">
+            <nav className="flex-1 overflow-y-auto py-2 pb-4">
               {menuItems.map((item) => {
                 const href = resolvedHref(item);
                 // Hide "Profile" if no username yet
