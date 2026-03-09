@@ -53,6 +53,7 @@ import ClassicPoetsList from "./pages/ClassicPoetPage";
 import ClassicPoetDetail from "./pages/ClassicPoetDetail";
 import ClassicPoemDetail from "./pages/ClassicPoemDetail";
 import Upgrade from "./pages/Upgrade";
+import RefundPolicy from "./pages/RefundPolicy";
 import Challenges from "./pages/Challenges";
 import ChallengeDetail from "./pages/ChallengeDetail";
 const queryClient = new QueryClient();
