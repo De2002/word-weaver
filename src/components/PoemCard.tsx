@@ -128,7 +128,7 @@ export function PoemCard({ poem, index = 0, showProBadge = false }: PoemCardProp
 
       {/* Poem preview text */}
       <div onClick={handlePoemClick} className="cursor-pointer mb-3">
-        <p className="font-serif text-lg leading-relaxed text-foreground whitespace-pre-line">
+        <p className="poem-text text-foreground">
           {previewText}
         </p>
         {shouldTruncate && (

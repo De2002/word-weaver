@@ -298,7 +298,7 @@ export default function PoemDetail() {
 
           {/* Poem Full Text */}
           <div className="mb-5">
-            <div className="font-serif text-lg leading-relaxed text-foreground whitespace-pre-line">
+            <div className="poem-text text-foreground">
               {poem.text}
             </div>
           </div>
