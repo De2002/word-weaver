@@ -141,10 +141,14 @@
 }
 
 @layer utilities {
-  /* Poem text styling */
+  /* Poem text styling — standard poetry reading spacing */
   .poem-text {
-    @apply font-poem text-lg md:text-xl leading-relaxed;
+    @apply font-poem text-lg md:text-xl;
+    line-height: 2;
     white-space: pre-line;
+    /* Stanza breaks: blank lines render as visible breathing room */
+    word-spacing: 0.04em;
+    letter-spacing: 0.01em;
   }
 
   .poem-title {
