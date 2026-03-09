@@ -112,7 +112,10 @@ export default function Upgrade() {
                   <Crown className="h-4 w-4" />
                   Become a Pro Poet — $2.99/month
                 </Link>
-                <p className="text-muted-foreground/60 text-xs">Cancel anytime. No pressure.</p>
+                <p className="text-muted-foreground/60 text-xs">
+                  Cancel anytime. No pressure.{' '}
+                  <Link to="/refund-policy" className="underline underline-offset-2 hover:text-muted-foreground transition-colors">Refund policy</Link>
+                </p>
               </div>
             )}
           </FadeUp>
@@ -234,7 +237,8 @@ export default function Upgrade() {
                   Upgrade to Pro — $2.99/month
                 </Link>
                 <p className="text-muted-foreground/60 text-xs mt-1">
-                  Your voice deserves more than ordinary.
+                  Your voice deserves more than ordinary.{' '}
+                  <Link to="/refund-policy" className="underline underline-offset-2 hover:text-muted-foreground transition-colors">Refund policy</Link>
                 </p>
               </div>
             </FadeUp>
