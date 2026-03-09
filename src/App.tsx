@@ -211,6 +211,7 @@ const App = () => (
 
             {/* Upgrade */}
             <Route path="/upgrade" element={<Upgrade />} />
+            <Route path="/refund-policy" element={<RefundPolicy />} />
 
             {/* Challenges */}
             <Route path="/challenges" element={<Challenges />} />
