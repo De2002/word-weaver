@@ -237,7 +237,8 @@ export default function Upgrade() {
                   Upgrade to Pro — $2.99/month
                 </Link>
                 <p className="text-muted-foreground/60 text-xs mt-1">
-                  Your voice deserves more than ordinary.
+                  Your voice deserves more than ordinary.{' '}
+                  <Link to="/refund-policy" className="underline underline-offset-2 hover:text-muted-foreground transition-colors">Refund policy</Link>
                 </p>
               </div>
             </FadeUp>
