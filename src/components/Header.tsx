@@ -14,7 +14,7 @@ const tabs = [
   { id: 'for-you', label: 'For You' },
   { id: 'following', label: 'Following' },
   { id: 'trending', label: 'Trending' },
-  { id: 'rising', label: 'Rising' },
+  { id: 'recent', label: 'Recent' },
 ];
 
 interface HeaderProps {
