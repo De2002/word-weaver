@@ -19,7 +19,8 @@ export default {
     extend: {
       fontFamily: {
         sans: ["DM Sans", "system-ui", "sans-serif"],
-        poem: ["Cormorant Garamond", "Georgia", "serif"],
+        poem: ["Georgia", "serif"],
+        display: ["Playfair Display", "Georgia", "serif"],
       },
       colors: {
         border: "hsl(var(--border))",
