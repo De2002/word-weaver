@@ -511,6 +511,9 @@ export function PoemEditor({ initial }: Props) {
                   <Label className="text-sm text-muted-foreground flex items-center gap-1.5">
                     <Tag className="h-3.5 w-3.5" />
                     Tags
+                    <span className="text-xs text-muted-foreground/50 ml-1">
+                      {isPro ? "up to 3" : "1 tag · upgrade for more"}
+                    </span>
                     <span className="ml-auto text-xs text-muted-foreground/60">{tagCountLabel}</span>
                   </Label>
                   <Input
