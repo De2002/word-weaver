@@ -13,7 +13,6 @@ import { useRef, useState, useEffect } from 'react';
 const tabs = [
   { id: 'for-you', label: 'For You' },
   { id: 'following', label: 'Following' },
-  { id: 'trending', label: 'Trending' },
   { id: 'recent', label: 'Recent' },
 ];
 
