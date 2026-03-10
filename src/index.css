@@ -1,7 +1,7 @@
-@import "@fontsource/cormorant-garamond/400.css";
-@import "@fontsource/cormorant-garamond/500.css";
-@import "@fontsource/cormorant-garamond/600.css";
-@import "@fontsource/cormorant-garamond/700.css";
+@import "@fontsource/playfair-display/400.css";
+@import "@fontsource/playfair-display/500.css";
+@import "@fontsource/playfair-display/600.css";
+@import "@fontsource/playfair-display/700.css";
 @import "@fontsource/dm-sans/400.css";
 @import "@fontsource/dm-sans/500.css";
 @import "@fontsource/dm-sans/600.css";
@@ -129,10 +129,14 @@
 
   /* Typography */
   .font-poem {
-    font-family: "Cormorant Garamond", Georgia, serif;
+    font-family: Georgia, "Times New Roman", serif;
     font-feature-settings: "liga" 1, "kern" 1;
     letter-spacing: 0.01em;
     line-height: 1.7;
+  }
+
+  .font-display {
+    font-family: "Playfair Display", Georgia, serif;
   }
 
   .font-sans {
@@ -159,7 +163,7 @@
   }
 
   .poem-title {
-    @apply font-poem text-2xl md:text-3xl font-semibold;
+    @apply font-display text-2xl md:text-3xl font-semibold;
   }
 
   /* Gradient text */
