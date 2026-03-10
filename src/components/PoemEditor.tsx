@@ -19,7 +19,6 @@ import { AddToTrailModal } from "@/components/trails/AddToTrailModal";
 
 const MAX_TITLE_LENGTH = 100;
 const MAX_POEM_LENGTH = 5000;
-const MAX_TAGS = 10;
 const AUTOSAVE_DEBOUNCE_MS = 3000;   // save 3s after last keystroke
 const AUTOSAVE_INTERVAL_MS = 30000;  // also save every 30s regardless
 
