@@ -163,17 +163,22 @@ export function PoemEditor({ initial }: Props) {
     return () => { if (intervalTimerRef.current) clearInterval(intervalTimerRef.current); };
   }, [autoSave]);
 
-  const tagCountLabel = useMemo(() => `${tags.length}/${MAX_TAGS}`, [tags.length]);
+  const maxTags = isPro ? 3 : 1;
+  const tagCountLabel = useMemo(() => `${tags.length}/${maxTags}`, [tags.length, maxTags]);
 
   const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" || e.key === ",") {
       e.preventDefault();
       const normalized = normalizeTag(tagInput);
-      if (normalized && !tags.includes(normalized) && tags.length < MAX_TAGS) {
+      if (normalized && !tags.includes(normalized) && tags.length < maxTags) {
         setTags([...tags, normalized]);
         setTagInput("");
-      } else if (tags.length >= MAX_TAGS) {
-        toast({ title: "Tag limit reached", description: `Up to ${MAX_TAGS} tags.`, variant: "destructive" });
+      } else if (tags.length >= maxTags) {
+        toast({
+          title: "Tag limit reached",
+          description: isPro ? "Pro poets can add up to 3 tags." : "Free poets can add 1 tag. Upgrade to Pro for up to 3 tags.",
+          variant: "destructive",
+        });
       }
     }
   };
