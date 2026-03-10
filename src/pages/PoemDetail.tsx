@@ -282,7 +282,7 @@ export default function PoemDetail() {
           <div className="mb-4">
             <div className="flex items-start justify-between gap-3">
               {poem.title && (
-                <h1 className="font-serif text-3xl md:text-4xl font-semibold text-foreground leading-tight">
+                <h1 className="font-display text-3xl md:text-4xl font-semibold text-foreground leading-tight">
                   {poem.title}
                 </h1>
               )}

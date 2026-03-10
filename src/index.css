@@ -163,7 +163,7 @@
   }
 
   .poem-title {
-    @apply font-poem text-2xl md:text-3xl font-semibold;
+    @apply font-display text-2xl md:text-3xl font-semibold;
   }
 
   /* Gradient text */
