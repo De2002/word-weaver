@@ -1134,6 +1134,33 @@ export type Database = {
           },
         ]
       }
+      tag_metadata: {
+        Row: {
+          banner_url: string | null
+          created_at: string
+          description: string | null
+          id: string
+          tag: string
+          updated_at: string
+        }
+        Insert: {
+          banner_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          tag: string
+          updated_at?: string
+        }
+        Update: {
+          banner_url?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          tag?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       trail_progress: {
         Row: {
           completed: boolean

@@ -12,6 +12,7 @@ import { useAdminStats, useAdminQAStats, useAdminTopAnswerers } from "@/hooks/us
 import { ClassicsAdminPanel } from "@/components/classics/ClassicsAdminPanel";
 import { ModerationPanel } from "@/components/admin/ModerationPanel";
 import { ChallengesAdminPanel } from "@/components/admin/ChallengesAdminPanel";
+import { TagsAdminPanel } from "@/components/admin/TagsAdminPanel";
 
 export default function AdminDashboard() {
   useSEO({
@@ -104,10 +105,11 @@ export default function AdminDashboard() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mt-6">
-          <TabsList className="grid w-full grid-cols-5 lg:w-auto lg:inline-flex">
+          <TabsList className="grid w-full grid-cols-6 lg:w-auto lg:inline-flex">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="challenges">Challenges</TabsTrigger>
             <TabsTrigger value="classics">Classics</TabsTrigger>
+            <TabsTrigger value="tags">Tags</TabsTrigger>
             <TabsTrigger value="moderation">Moderation</TabsTrigger>
             <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
@@ -276,6 +278,10 @@ export default function AdminDashboard() {
 
           <TabsContent value="classics" className="mt-6">
             <ClassicsAdminPanel />
+          </TabsContent>
+
+          <TabsContent value="tags" className="mt-6">
+            <TagsAdminPanel />
           </TabsContent>
 
           <TabsContent value="moderation" className="mt-6">
