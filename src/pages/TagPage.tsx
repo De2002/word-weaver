@@ -31,6 +31,7 @@ export default function TagPage() {
   });
 
   const { poems, isLoading, isLoadingMore, hasMore, loadMore, totalCount } = useTagPoems(displayTag);
+  const { data: tagMeta } = useTagMetadata(displayTag);
 
   // Sort poems client-side
   const sortedPoems = useMemo(() => sortPoems(poems, sortBy), [poems, sortBy]);
