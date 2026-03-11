@@ -8,6 +8,7 @@ import { sortPoems, SortType } from '@/lib/ranking';
 import { cn } from '@/lib/utils';
 import { useSEO } from '@/hooks/useSEO';
 import { useTagPoems } from '@/hooks/useTagPoems';
+import { useTagMetadata } from '@/hooks/useTagMetadata';
 import { Button } from '@/components/ui/button';
 
 const sortOptions: { value: SortType; label: string; icon: React.ElementType }[] = [
