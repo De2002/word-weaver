@@ -299,6 +299,7 @@ export default function Start() {
           <span>© {new Date().getFullYear()} WordStack</span>
           <Link to="/privacy-policy" className="hover:underline">Privacy</Link>
           <Link to="/user-agreement" className="hover:underline">Terms</Link>
+          <Link to="/refund-policy" className="hover:underline">Refunds</Link>
           <Link to="/about" className="hover:underline">About</Link>
         </div>
 
