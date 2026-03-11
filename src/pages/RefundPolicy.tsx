@@ -4,7 +4,7 @@ import { useSEO } from '@/hooks/useSEO';
 export default function RefundPolicy() {
   useSEO({
     title: "Refund Policy",
-    description: "WordStack Pro subscription refund policy — understand your rights and our refund terms."
+    description: "WordStack Pro subscription refund policy — powered by Paddle as Merchant of Record."
   });
 
   return (
@@ -18,28 +18,33 @@ export default function RefundPolicy() {
 
           {/* Section 1 */}
           <section>
-            <h2 className="text-base font-semibold text-foreground mb-3">1. Overview</h2>
+            <h2 className="text-base font-semibold text-foreground mb-3">1. Merchant of Record</h2>
             <p>
-              WordStack offers a <strong>Pro Poet</strong> subscription that unlocks premium features including challenge participation, advanced profile customisation, and more. We want you to feel confident subscribing. This policy explains exactly when refunds are available and when they are not.
+              WordStack Pro subscriptions are sold and processed by <strong>Paddle</strong> (Paddle.com Market Ltd / Paddle.com Inc), who acts as the Merchant of Record and authorised reseller. This means you purchase the subscription <em>from Paddle</em>, but the product is licensed to you by WordStack. Your purchase is therefore governed by both this policy and{' '}
+              <a
+                href="https://www.paddle.com/legal/invoiced-consumer-terms"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary underline underline-offset-2 hover:opacity-80 transition-opacity"
+              >
+                Paddle's Consumer Terms
+              </a>.
             </p>
           </section>
 
           {/* Section 2 */}
           <section>
             <div className="rounded-xl border border-primary/30 bg-primary/5 p-5 mb-4">
-              <h2 className="text-base font-semibold text-foreground mb-1">2. Initial Subscription — 24-Hour Refund Window</h2>
-              <p className="text-xs text-primary font-medium mb-3 uppercase tracking-wide">First-time activation only</p>
+              <h2 className="text-base font-semibold text-foreground mb-1">2. Right to Cancel — 14-Day Window</h2>
+              <p className="text-xs text-primary font-medium mb-3 uppercase tracking-wide">Consumers · First-time activation</p>
               <p className="mb-3">
-                If you have just activated a <strong>new</strong> WordStack Pro subscription, you may request a full refund within <strong>24 hours</strong> of activation. This applies only to your <strong>first-ever</strong> Pro subscription and is not available on re-subscriptions or plan changes.
+                If you are a Consumer, you have the right to cancel your <strong>new</strong> WordStack Pro subscription and receive a full refund within <strong>14 days</strong> of activation, without giving any reason. This right applies only to your <strong>initial subscription</strong> and not to subsequent automatic renewals.
               </p>
-              <p className="font-medium text-foreground">Eligible reasons for a refund within this window include:</p>
+              <p className="font-medium text-foreground">The 14-day cancellation right does not apply if:</p>
               <ul className="mt-2 space-y-1.5 list-none">
                 {[
-                  "You subscribed by mistake or unintentionally.",
-                  "The Pro features do not work as described on your device.",
-                  "You experienced a technical issue that prevented access to Pro features.",
-                  "You were charged more than the advertised amount.",
-                  "Duplicate charges or billing errors.",
+                  "You have already begun downloading, streaming or otherwise acquiring Digital Content and explicitly consented to immediate performance, losing the right of withdrawal.",
+                  "The subscription has already renewed (renewals are not eligible — see Section 3).",
                 ].map((reason, i) => (
                   <li key={i} className="flex items-start gap-2">
                     <span className="mt-0.5 h-4 w-4 shrink-0 rounded-full bg-primary/20 text-primary text-[10px] flex items-center justify-center font-bold">{i + 1}</span>
@@ -49,20 +54,20 @@ export default function RefundPolicy() {
               </ul>
             </div>
             <p className="text-muted-foreground text-xs">
-              Refund requests must be submitted within 24 hours of the charge appearing on your account. Requests submitted after this window will not be considered for initial subscriptions.
+              To exercise your cancellation right, contact us within 14 days of activation with your registered email address, activation date and reason. Reimbursement will be made within 14 days via your original payment method, with no fees charged.
             </p>
           </section>
 
           {/* Section 3 */}
           <section>
             <div className="rounded-xl border border-border bg-muted/30 p-5">
-              <h2 className="text-base font-semibold text-foreground mb-1">3. Recurring Subscriptions — No Refunds</h2>
-              <p className="text-xs text-muted-foreground font-medium mb-3 uppercase tracking-wide">Monthly / annual renewals</p>
+              <h2 className="text-base font-semibold text-foreground mb-1">3. Recurring Renewals — No Refunds</h2>
+              <p className="text-xs text-muted-foreground font-medium mb-3 uppercase tracking-wide">Monthly / annual automatic renewals</p>
               <p>
-                Once your subscription renews — whether monthly or annually — <strong>no refunds will be issued</strong> for that billing period. Each renewal gives you immediate continued access to all Pro features for the duration of the paid period.
+                Once your subscription renews automatically, <strong>there are no refunds</strong> on the unused portion of that billing period. Each renewal grants you immediate continued access to all Pro features for the full period paid.
               </p>
               <p className="mt-3">
-                If you no longer wish to continue, you can cancel at any time (see Section 4). Cancellation stops future charges but does not entitle you to a refund of the current period already paid.
+                You can cancel at any time to stop future renewals (see Section 4). Cancellation does not entitle you to a refund of the current period already charged.
               </p>
             </div>
           </section>
@@ -71,7 +76,7 @@ export default function RefundPolicy() {
           <section>
             <h2 className="text-base font-semibold text-foreground mb-3">4. Cancellation</h2>
             <p className="mb-3">
-              You may cancel your Pro subscription at any time from your account settings. Cancellation takes effect at the <strong>end of your current billing cycle</strong> — meaning:
+              You may cancel your Pro subscription at any time from your account settings, or by contacting us. Cancellation must be made at least <strong>48 hours before</strong> the end of your current billing period to take effect on the next renewal date.
             </p>
             <ul className="space-y-2 list-none">
               {[
@@ -86,19 +91,39 @@ export default function RefundPolicy() {
               ))}
             </ul>
             <p className="mt-4 text-muted-foreground">
-              Cancellation does not delete your account or your published poetry. Your profile reverts to the standard plan once the paid period ends.
+              Cancellation does not delete your account or published poetry. Your profile reverts to the standard plan once the paid period ends.
             </p>
           </section>
 
           {/* Section 5 */}
           <section>
-            <h2 className="text-base font-semibold text-foreground mb-3">5. How to Request a Refund</h2>
-            <p className="mb-3">To request a refund within the eligible 24-hour window, contact us with:</p>
+            <h2 className="text-base font-semibold text-foreground mb-3">5. Paddle's Discretionary Refunds</h2>
+            <p className="mb-3">
+              Outside the statutory 14-day window, refunds may be issued at the sole discretion of Paddle on a case-by-case basis. Paddle reserves the right to refuse a refund request if there is evidence of fraud, refund abuse or other manipulative behaviour. This does not affect your statutory rights as a Consumer where a product is not as described, faulty or not fit for purpose.
+            </p>
+            <p>
+              For all refund and billing queries handled by Paddle, please visit{' '}
+              <a
+                href="https://paddle.net/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary underline underline-offset-2 hover:opacity-80 transition-opacity"
+              >
+                paddle.net
+              </a>.
+            </p>
+          </section>
+
+          {/* Section 6 */}
+          <section>
+            <h2 className="text-base font-semibold text-foreground mb-3">6. How to Request a Refund</h2>
+            <p className="mb-3">To request a cancellation or refund within the 14-day window, contact us with:</p>
             <ul className="space-y-1.5 list-none">
               {[
                 "Your registered email address.",
                 "The date and time of your subscription activation.",
-                "The reason for your refund request.",
+                "Your Paddle order reference (found in your receipt email).",
+                "The reason for your request.",
               ].map((item, i) => (
                 <li key={i} className="flex items-start gap-2">
                   <span className="text-muted-foreground">·</span>
@@ -107,15 +132,23 @@ export default function RefundPolicy() {
               ))}
             </ul>
             <p className="mt-4">
-              Approved refunds are processed within <strong>5–10 business days</strong> depending on your payment provider. We will notify you by email once the refund has been initiated.
+              Approved refunds are processed by Paddle within <strong>14 days</strong> via your original payment method with no additional fees.
             </p>
           </section>
 
-          {/* Section 6 */}
+          {/* Section 7 */}
           <section>
-            <h2 className="text-base font-semibold text-foreground mb-3">6. Changes to This Policy</h2>
+            <h2 className="text-base font-semibold text-foreground mb-3">7. Changes to This Policy</h2>
             <p>
-              WordStack reserves the right to update this Refund Policy at any time. Material changes will be communicated via the platform or email. Continued use of the Pro subscription after changes constitutes acceptance of the revised policy.
+              WordStack reserves the right to update this Refund Policy at any time. Material changes will be communicated via the platform or email. Continued use of the Pro subscription after changes constitutes acceptance of the revised policy. This policy is subject to and supplemented by{' '}
+              <a
+                href="https://www.paddle.com/legal/invoiced-consumer-terms"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary underline underline-offset-2 hover:opacity-80 transition-opacity"
+              >
+                Paddle's Consumer Terms
+              </a>.
             </p>
           </section>
 
@@ -126,22 +159,29 @@ export default function RefundPolicy() {
               <div className="flex items-start gap-3">
                 <span className="text-lg">✅</span>
                 <div>
-                  <p className="font-medium text-foreground">First subscription</p>
-                  <p className="text-muted-foreground">Full refund within 24 hours of activation for valid reasons.</p>
+                  <p className="font-medium text-foreground">First subscription — 14-day window</p>
+                  <p className="text-muted-foreground">Full refund within 14 days of activation (Consumer right). Exceptions apply for immediately-accessed digital content.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <span className="text-lg">❌</span>
                 <div>
                   <p className="font-medium text-foreground">Renewals</p>
-                  <p className="text-muted-foreground">No refunds on any recurring billing period.</p>
+                  <p className="text-muted-foreground">No refunds on any automatic renewal billing period.</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
                 <span className="text-lg">🔕</span>
                 <div>
                   <p className="font-medium text-foreground">Cancellation</p>
-                  <p className="text-muted-foreground">Stops future charges. Access continues until end of paid period.</p>
+                  <p className="text-muted-foreground">Cancel 48 hrs before renewal. Access continues until end of paid period.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3">
+                <span className="text-lg">⚖️</span>
+                <div>
+                  <p className="font-medium text-foreground">Processed by Paddle</p>
+                  <p className="text-muted-foreground">All billing and refunds are handled by Paddle as Merchant of Record.</p>
                 </div>
               </div>
             </div>
@@ -151,7 +191,15 @@ export default function RefundPolicy() {
 
         <div className="mt-12 pt-6 border-t border-border">
           <p className="text-xs text-muted-foreground text-center">
-            © {new Date().getFullYear()} WordStack. All rights reserved.
+            © {new Date().getFullYear()} WordStack. All rights reserved. · Payments processed by{' '}
+            <a
+              href="https://www.paddle.com/legal/invoiced-consumer-terms"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline underline-offset-2 hover:opacity-80 transition-opacity"
+            >
+              Paddle
+            </a>
           </p>
         </div>
       </main>

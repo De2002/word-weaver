@@ -10,6 +10,7 @@ import {
   Info, 
   Shield, 
   ScrollText,
+  DollarSign,
   ChevronDown,
   X
 } from 'lucide-react';
@@ -46,6 +47,7 @@ const sidebarSections: SidebarSection[] = [
     items: [
       { label: 'User Agreement', icon: FileText, href: '/user-agreement' },
       { label: 'Privacy Policy', icon: Shield, href: '/privacy-policy' },
+      { label: 'Refund Policy', icon: DollarSign, href: '/refund-policy' },
     ],
   },
 ];
