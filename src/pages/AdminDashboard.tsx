@@ -280,6 +280,10 @@ export default function AdminDashboard() {
             <ClassicsAdminPanel />
           </TabsContent>
 
+          <TabsContent value="tags" className="mt-6">
+            <TagsAdminPanel />
+          </TabsContent>
+
           <TabsContent value="moderation" className="mt-6">
             <ModerationPanel />
           </TabsContent>
