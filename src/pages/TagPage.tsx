@@ -76,6 +76,22 @@ export default function TagPage() {
       </header>
 
       <main className="max-w-2xl mx-auto pb-24">
+        {/* Banner Image */}
+        {tagMeta?.banner_url && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="relative h-40 overflow-hidden"
+          >
+            <img
+              src={tagMeta.banner_url}
+              alt={`#${displayTag} banner`}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/60" />
+          </motion.div>
+        )}
+
         {/* Tag Info */}
         <motion.div 
           initial={{ opacity: 0, y: 10 }}
@@ -83,7 +99,7 @@ export default function TagPage() {
           className="p-5 border-b border-border"
         >
           <div className="flex items-center gap-3 mb-3">
-            <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+            <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
               <Hash className="h-6 w-6 text-primary" />
             </div>
             <div>
@@ -93,6 +109,13 @@ export default function TagPage() {
               </p>
             </div>
           </div>
+
+          {/* Description */}
+          {tagMeta?.description && (
+            <p className="text-sm text-muted-foreground leading-relaxed mt-1 mb-3">
+              {tagMeta.description}
+            </p>
+          )}
           
           {/* Related Tags */}
           {relatedTags.length > 0 && (
