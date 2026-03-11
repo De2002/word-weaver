@@ -12,6 +12,7 @@ import { useAdminStats, useAdminQAStats, useAdminTopAnswerers } from "@/hooks/us
 import { ClassicsAdminPanel } from "@/components/classics/ClassicsAdminPanel";
 import { ModerationPanel } from "@/components/admin/ModerationPanel";
 import { ChallengesAdminPanel } from "@/components/admin/ChallengesAdminPanel";
+import { TagsAdminPanel } from "@/components/admin/TagsAdminPanel";
 
 export default function AdminDashboard() {
   useSEO({
