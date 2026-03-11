@@ -10,6 +10,7 @@ import {
   Info, 
   Shield, 
   ScrollText,
+  DollarSign,
   ChevronDown,
   X
 } from 'lucide-react';
