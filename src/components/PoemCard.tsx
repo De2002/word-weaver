@@ -113,7 +113,7 @@ export function PoemCard({ poem, index = 0, showProBadge = false }: PoemCardProp
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.3 }}
-      className="px-4 pt-8 pb-6 border-b border-border hover:bg-secondary/20 transition-colors"
+      className="px-4 pt-8 pb-10 border-b border-border hover:bg-secondary/20 transition-colors"
     >
       {/* Poem title */}
       {poem.title && (
