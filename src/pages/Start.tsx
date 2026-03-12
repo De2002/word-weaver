@@ -73,9 +73,9 @@ const fadeUp: Variants = {
 
 export default function Start() {
   useSEO({
-    title: "WordStack | Social Poetry Platform for Poets & Poetry Lovers",
+    title: "WordStack – Publish Poems & Connect with Poets",
     description:
-      "Publish poems, record audio readings, explore curated trails, and connect with a global poetry community on WordStack.",
+      "Join WordStack to read poetry, publish your poems, explore classics, ask questions, and connect with poets worldwide.",
     fullTitle: true,
   });
   const { user } = useAuth();
