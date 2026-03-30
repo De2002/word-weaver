@@ -2,7 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { CSSProperties, useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthProvider";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
@@ -68,6 +68,10 @@ const App = () => {
     window.localStorage.setItem("desktop-sidebar-collapsed", String(isDesktopSidebarCollapsed));
   }, [isDesktopSidebarCollapsed]);
 
+  const layoutVars = {
+    "--desktop-sidebar-offset": isDesktopSidebarCollapsed ? "5rem" : "18rem",
+  } as CSSProperties;
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -76,7 +80,7 @@ const App = () => {
         <AuthProvider>
           <BrowserRouter>
             <ScrollToTop />
-            <div className="min-h-screen">
+            <div className="min-h-screen" style={layoutVars}>
             <DesktopSidebar
               isCollapsed={isDesktopSidebarCollapsed}
               onToggle={() => setIsDesktopSidebarCollapsed((prev) => !prev)}
