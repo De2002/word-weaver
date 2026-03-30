@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   ArrowLeft, Trophy, Calendar, Crown, Loader2, Send,
-  CheckCircle, Clock, Users, Feather, Lock, X
+  CheckCircle, Clock, Users, Feather, X
 } from 'lucide-react';
 import { format, formatDistanceToNow, isPast } from 'date-fns';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -34,7 +34,7 @@ const STATUS_STYLES: Record<string, { label: string; className: string }> = {
 export default function ChallengeDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user, roles } = useAuth();
+  const { user } = useAuth();
   const { toast } = useToast();
   const [submitOpen, setSubmitOpen] = useState(false);
 
@@ -48,7 +48,6 @@ export default function ChallengeDetail() {
     description: challenge?.description || '',
   });
 
-  const isPro = roles.includes('pro') || roles.includes('admin');
   const isActive = challenge?.status === 'active';
   const deadline = challenge ? new Date(challenge.end_date) : null;
   const statusStyle = challenge ? (STATUS_STYLES[challenge.status] || STATUS_STYLES.closed) : STATUS_STYLES.closed;
@@ -181,21 +180,7 @@ export default function ChallengeDetail() {
                   <Link to="/login">Sign in</Link>
                 </Button>
               </div>
-            ) : !isPro ? (
-              <div className="text-center space-y-3">
-                <Lock className="h-7 w-7 text-muted-foreground mx-auto" />
-                <div>
-                  <p className="text-sm font-semibold">Pro Poets only</p>
-                  <p className="text-xs text-muted-foreground mt-1">Upgrade to Pro to submit to challenges.</p>
-                </div>
-                <Button asChild size="sm" className="gap-1.5">
-                  <Link to="/upgrade">
-                    <Crown className="h-3.5 w-3.5" />
-                    Go Pro
-                  </Link>
-                </Button>
-              </div>
-            ) : mySubmission ? (
+) : mySubmission ? (
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
                   <CheckCircle className="h-4 w-4 text-green-500" />

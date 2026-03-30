@@ -90,7 +90,7 @@ const menuSections: MenuSection[] = [
     items: [
       { icon: FileText, label: 'User Agreement', href: '/user-agreement', description: 'Terms of use' },
       { icon: Shield, label: 'Privacy Policy', href: '/privacy-policy', description: 'Your privacy' },
-      { icon: DollarSign, label: 'Refund Policy', href: '/refund-policy', description: 'Pro subscription refunds' },
+      { icon: DollarSign, label: 'Refund Policy', href: '/refund-policy', description: 'Subscription refunds' },
     ],
   },
 ];

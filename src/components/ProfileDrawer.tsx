@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, User, BookOpen, Bookmark, Bell, Settings, LogOut, Feather, Crown, Sun, Moon } from 'lucide-react';
+import { X, User, BookOpen, Bookmark, Bell, Settings, LogOut, Feather, Sun, Moon } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/context/AuthProvider';
@@ -23,12 +23,10 @@ const menuItems = [
 ];
 
 export function ProfileDrawer({ open, onClose }: ProfileDrawerProps) {
-  const { user, profile, roles, signOut } = useAuth();
+  const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
   const { unreadCount } = useNotifications();
-  const isPro = roles.includes('pro');
-  const isPoetRole = roles.includes('poet') || roles.includes('pro');
 
   const displayName = profile?.display_name || profile?.username || user?.email || 'You';
   const username = profile?.username;
@@ -123,9 +121,6 @@ export function ProfileDrawer({ open, onClose }: ProfileDrawerProps) {
                 <div>
                   <div className="flex items-center gap-1.5">
                     <span className="font-semibold text-foreground text-base leading-tight">{displayName}</span>
-                    {isPro && (
-                      <Crown className="h-3.5 w-3.5 text-warm-gold fill-warm-gold" />
-                    )}
                   </div>
                   {username && (
                     <span className="text-sm text-muted-foreground">@{username}</span>

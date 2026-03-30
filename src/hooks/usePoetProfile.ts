@@ -7,7 +7,6 @@ interface UsePoetProfileResult {
   poet: Poet | null;
   poems: Poem[];
   pinnedPoem: Poem | null;
-  isPro: boolean;
   isLoading: boolean;
   error: Error | null;
   notFound: boolean;
@@ -34,24 +33,6 @@ export function usePoetProfile(username: string): UsePoetProfileResult {
     },
     enabled: !!username,
   });
-
-  // Check if poet has pro role
-  const { data: proRole } = useQuery({
-    queryKey: ['poet-pro-role', profile?.user_id],
-    queryFn: async () => {
-      const { data, error } = await db
-        .from('user_roles')
-        .select('role')
-        .eq('user_id', profile!.user_id)
-        .eq('role', 'pro' as any)
-        .maybeSingle();
-      if (error) return null;
-      return data;
-    },
-    enabled: !!profile?.user_id,
-  });
-
-  const isPro = !!proRole;
 
   // Fetch published poems for this poet
   const {
@@ -205,7 +186,6 @@ export function usePoetProfile(username: string): UsePoetProfileResult {
     poet,
     poems,
     pinnedPoem,
-    isPro,
     isLoading: profileLoading || poemsLoading,
     error: (profileError || poemsError) as Error | null,
     notFound: !profileLoading && !profile,
