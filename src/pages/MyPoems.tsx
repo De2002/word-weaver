@@ -95,7 +95,7 @@ export default function MyPoems() {
       <Header />
       <main className="max-w-lg mx-auto px-4 py-6 pb-24">
         <div className="flex items-center gap-3">
-          <Link to="/home" className="p-2 -ml-2 rounded-full hover:bg-secondary transition-colors">
+          <Link to="/" className="p-2 -ml-2 rounded-full hover:bg-secondary transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </Link>
           <h1 className="text-xl font-semibold">My Poems</h1>

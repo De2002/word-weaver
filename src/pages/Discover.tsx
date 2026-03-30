@@ -66,7 +66,7 @@ export default function Discover() {
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border">
         <div className="flex items-center gap-3 px-4 py-3">
           <motion.a
-            href="/home"
+            href="/"
             whileTap={{ scale: 0.95 }}
             className="p-2 -ml-2 rounded-full hover:bg-secondary transition-colors"
           >

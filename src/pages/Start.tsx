@@ -92,7 +92,7 @@ export default function Start() {
           <div className="flex items-center gap-2">
             {user ? (
               <Button asChild size="sm">
-                <Link to="/home">Open app</Link>
+                <Link to="/">Open app</Link>
               </Button>
             ) : (
               <>
@@ -139,13 +139,13 @@ export default function Start() {
 
           <motion.div variants={fadeUp} className="mt-7 flex flex-wrap gap-3 justify-center">
             <Button asChild size="lg" className="gap-2 rounded-full px-7">
-              <Link to={user ? "/home" : "/signup"}>
+              <Link to={user ? "/" : "/signup"}>
                 Start writing free
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="rounded-full px-7">
-              <Link to="/home">Browse the feed</Link>
+              <Link to="/">Browse the feed</Link>
             </Button>
           </motion.div>
 
@@ -287,7 +287,7 @@ export default function Start() {
             Join thousands of poets already writing, sharing, and connecting on WordStack.
           </p>
           <Button asChild size="lg" className="rounded-full gap-2 px-8">
-            <Link to={user ? "/home" : "/signup"}>
+            <Link to={user ? "/" : "/signup"}>
               Create your poet profile
               <ArrowRight className="h-4 w-4" />
             </Link>

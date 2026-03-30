@@ -19,7 +19,6 @@ import Rules from "./pages/Rules";
 import UserAgreement from "./pages/UserAgreement";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import CreatePoetry from "./pages/CreatePoetry";
-import Start from "./pages/Start";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import MyPoems from "./pages/MyPoems";
@@ -67,8 +66,7 @@ const App = () => (
         <BrowserRouter>
           <ScrollToTop />
           <Routes>
-            <Route path="/" element={<Start />} />
-            <Route path="/home" element={<Index />} />
+            <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
 

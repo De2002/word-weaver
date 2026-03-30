@@ -19,7 +19,7 @@ export function AdminRoute({ children }: { children: React.ReactNode }) {
   const isAdmin = roles.includes("admin");
 
   if (!isAdmin) {
-    return <Navigate to="/home" replace />;
+    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;
