@@ -59,7 +59,7 @@ export function Header({ activeTab = 'for-you', onTabChange, showTabs = false }:
         initial={{ y: 0 }}
         animate={{ y: isVisible ? 0 : -100 }}
         transition={{ duration: 0.3, ease: 'easeInOut' }}
-        className="fixed top-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-xl border-b border-border/50"
+        className="fixed top-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-xl border-b border-border/50 md:left-[var(--desktop-sidebar-offset,0px)]"
       >
         <div className="max-w-2xl mx-auto">
           {/* Top Row: Avatar (left) + Brand (center) + Bell (right) */}
@@ -95,7 +95,7 @@ export function Header({ activeTab = 'for-you', onTabChange, showTabs = false }:
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="flex-1 flex justify-center"
+              className="flex-1 flex justify-center md:hidden"
             >
               <span className="font-poem text-xl font-bold bg-gradient-to-r from-primary to-warm-gold bg-clip-text text-transparent">
                 WS
