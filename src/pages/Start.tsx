@@ -218,8 +218,8 @@ export default function Start() {
         >
           <div className="p-6 sm:p-8">
             <div className="flex items-center gap-2 mb-3">
-              <Crown className="h-4 w-4 text-amber-500" />
-              <span className="text-xs font-bold uppercase tracking-widest" style={{ color: "hsl(38 80% 45%)" }}>Pro Poet</span>
+              <Crown className="h-4 w-4 text-primary" />
+              <span className="text-xs font-bold uppercase tracking-widest text-primary">Pro Poet</span>
             </div>
             <h2 className="font-poem text-2xl sm:text-3xl mb-2">Take your profile further</h2>
             <p className="text-sm text-muted-foreground mb-5">
@@ -228,12 +228,12 @@ export default function Start() {
             <ul className="space-y-2 mb-6">
               {proFeatures.map((f) => (
                 <li key={f} className="flex items-center gap-2 text-sm">
-                  <Star className="h-3.5 w-3.5 text-amber-500 shrink-0" />
+                  <Star className="h-3.5 w-3.5 text-primary shrink-0" />
                   {f}
                 </li>
               ))}
             </ul>
-            <Button asChild className="rounded-full gap-2" style={{ background: "linear-gradient(135deg, hsl(24 80% 50%), hsl(38 80% 50%))", color: "white" }}>
+            <Button asChild className="rounded-full gap-2" style={{ background: "var(--gradient-warm)", color: "white" }}>
               <Link to="/upgrade">
                 Upgrade to Pro <ArrowRight className="h-3.5 w-3.5" />
               </Link>

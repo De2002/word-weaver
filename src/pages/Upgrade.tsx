@@ -60,7 +60,7 @@ export default function Upgrade() {
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full bg-primary/5 blur-[120px]" />
         <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full opacity-60 blur-[100px]"
-          style={{ background: 'hsl(38 80% 50% / 0.06)' }} />
+          style={{ background: 'hsl(var(--warm-gold) / 0.06)' }} />
       </div>
 
       <div className="relative max-w-2xl mx-auto px-5 pb-24 pt-16">
@@ -70,9 +70,9 @@ export default function Upgrade() {
           <FadeUp delay={0} className="flex justify-center mb-6">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-medium tracking-widest uppercase"
               style={{
-                borderColor: 'hsl(38 80% 50% / 0.3)',
-                background: 'hsl(38 80% 50% / 0.07)',
-                color: 'hsl(38 80% 50%)',
+                borderColor: 'hsl(var(--warm-gold) / 0.3)',
+                background: 'hsl(var(--warm-gold) / 0.07)',
+                color: 'hsl(var(--warm-gold))',
               }}>
               <Crown className="h-3 w-3" />
               Pro Poet
@@ -83,7 +83,7 @@ export default function Upgrade() {
             <h1 className="font-poem text-4xl md:text-5xl font-bold text-foreground leading-tight mb-5">
               You're Not Just Posting.
               <br />
-              <span className="bg-gradient-to-r from-primary to-[hsl(38,80%,50%)] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-primary to-warm-gold bg-clip-text text-transparent">
                 You're Publishing.
               </span>
             </h1>
@@ -98,7 +98,7 @@ export default function Upgrade() {
           <FadeUp delay={0.24}>
             {isPro ? (
               <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full border font-medium"
-                style={{ background: 'hsl(38 80% 50% / 0.1)', borderColor: 'hsl(38 80% 50% / 0.3)', color: 'hsl(38 80% 50%)' }}>
+                style={{ background: 'hsl(var(--warm-gold) / 0.1)', borderColor: 'hsl(var(--warm-gold) / 0.3)', color: 'hsl(var(--warm-gold))' }}>
                 <Crown className="h-4 w-4" />
                 You're already a Pro Poet
               </div>
@@ -107,7 +107,7 @@ export default function Upgrade() {
                 <Link
                   to="/login"
                   className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-primary-foreground font-semibold text-base shadow-lg hover:shadow-xl hover:opacity-95 transition-all duration-300"
-                  style={{ background: 'linear-gradient(135deg, hsl(24 80% 50%), hsl(38 80% 50%))' }}
+                  style={{ background: 'var(--gradient-warm)' }}
                 >
                   <Crown className="h-4 w-4" />
                   Become a Pro Poet — $2.99/month
@@ -135,10 +135,10 @@ export default function Upgrade() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {proFeatures.map((feat, i) => (
               <FadeUp key={feat.label} delay={i * 0.04 + 0.1}>
-                <div className="flex items-start gap-3 p-4 rounded-2xl border border-border/50 bg-card hover:border-[hsl(38,80%,50%,0.3)] transition-colors duration-200 h-full">
+                <div className="flex items-start gap-3 p-4 rounded-2xl border border-border/50 bg-card hover:border-primary/30 transition-colors duration-200 h-full">
                   <div className="flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center"
-                    style={{ background: 'hsl(38 80% 50% / 0.1)' }}>
-                    <feat.icon className="h-3.5 w-3.5" style={{ color: 'hsl(38 80% 50%)' }} />
+                    style={{ background: 'hsl(var(--warm-gold) / 0.1)' }}>
+                    <feat.icon className="h-3.5 w-3.5" style={{ color: 'hsl(var(--warm-gold))' }} />
                   </div>
                   <span className="text-sm text-foreground/80 leading-snug pt-1">{feat.label}</span>
                 </div>
@@ -177,17 +177,17 @@ export default function Upgrade() {
             {/* Pro */}
             <FadeUp delay={0.18}>
               <div className="rounded-2xl border p-5 relative overflow-hidden h-full"
-                style={{ borderColor: 'hsl(38 80% 50% / 0.35)', background: 'linear-gradient(160deg, hsl(38 80% 50% / 0.06), transparent)' }}>
+                style={{ borderColor: 'hsl(var(--warm-gold) / 0.35)', background: 'linear-gradient(160deg, hsl(var(--warm-gold) / 0.06), transparent)' }}>
                 <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl"
-                  style={{ background: 'hsl(38 80% 50% / 0.08)' }} />
+                  style={{ background: 'hsl(var(--warm-gold) / 0.08)' }} />
                 <p className="font-poem text-base font-semibold mb-4 flex items-center gap-1.5"
-                  style={{ color: 'hsl(38 80% 50%)' }}>
+                  style={{ color: 'hsl(var(--warm-gold))' }}>
                   <Crown className="h-3.5 w-3.5" /> Pro Poet
                 </p>
                 <ul className="space-y-2.5">
                   {comparison.pro.map((item) => (
                     <li key={item} className="flex items-start gap-2 text-sm text-foreground/80">
-                      <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0" style={{ color: 'hsl(38 80% 50%)' }} />
+                      <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0" style={{ color: 'hsl(var(--warm-gold))' }} />
                       {item}
                     </li>
                   ))}
@@ -231,7 +231,7 @@ export default function Upgrade() {
                 <Link
                   to="/login"
                   className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-primary-foreground font-semibold text-base shadow-lg hover:shadow-xl hover:opacity-95 transition-all duration-300"
-                  style={{ background: 'linear-gradient(135deg, hsl(24 80% 50%), hsl(38 80% 50%))' }}
+                  style={{ background: 'var(--gradient-warm)' }}
                 >
                   <Crown className="h-4 w-4" />
                   Upgrade to Pro — $2.99/month
