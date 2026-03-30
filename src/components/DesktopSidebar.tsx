@@ -1,9 +1,9 @@
-import { useState } from 'react';
 import { LayoutList, HelpCircle, Trophy, Feather, User, BookOpen, Bookmark, Bell, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/context/AuthProvider';
 import { useNotifications } from '@/hooks/useNotifications';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface NavItem {
   icon: React.ElementType;
@@ -30,11 +30,15 @@ const accountNavItems: NavItem[] = [
   { icon: Settings, label: 'Edit Profile', href: '/profile', requiresAuth: true },
 ];
 
-export function DesktopSidebar() {
+interface DesktopSidebarProps {
+  isCollapsed: boolean;
+  onToggle: () => void;
+}
+
+export function DesktopSidebar({ isCollapsed, onToggle }: DesktopSidebarProps) {
   const location = useLocation();
   const { user, profile } = useAuth();
   const { unreadCount } = useNotifications();
-  const [isCollapsed, setIsCollapsed] = useState(false);
 
   const isActive = (href: string) => {
     if (href === '/') return location.pathname === '/';
@@ -59,18 +63,17 @@ export function DesktopSidebar() {
 
     const active = isActive(href);
 
-    return (
+    const link = (
       <Link
         key={item.label}
         to={href}
         className={cn(
-          'group flex items-center rounded-xl px-3 py-3 transition-colors',
+          'group flex items-center rounded-xl px-3 py-3 transition-all duration-300 ease-in-out',
           active
             ? 'bg-primary/10 text-primary'
             : 'text-muted-foreground hover:bg-secondary hover:text-foreground',
           isCollapsed ? 'justify-center' : 'gap-3'
         )}
-        title={isCollapsed ? item.label : undefined}
       >
         <div className="relative">
           <item.icon className={cn('h-5 w-5 shrink-0', active && 'stroke-[2.5]')} />
@@ -81,28 +84,40 @@ export function DesktopSidebar() {
           )}
         </div>
 
-        {!isCollapsed && (
-          <div>
-            <p className="text-sm font-semibold leading-tight">{item.label}</p>
-            {item.description && (
-              <p className={cn('text-xs leading-tight mt-1', active ? 'text-primary/80' : 'text-muted-foreground')}>
-                {item.description}
-              </p>
-            )}
-          </div>
-        )}
+        <div
+          className={cn(
+            'overflow-hidden transition-all duration-300 ease-in-out',
+            isCollapsed ? 'max-w-0 opacity-0' : 'max-w-[220px] opacity-100'
+          )}
+        >
+          <p className="text-sm font-semibold leading-tight whitespace-nowrap">{item.label}</p>
+          {item.description && (
+            <p className={cn('text-xs leading-tight mt-1 whitespace-nowrap', active ? 'text-primary/80' : 'text-muted-foreground')}>
+              {item.description}
+            </p>
+          )}
+        </div>
       </Link>
+    );
+
+    if (!isCollapsed) return link;
+
+    return (
+      <Tooltip key={item.label}>
+        <TooltipTrigger asChild>{link}</TooltipTrigger>
+        <TooltipContent side="right">{item.label}</TooltipContent>
+      </Tooltip>
     );
   };
 
   return (
     <aside
       className={cn(
-        'hidden md:flex h-screen border-r border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 transition-[width] duration-200',
-        isCollapsed ? 'w-20' : 'w-64'
+        'fixed left-0 top-0 z-40 hidden h-screen border-r border-border bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80 md:flex transition-[width] duration-300 ease-in-out',
+        isCollapsed ? 'w-20' : 'w-72'
       )}
     >
-      <div className="flex w-full flex-col p-4">
+      <div className="flex w-full flex-col overflow-y-auto p-4">
         <div className={cn('mb-6 flex items-center', isCollapsed ? 'justify-center' : 'justify-between')}>
           {!isCollapsed && (
             <Link to="/" className="px-2 py-1">
@@ -115,11 +130,11 @@ export function DesktopSidebar() {
 
           <button
             type="button"
-            onClick={() => setIsCollapsed((prev) => !prev)}
-            className="rounded-lg p-2 text-muted-foreground hover:bg-secondary hover:text-foreground transition-colors"
+            onClick={onToggle}
+            className="rounded-lg p-2 text-muted-foreground hover:bg-secondary hover:text-foreground transition-all duration-300"
             aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
-            {isCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+            {isCollapsed ? <ChevronRight className="h-5 w-5 transition-transform duration-300" /> : <ChevronLeft className="h-5 w-5 transition-transform duration-300" />}
           </button>
         </div>
 
@@ -130,11 +145,14 @@ export function DesktopSidebar() {
         {user && (
           <>
             <div className="my-4 border-t border-border/60" />
-            {!isCollapsed && (
-              <p className="px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            <p
+              className={cn(
+                'px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground transition-opacity duration-300',
+                isCollapsed ? 'opacity-0' : 'opacity-100'
+              )}
+            >
                 Account
-              </p>
-            )}
+            </p>
             <nav className="space-y-1.5" aria-label="Desktop account navigation">
               {accountNavItems.map(renderNavLink)}
             </nav>
