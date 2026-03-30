@@ -120,7 +120,7 @@ export default function Profile() {
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border">
         <div className="flex items-center justify-between px-4 h-14 max-w-lg mx-auto">
-          <Link to="/home" className="p-2 -ml-2 hover:bg-secondary rounded-full transition-colors">
+          <Link to="/" className="p-2 -ml-2 hover:bg-secondary rounded-full transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </Link>
           <h1 className="font-semibold">Profile</h1>

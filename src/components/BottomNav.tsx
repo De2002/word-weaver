@@ -9,7 +9,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { icon: LayoutList, label: 'Feed', href: '/home' },
+  { icon: LayoutList, label: 'Feed', href: '/' },
   { icon: HelpCircle, label: 'Q&A', href: '/qa' },
   { icon: Trophy, label: 'Challenges', href: '/challenges' },
   { icon: Feather, label: 'Classics', href: '/classics' },
@@ -19,7 +19,7 @@ export function BottomNav() {
   const location = useLocation();
   
   const isActive = (href: string) => {
-    if (href === '/home') return location.pathname === '/home';
+    if (href === '/') return location.pathname === '/';
     return location.pathname.startsWith(href);
   };
 

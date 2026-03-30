@@ -15,7 +15,7 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const { toast } = useToast();
-  const redirectTo = (location.state as any)?.from || "/home";
+  const redirectTo = (location.state as any)?.from || "/";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

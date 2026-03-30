@@ -216,7 +216,7 @@ export default function Notifications() {
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-border px-4 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Link to="/home" className="p-2 -ml-2 hover:bg-secondary rounded-full transition-colors">
+            <Link to="/" className="p-2 -ml-2 hover:bg-secondary rounded-full transition-colors">
               <ArrowLeft className="h-5 w-5" />
             </Link>
             <div>
