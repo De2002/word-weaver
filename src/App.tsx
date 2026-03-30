@@ -8,6 +8,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AdminRoute } from "@/components/AdminRoute";
 import { BottomNav } from "@/components/BottomNav";
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { DesktopSidebar } from "@/components/DesktopSidebar";
 import Index from "./pages/Index";
 import Profile from "./pages/Profile";
 import PoemDetail from "./pages/PoemDetail";
@@ -64,7 +65,9 @@ const App = () => (
       <AuthProvider>
         <BrowserRouter>
           <ScrollToTop />
-          <Routes>
+          <div className="min-h-screen md:pl-64">
+            <DesktopSidebar />
+            <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
@@ -225,8 +228,9 @@ const App = () => (
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
-          </Routes>
-          <BottomNav />
+            </Routes>
+            <BottomNav />
+          </div>
         </BrowserRouter>
       </AuthProvider>
     </TooltipProvider>
