@@ -111,7 +111,7 @@ export function Header({ activeTab = 'for-you', onTabChange, showTabs = false }:
                   <Link
                     to="/upgrade"
                     className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:opacity-90"
-                    style={{ background: 'linear-gradient(135deg, hsl(24 80% 50%), hsl(38 80% 50%))', color: 'hsl(0 0% 100%)' }}
+                    style={{ background: 'var(--gradient-warm)', color: 'hsl(0 0% 100%)' }}
                   >
                     <Crown className="h-3 w-3" />
                     Pro
