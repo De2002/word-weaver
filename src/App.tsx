@@ -65,8 +65,9 @@ const App = () => (
       <AuthProvider>
         <BrowserRouter>
           <ScrollToTop />
-          <div className="min-h-screen md:pl-64">
+          <div className="min-h-screen md:flex">
             <DesktopSidebar />
+            <main className="flex-1 min-w-0">
             <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
@@ -229,6 +230,7 @@ const App = () => (
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
             </Routes>
+            </main>
             <BottomNav />
           </div>
         </BrowserRouter>

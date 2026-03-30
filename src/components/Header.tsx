@@ -69,7 +69,7 @@ export function Header({ activeTab = 'for-you', onTabChange, showTabs = false }:
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.05 }}
-              className="flex-none"
+              className="flex-none md:hidden"
             >
               {user ? (
                 <button
@@ -103,7 +103,7 @@ export function Header({ activeTab = 'for-you', onTabChange, showTabs = false }:
             </motion.div>
 
             {/* Right: spacing to balance the centered brand */}
-            <div className="flex-none w-8" />
+            <div className="flex-none w-8 md:hidden" />
           </div>
 
           {/* Tabs Row */}
