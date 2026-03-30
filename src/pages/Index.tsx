@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { usePublishedPoems } from '@/hooks/usePublishedPoems';
 import { useFollowingPoems } from '@/hooks/useFollowingPoems';
-import { useProPoems } from '@/hooks/useProPoems';
+import { useTopLikedPoems } from '@/hooks/useTopLikedPoems';
 import { useDiscoverPoets } from '@/hooks/useDiscoverPoets';
 import { usePullToRefresh } from '@/hooks/usePullToRefresh';
 import { useSEO } from '@/hooks/useSEO';
@@ -47,8 +47,8 @@ const Index = () => {
 
   const [activeTab, setActiveTab] = useState('for-you');
 
-  // For You = Pro poets poems
-  const { poems: proPoems, isLoading: proLoading, isLoadingMore: proLoadingMore, error: proError, hasMore: proHasMore, loadMore: loadMorePro, refresh: refreshPro } = useProPoems();
+  // For You = top liked poems across all poets
+  const { poems: topLikedPoems, isLoading: topLikedLoading, isLoadingMore: topLikedLoadingMore, error: topLikedError, hasMore: topLikedHasMore, loadMore: loadMoreTopLiked, refresh: refreshTopLiked } = useTopLikedPoems();
   // Recent = all published poems
   const { poems, isLoading, isLoadingMore, error, hasMore, loadMore, refresh } = usePublishedPoems();
   // Following
@@ -65,9 +65,9 @@ const Index = () => {
       case 'following':
         return { poems: followingPoems, loading: followingLoading, loadingMore: false, error: followingError, hasMore: followingHasMore, loadMore: loadMoreFollowing, refresh: refreshFollowing };
       default: // for-you
-        return { poems: proPoems, loading: proLoading, loadingMore: proLoadingMore, error: proError, hasMore: proHasMore, loadMore: loadMorePro, refresh: refreshPro };
+        return { poems: topLikedPoems, loading: topLikedLoading, loadingMore: topLikedLoadingMore, error: topLikedError, hasMore: topLikedHasMore, loadMore: loadMoreTopLiked, refresh: refreshTopLiked };
     }
-  }, [activeTab, poems, isLoading, isLoadingMore, error, hasMore, loadMore, refresh, followingPoems, followingLoading, followingError, followingHasMore, loadMoreFollowing, refreshFollowing, proPoems, proLoading, proLoadingMore, proError, proHasMore, loadMorePro, refreshPro]);
+  }, [activeTab, poems, isLoading, isLoadingMore, error, hasMore, loadMore, refresh, followingPoems, followingLoading, followingError, followingHasMore, loadMoreFollowing, refreshFollowing, topLikedPoems, topLikedLoading, topLikedLoadingMore, topLikedError, topLikedHasMore, loadMoreTopLiked, refreshTopLiked]);
 
   const currentData = getCurrentData();
 
@@ -213,12 +213,12 @@ const Index = () => {
             </div>
           )}
 
-          {/* Empty State for For You Tab (no Pro poems) */}
+          {/* Empty State for For You Tab (no top liked poems) */}
           {activeTab === 'for-you' && !currentData.loading && !currentData.error && currentData.poems.length === 0 && (
             <div className="flex flex-col items-center justify-center py-12 text-center">
               <Star className="w-12 h-12 text-muted-foreground mb-4" />
-              <p className="text-lg font-medium text-foreground mb-2">No Pro poems yet</p>
-              <p className="text-muted-foreground mb-4">Pro poet poems will appear here.</p>
+              <p className="text-lg font-medium text-foreground mb-2">No top liked poems yet</p>
+              <p className="text-muted-foreground mb-4">Top liked poems from all poets will appear here.</p>
             </div>
           )}
 
@@ -237,7 +237,7 @@ const Index = () => {
           {!currentData.loading && !currentData.error && currentData.poems.length > 0 && (
             <div>
               {currentData.poems.map((poem, index) => (
-                <PoemCard key={poem.id} poem={poem} index={index} showProBadge={activeTab === 'for-you'} />
+                <PoemCard key={poem.id} poem={poem} index={index} showProBadge={false} />
               ))}
             </div>
           )}
