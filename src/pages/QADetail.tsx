@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, MessageCircle, Eye, Crown, Send, Lock } from 'lucide-react';
+import { ArrowLeft, MessageCircle, Eye, Send } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
@@ -16,14 +16,13 @@ import { useToast } from '@/hooks/use-toast';
 export default function QADetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user, roles } = useAuth();
+  const { user } = useAuth();
   const { toast } = useToast();
   const [answerText, setAnswerText] = useState('');
   const [isPosting, setIsPosting] = useState(false);
 
   const { question, answers, isLoading, postAnswer, toggleVote, acceptAnswer } = useQAQuestion(id!);
 
-  const isPro = roles.includes('pro');
   const isOwner = user?.id === question?.user_id;
   const categoryLabel = QA_CATEGORIES.find(c => c.value === question?.category)?.label || 'General';
 
@@ -165,7 +164,7 @@ export default function QADetail() {
         {answers.length === 0 && (
           <div className="text-center py-10 px-4">
             <MessageCircle className="h-8 w-8 text-muted-foreground mx-auto mb-2" />
-            <p className="text-sm text-muted-foreground">No answers yet. Pro poets, share your wisdom!</p>
+            <p className="text-sm text-muted-foreground">No answers yet. Be the first to share your wisdom!</p>
           </div>
         )}
 
@@ -176,24 +175,11 @@ export default function QADetail() {
               <p className="text-sm text-muted-foreground mb-3">Sign in to participate</p>
               <Button size="sm" asChild><a href="/login">Sign in</a></Button>
             </div>
-          ) : !isPro ? (
-            <div className="rounded-xl border border-border p-4 bg-secondary/30 flex items-start gap-3">
-              <Lock className="h-4 w-4 text-muted-foreground shrink-0 mt-0.5" />
-              <div>
-                <p className="text-sm font-medium mb-0.5">Pro Poets only</p>
-                <p className="text-xs text-muted-foreground">
-                  Only Pro Poets can post answers. Upgrade to Pro to share your expertise.
-                </p>
-              </div>
-              <div className="ml-auto shrink-0">
-                <Crown className="h-5 w-5 text-amber-500" />
-              </div>
-            </div>
           ) : (
+
             <div>
               <div className="flex items-center gap-2 mb-3">
-                <Crown className="h-4 w-4 text-amber-500" />
-                <span className="text-sm font-medium">Answer as Pro Poet</span>
+                <span className="text-sm font-medium">Post an answer</span>
               </div>
               <Textarea
                 value={answerText}

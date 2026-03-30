@@ -2,8 +2,8 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
   Sparkles, TrendingUp, Users, Mic, BookOpen, Calendar,
-  MessageCircle, HelpCircle, Crown, Feather, ArrowRight,
-  Star, BookMarked, Map
+  MessageCircle, HelpCircle, Feather, ArrowRight,
+  BookMarked, Map
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthProvider";
@@ -37,8 +37,8 @@ const features = [
   },
   {
     icon: HelpCircle,
-    title: "Q&A with Pro Poets",
-    description: "Ask craft questions. Get real answers from experienced poets.",
+    title: "Q&A with Poets",
+    description: "Ask craft questions. Get real answers from the community.",
   },
   {
     icon: BookOpen,
@@ -52,12 +52,6 @@ const features = [
   },
 ];
 
-const proFeatures = [
-  "Header image & pinned poem on your profile",
-  "Advanced analytics — reads, saves, upvotes",
-  "Answer questions in the community Q&A",
-  "Pro badge on your public profile",
-];
 
 import type { Variants } from "framer-motion";
 
@@ -202,40 +196,6 @@ export default function Start() {
             <Button asChild variant="outline" className="rounded-full gap-2">
               <Link to="/trails">
                 Explore trails <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
-            </Button>
-          </div>
-        </motion.section>
-
-        {/* ── Pro tier ─────────────────────────────────────────────────── */}
-        <motion.section
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="mb-14 rounded-3xl overflow-hidden"
-          style={{ background: "linear-gradient(135deg, hsl(var(--primary) / 0.08), hsl(var(--accent) / 0.12))", border: "1px solid hsl(var(--primary) / 0.2)" }}
-        >
-          <div className="p-6 sm:p-8">
-            <div className="flex items-center gap-2 mb-3">
-              <Crown className="h-4 w-4 text-primary" />
-              <span className="text-xs font-bold uppercase tracking-widest text-primary">Pro Poet</span>
-            </div>
-            <h2 className="font-poem text-2xl sm:text-3xl mb-2">Take your profile further</h2>
-            <p className="text-sm text-muted-foreground mb-5">
-              Unlock a richer public presence and deeper analytics for $2.99/month.
-            </p>
-            <ul className="space-y-2 mb-6">
-              {proFeatures.map((f) => (
-                <li key={f} className="flex items-center gap-2 text-sm">
-                  <Star className="h-3.5 w-3.5 text-primary shrink-0" />
-                  {f}
-                </li>
-              ))}
-            </ul>
-            <Button asChild className="rounded-full gap-2" style={{ background: "var(--gradient-warm)", color: "white" }}>
-              <Link to="/upgrade">
-                Upgrade to Pro <ArrowRight className="h-3.5 w-3.5" />
               </Link>
             </Button>
           </div>

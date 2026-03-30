@@ -14,7 +14,7 @@ type Filter = typeof FILTERS[number];
 export default function Challenges() {
   useSEO({
     title: 'Poetry Challenges',
-    description: 'Monthly poetry challenges for Pro poets. Compete, win prizes, and grow your audience.',
+    description: 'Monthly poetry challenges. Compete, win prizes, and grow your audience.',
   });
 
   const [filter, setFilter] = useState<Filter>('all');
@@ -54,7 +54,7 @@ export default function Challenges() {
             transition={{ delay: 0.1 }}
             className="text-muted-foreground max-w-sm mx-auto text-sm"
           >
-            Monthly competitions for Pro Poets. Submit your best work, compete for prizes, and earn community recognition.
+            Monthly competitions. Submit your best work, compete for prizes, and earn community recognition.
           </motion.p>
 
           {active.length > 0 && (
@@ -76,7 +76,7 @@ export default function Challenges() {
             className="mt-3 flex items-center justify-center gap-1.5 text-xs text-muted-foreground"
           >
             <Crown className="h-3 w-3 text-amber-500" />
-            <span>Pro Poets only · Monthly cadence · Admin-curated</span>
+            <span>Open to all poets · Monthly cadence · Admin-curated</span>
           </motion.div>
         </div>
       </div>

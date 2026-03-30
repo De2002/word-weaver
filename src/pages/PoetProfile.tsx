@@ -34,7 +34,7 @@ type SortTab = 'all' | 'popular';
 
 export default function PoetProfile() {
   const { username } = useParams<{ username: string }>();
-  const { poet, poems, pinnedPoem, isPro, isLoading, error, notFound, followerCount } = usePoetProfile(username || '');
+  const { poet, poems, pinnedPoem, isLoading, error, notFound, followerCount } = usePoetProfile(username || '');
   const { user, roles } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -132,7 +132,7 @@ export default function PoetProfile() {
   const badge = poet?.badges[0];
   const BadgeIcon = badge?.type === 'trending' ? Sparkles : badge?.type === 'rising' ? TrendingUp : null;
   const supportLinks = poet?.supportLinks as Record<string, string> || {};
-  const profileTabs: ProfileTab[] = isPro ? ['Poems', 'About', 'Links'] : ['Poems'];
+  const profileTabs: ProfileTab[] = ['Poems', 'About', 'Links'];
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -147,12 +147,7 @@ export default function PoetProfile() {
           <div className="text-center min-w-0">
             <p className="font-semibold text-sm truncate flex items-center gap-1.5 justify-center">
               {poet?.name}
-              {isPro && (
-                <span className="text-[9px] font-black uppercase tracking-wider bg-foreground text-background px-1.5 py-0.5 rounded-full leading-none">
-                  PRO
-                </span>
-              )}
-            </p>
+                          </p>
             {poems.length > 0 && (
               <p className="text-[10px] text-muted-foreground uppercase tracking-wider">{poems.length} poems</p>
             )}
@@ -213,7 +208,7 @@ export default function PoetProfile() {
       <div className="max-w-2xl mx-auto">
 
         {/* ── Pro Header image ──────────────────────────────────────────────── */}
-        {isPro && (poet as any)?.headerImage && (
+        {(poet as any)?.headerImage && (
           <div className="h-44 md:h-56 w-full relative overflow-hidden">
             <img
               src={(poet as any).headerImage}
@@ -230,7 +225,7 @@ export default function PoetProfile() {
           animate={{ opacity: 1, y: 0 }}
           className={cn(
             "px-4 pb-4",
-            isPro && (poet as any)?.headerImage ? "-mt-14" : "pt-6"
+            (poet as any)?.headerImage ? "-mt-14" : "pt-6"
           )}
         >
           {/* Avatar row */}
@@ -238,7 +233,7 @@ export default function PoetProfile() {
             <div className="relative">
               <Avatar className={cn(
                 "ring-4 ring-background",
-                isPro ? "h-24 w-24" : "h-20 w-20"
+                "h-24 w-24"
               )}>
                 <AvatarImage src={poet?.avatar} alt={poet?.name} />
                 <AvatarFallback className="text-2xl font-medium bg-secondary">
@@ -283,12 +278,7 @@ export default function PoetProfile() {
           <div className="mb-3">
             <h1 className="text-xl font-semibold flex items-center gap-2 flex-wrap">
               {poet?.name}
-              {isPro && (
-                <span className="text-[9px] font-black uppercase tracking-wider bg-foreground text-background px-2 py-0.5 rounded-full leading-none">
-                  PRO
-                </span>
-              )}
-            </h1>
+                          </h1>
             <p className="text-sm text-muted-foreground">@{poet?.username}</p>
           </div>
 
@@ -314,8 +304,8 @@ export default function PoetProfile() {
           </div>
         </motion.div>
 
-        {/* ── Pro: Own-profile analytics ────────────────────────────────────── */}
-        {isPro && isOwnProfile && (
+        {/* ── Own-profile analytics ─────────────────────────────────────────── */}
+        {isOwnProfile && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -327,7 +317,7 @@ export default function PoetProfile() {
                 <BarChart3 className="h-3.5 w-3.5" />
                 Your Stats
               </p>
-              <span className="text-[9px] font-bold uppercase tracking-widest text-primary">Pro</span>
+              <span className="text-[9px] font-bold uppercase tracking-widest text-primary">Stats</span>
             </div>
             <div className="grid grid-cols-3 gap-3 text-center">
               {[
@@ -345,8 +335,8 @@ export default function PoetProfile() {
           </motion.div>
         )}
 
-        {/* ── Pro: Pinned poem ─────────────────────────────────────────────── */}
-        {isPro && pinnedPoem && (
+        {/* ── Pinned poem ──────────────────────────────────────────────────── */}
+        {pinnedPoem && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -462,8 +452,8 @@ export default function PoetProfile() {
             </motion.div>
           )}
 
-          {/* ── About tab (Pro only) ─────────────────────────────────────────── */}
-          {profileTab === 'About' && isPro && (
+          {/* ── About tab ───────────────────────────────────────────────────── */}
+          {profileTab === 'About' && (
             <motion.div
               key="about"
               initial={{ opacity: 0 }}
@@ -490,8 +480,8 @@ export default function PoetProfile() {
             </motion.div>
           )}
 
-          {/* ── Links tab (Pro only) ─────────────────────────────────────────── */}
-          {profileTab === 'Links' && isPro && (
+          {/* ── Links tab ───────────────────────────────────────────────────── */}
+          {profileTab === 'Links' && (
             <motion.div
               key="links"
               initial={{ opacity: 0 }}

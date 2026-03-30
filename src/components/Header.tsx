@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Crown } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthProvider';
@@ -23,7 +22,7 @@ interface HeaderProps {
 }
 
 export function Header({ activeTab = 'for-you', onTabChange, showTabs = false }: HeaderProps) {
-  const { user, profile, roles } = useAuth();
+  const { user, profile } = useAuth();
   const isVisible = useScrollDirection(15);
   const tabRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
@@ -103,22 +102,8 @@ export function Header({ activeTab = 'for-you', onTabChange, showTabs = false }:
               </span>
             </motion.div>
 
-            {/* Right: Upgrade crown for non-pro / empty spacer for pro (bell is in Profile Drawer) */}
-            {/* Right: Upgrade crown for non-pro / empty spacer for pro (bell is in Profile Drawer) */}
-            <div className="flex-none flex items-center gap-1">
-              {!roles.includes('pro') && (
-                <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.03 }}>
-                  <Link
-                    to="/upgrade"
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:opacity-90"
-                    style={{ background: 'var(--gradient-warm)', color: 'hsl(0 0% 100%)' }}
-                  >
-                    <Crown className="h-3 w-3" />
-                    Pro
-                  </Link>
-                </motion.div>
-              )}
-            </div>
+            {/* Right: spacing to balance the centered brand */}
+            <div className="flex-none w-8" />
           </div>
 
           {/* Tabs Row */}

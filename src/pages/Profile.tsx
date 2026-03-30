@@ -23,7 +23,6 @@ export default function Profile() {
   const { user, profile, isPoet, roles, refreshProfile, refreshRoles, signOut } = useAuth();
   const { toast } = useToast();
 
-  const isPro = roles.includes("pro");
   const profileLinks = (profile?.links || {}) as Record<string, string>;
 
   const [username, setUsername] = useState(profile?.username ?? "");
@@ -52,7 +51,7 @@ export default function Profile() {
       if (error) throw error;
       return data || [];
     },
-    enabled: !!user && isPro,
+    enabled: !!user,
   });
 
   useEffect(() => {
@@ -131,13 +130,11 @@ export default function Profile() {
       <main className="max-w-lg mx-auto px-4 pb-24">
         <div className="pt-6 pb-4 space-y-5">
 
-          {/* Pro Banner Upload */}
-          {isPro && (
-            <div className="space-y-2 pb-5 border-b border-border">
+          {/* Profile Banner */}
+          <div className="space-y-2 pb-5 border-b border-border">
               <div className="flex items-center gap-2 mb-1">
                 <Sparkles className="h-4 w-4 text-primary" />
                 <Label className="text-sm font-semibold">Profile Banner</Label>
-                <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">PRO</span>
               </div>
               <p className="text-xs text-muted-foreground mb-2">
                 This banner appears at the top of your public poet profile.
@@ -148,7 +145,7 @@ export default function Profile() {
                 onUploadComplete={(url) => setHeaderImage(url)}
               />
             </div>
-          )}
+
 
           {/* Avatar Upload */}
           <div className="flex flex-col items-center gap-3 pb-5 border-b border-border">
@@ -178,12 +175,10 @@ export default function Profile() {
             <Textarea id="bio" value={bio} onChange={(e) => setBio(e.target.value)} className="bg-secondary/50 resize-none" rows={2} placeholder="Tell readers about your voice…" />
           </div>
 
-          {/* Pro: About section */}
-          {isPro && (
-            <div className="space-y-2">
+          {/* About section */}
+          <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Label htmlFor="about">About</Label>
-                <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">PRO</span>
               </div>
               <Textarea
                 id="about"
@@ -195,15 +190,13 @@ export default function Profile() {
               />
               <p className="text-xs text-muted-foreground">Shown on the About tab of your public profile.</p>
             </div>
-          )}
 
-          {/* Pro: Pin a poem */}
-          {isPro && (
-            <div className="space-y-2">
+
+          {/* Pin a poem */}
+          <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Pin className="h-4 w-4 text-primary" />
                 <Label htmlFor="pinned-poem">Pinned Poem</Label>
-                <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">PRO</span>
               </div>
               <Select value={pinnedPoemId} onValueChange={setPinnedPoemId}>
                 <SelectTrigger id="pinned-poem" className="bg-secondary/50">
@@ -220,7 +213,7 @@ export default function Profile() {
               </Select>
               <p className="text-xs text-muted-foreground">This poem appears pinned at the top of your public profile.</p>
             </div>
-          )}
+
 
           <Separator />
 
@@ -238,13 +231,11 @@ export default function Profile() {
             />
           </div>
 
-          {/* Pro: Social links */}
-          {isPro && (
-            <div className="space-y-4 p-4 rounded-xl bg-secondary/30 border border-border">
+          {/* Social links */}
+          <div className="space-y-4 p-4 rounded-xl bg-secondary/30 border border-border">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-primary" />
                 <p className="text-sm font-semibold">Social Links</p>
-                <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">PRO</span>
               </div>
               <p className="text-xs text-muted-foreground -mt-2">These appear on the Links tab of your public profile.</p>
 
@@ -287,7 +278,7 @@ export default function Profile() {
                 />
               </div>
             </div>
-          )}
+
 
           <div className="flex flex-wrap gap-2 pt-1">
             <Button onClick={saveProfile} disabled={saving}>{saving ? 'Saving…' : 'Save profile'}</Button>
