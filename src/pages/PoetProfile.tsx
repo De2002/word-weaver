@@ -113,7 +113,7 @@ export default function PoetProfile() {
       <div className="min-h-screen bg-background">
         <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-border px-4 py-3">
           <div className="flex items-center gap-3 max-w-2xl mx-auto">
-            <Link to="/discover" className="p-2 -ml-2 hover:bg-secondary rounded-full">
+            <Link to="/search" className="p-2 -ml-2 hover:bg-secondary rounded-full">
               <ArrowLeft className="h-5 w-5" />
             </Link>
             <span className="font-medium">Poet not found</span>
@@ -123,7 +123,7 @@ export default function PoetProfile() {
           <div className="text-6xl mb-4">🔍</div>
           <h2 className="text-xl font-semibold mb-2">Poet not found</h2>
           <p className="text-muted-foreground mb-6">We couldn't find a poet with username @{username}</p>
-          <Link to="/discover"><Button>Browse Poets</Button></Link>
+          <Link to="/search"><Button>Browse Poets</Button></Link>
         </div>
       </div>
     );
@@ -140,7 +140,7 @@ export default function PoetProfile() {
       {/* ── Sticky header ─────────────────────────────────────────────────── */}
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-md border-b border-border">
         <div className="max-w-2xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
-          <Link to="/discover" className="p-2 -ml-2 hover:bg-secondary rounded-full transition-colors shrink-0">
+          <Link to="/search" className="p-2 -ml-2 hover:bg-secondary rounded-full transition-colors shrink-0">
             <ArrowLeft className="h-5 w-5" />
           </Link>
 

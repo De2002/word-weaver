@@ -10,7 +10,6 @@ import { BottomNav } from "@/components/BottomNav";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import Index from "./pages/Index";
 import Profile from "./pages/Profile";
-import Discover from "./pages/Discover";
 import PoemDetail from "./pages/PoemDetail";
 import TagPage from "./pages/TagPage";
 import More from "./pages/More";
@@ -78,7 +77,6 @@ const App = () => (
                 </ProtectedRoute>
               }
             />
-            <Route path="/discover" element={<Discover />} />
             <Route path="/search" element={<Search />} />
             <Route path="/poet/:username" element={<PoetProfile />} />
             <Route path="/poem/:slug" element={<PoemDetail />} />

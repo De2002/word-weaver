@@ -132,7 +132,7 @@ export default function SavedPoems() {
             <p className="text-muted-foreground mb-6 max-w-sm mx-auto">
               When you save poems, they'll appear here for easy access.
             </p>
-            <Link to="/discover">
+            <Link to="/search">
               <Button>Discover Poems</Button>
             </Link>
           </motion.div>

@@ -208,7 +208,7 @@ const Index = () => {
               <p className="text-lg font-medium text-foreground mb-2">No poems from followed poets</p>
               <p className="text-muted-foreground mb-4">Follow poets to see their work in your feed</p>
               <Button asChild variant="default">
-                <a href="/discover">Discover Poets</a>
+                <a href="/search">Discover Poets</a>
               </Button>
             </div>
           )}
