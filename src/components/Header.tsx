@@ -97,9 +97,11 @@ export function Header({ activeTab = 'for-you', onTabChange, showTabs = false }:
               animate={{ opacity: 1 }}
               className="flex-1 flex justify-center md:hidden"
             >
-              <span className="font-poem text-xl font-bold bg-gradient-to-r from-primary to-warm-gold bg-clip-text text-transparent">
-                WS
-              </span>
+              <img
+                src="/favicon.png"
+                alt="Word Weaver"
+                className="h-7 w-7 rounded-md"
+              />
             </motion.div>
 
             {/* Right: spacing to balance the centered brand */}
