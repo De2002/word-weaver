@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Pencil, Trash2, Eye, EyeOff } from "lucide-react";
@@ -28,32 +28,44 @@ export default function MyPoems() {
   const { user, isPoet } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
-  const [poems, setPoems] = useState<PoemRow[]>([]);
+  const [drafts, setDrafts] = useState<PoemRow[]>([]);
+  const [published, setPublished] = useState<PoemRow[]>([]);
 
   const load = async () => {
     if (!user) return;
     setLoading(true);
-    const { data, error } = await db
-      .from("poems")
-      .select("id, title, content, status, updated_at")
-      .eq("user_id", user.id)
-      .order("updated_at", { ascending: false });
+    const [{ data: draftData, error: draftError }, { data: publishedData, error: publishedError }] = await Promise.all([
+      db
+        .from("poems")
+        .select("id, title, content, status, updated_at")
+        .eq("user_id", user.id)
+        .eq("status", "draft")
+        .order("updated_at", { ascending: false }),
+      db
+        .from("poems")
+        .select("id, title, content, status, updated_at")
+        .eq("user_id", user.id)
+        .eq("status", "published")
+        .order("updated_at", { ascending: false }),
+    ]);
 
     setLoading(false);
-    if (error) {
-      toast({ title: "Couldn’t load poems", description: error.message, variant: "destructive" });
+    if (draftError || publishedError) {
+      toast({
+        title: "Couldn’t load poems",
+        description: draftError?.message ?? publishedError?.message ?? "Please try again.",
+        variant: "destructive",
+      });
       return;
     }
-    setPoems((data ?? []) as PoemRow[]);
+    setDrafts((draftData ?? []) as PoemRow[]);
+    setPublished((publishedData ?? []) as PoemRow[]);
   };
 
   useEffect(() => {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.id]);
-
-  const drafts = useMemo(() => poems.filter((p) => p.status === "draft"), [poems]);
-  const published = useMemo(() => poems.filter((p) => p.status === "published"), [poems]);
 
   const setStatus = async (poemId: string, next: "draft" | "published") => {
     const { error } = await db.from("poems").update({ status: next }).eq("id", poemId);
@@ -93,7 +105,7 @@ export default function MyPoems() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="max-w-lg mx-auto px-4 py-6 pb-24">
+      <main className="max-w-lg mx-auto px-4 pt-20 pb-24">
         <div className="flex items-center gap-3">
           <Link to="/" className="p-2 -ml-2 rounded-full hover:bg-secondary transition-colors">
             <ArrowLeft className="h-5 w-5" />
