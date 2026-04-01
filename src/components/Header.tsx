@@ -8,6 +8,7 @@ import { useScrollDirection } from '@/hooks/useScrollDirection';
 import { ProfileDrawer } from '@/components/ProfileDrawer';
 import { cn } from '@/lib/utils';
 import { useRef, useState, useEffect } from 'react';
+import logoImg from '@/assets/logo.png';
 
 const tabs = [
   { id: 'for-you', label: 'For You' },
@@ -97,11 +98,15 @@ export function Header({ activeTab = 'for-you', onTabChange, showTabs = false }:
               animate={{ opacity: 1 }}
               className="flex-1 flex justify-center md:hidden"
             >
+<<<<<<< lovable-sync-1775041576
+              <img src={logoImg} alt="WordStack" className="h-8 w-8 rounded-lg" />
+=======
               <img
                 src="/favicon.png"
                 alt="Word Weaver"
                 className="h-7 w-7 rounded-md"
               />
+>>>>>>> main
             </motion.div>
 
             {/* Right: spacing to balance the centered brand */}
