@@ -55,7 +55,9 @@ export default function Discover() {
     description: "Discover trending poets, rising stars, and new voices in the poetry community."
   });
 
+  const navigate = useNavigate();
   const { trendingPoets, risingPoets, newPoets, allPoets, isLoading, error } = useDiscoverPoets();
+  const { data: allTags = [] } = useAllTagMetadata();
 
   const sections = [
     { ...sectionConfig.trending, poets: trendingPoets },
