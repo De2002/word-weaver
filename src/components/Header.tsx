@@ -99,9 +99,7 @@ export function Header({ activeTab = 'for-you', onTabChange, showTabs = false }:
               animate={{ opacity: 1 }}
               className="flex-1 flex justify-center"
             >
-              <span className="font-poem text-xl font-bold bg-gradient-to-r from-primary to-warm-gold bg-clip-text text-transparent">
-                WS
-              </span>
+              <img src={logoImg} alt="WordStack" className="h-8 w-8 rounded-lg" />
             </motion.div>
 
             {/* Right: Upgrade crown for non-pro / empty spacer for pro (bell is in Profile Drawer) */}
