@@ -77,6 +77,7 @@ export function TagsAdminPanel() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-tag-metadata"] });
       queryClient.invalidateQueries({ queryKey: ["tag-metadata"] });
+      queryClient.invalidateQueries({ queryKey: ["all-tags"] });
       toast.success(editing ? "Tag updated" : "Tag created");
       handleClose();
     },
@@ -91,6 +92,7 @@ export function TagsAdminPanel() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["admin-tag-metadata"] });
       queryClient.invalidateQueries({ queryKey: ["tag-metadata"] });
+      queryClient.invalidateQueries({ queryKey: ["all-tags"] });
       toast.success("Tag metadata deleted");
     },
     onError: (e: Error) => toast.error(e.message),
