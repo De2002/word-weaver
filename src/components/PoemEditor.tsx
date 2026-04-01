@@ -510,31 +510,6 @@ export function PoemEditor({ initial }: Props) {
                     <p className="text-xs text-amber-600/70">Select 2 tags to publish your poem</p>
                   )}
                 </div>
-                          <motion.div
-                            key={tag}
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.8 }}
-                            layout
-                          >
-                            <Badge
-                              variant="secondary"
-                              className="pl-2 pr-1 py-1 gap-1 bg-primary/10 text-primary hover:bg-primary/20 cursor-default"
-                            >
-                              #{tag}
-                              <button
-                                onClick={() => handleRemoveTag(tag)}
-                                className="ml-1 hover:bg-primary/20 rounded-full p-0.5"
-                              >
-                                <X className="h-3 w-3" />
-                              </button>
-                            </Badge>
-                          </motion.div>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
 
                 {/* Audio */}
                 <div className="space-y-2">
