@@ -80,7 +80,7 @@ export default function Start() {
       <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
         <div className="flex items-center justify-between h-14 px-4 max-w-3xl mx-auto">
           <div className="flex items-center gap-2">
-            <img src="/favicon.png" alt="WordStack" className="h-7 w-7" />
+            <img src="/logo.png" alt="WordStack" className="h-7 w-7" />
             <span className="font-semibold text-sm tracking-wide">WordStack</span>
           </div>
           <div className="flex items-center gap-2">
