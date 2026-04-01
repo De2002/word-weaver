@@ -24,3 +24,17 @@ export function useTagMetadata(tag: string) {
     enabled: !!tag,
   });
 }
+
+export function useAllTagMetadata() {
+  return useQuery<TagMeta[]>({
+    queryKey: ["all-tag-metadata"],
+    queryFn: async () => {
+      const { data, error } = await db
+        .from("tag_metadata")
+        .select("id, tag, description, banner_url")
+        .order("tag");
+      if (error) throw error;
+      return data ?? [];
+    },
+  });
+}

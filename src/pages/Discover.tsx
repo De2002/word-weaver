@@ -1,8 +1,11 @@
 import { motion } from 'framer-motion';
-import { Sparkles, TrendingUp, Sprout, ArrowLeft } from 'lucide-react';
+import { Sparkles, TrendingUp, Sprout, ArrowLeft, Hash } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { PoetCard } from '@/components/PoetCard';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useDiscoverPoets } from '@/hooks/useDiscoverPoets';
+import { useAllTagMetadata } from '@/hooks/useTagMetadata';
+import { tagToSlug } from '@/lib/tags';
 import { cn } from '@/lib/utils';
 import { useSEO } from '@/hooks/useSEO';
 
