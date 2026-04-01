@@ -1,4 +1,4 @@
-import { LayoutList, HelpCircle, Trophy, Feather } from 'lucide-react';
+import { LayoutList, HelpCircle, Trophy, Feather, Compass } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 
@@ -10,6 +10,7 @@ interface NavItem {
 
 const navItems: NavItem[] = [
   { icon: LayoutList, label: 'Feed', href: '/' },
+  { icon: Compass, label: 'Explore', href: '/explore' },
   { icon: HelpCircle, label: 'Q&A', href: '/qa' },
   { icon: Trophy, label: 'Challenges', href: '/challenges' },
   { icon: Feather, label: 'Classics', href: '/classics' },
