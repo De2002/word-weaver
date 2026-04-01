@@ -166,7 +166,50 @@ export default function Discover() {
             })
           )}
 
-          {/* Browse All Section */}
+          {/* Explore Tags */}
+          {allTags.length > 0 && (
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="space-y-3"
+            >
+              <div className="flex items-center gap-2 px-4">
+                <div className="p-1.5 rounded-lg bg-gradient-to-r from-primary to-accent">
+                  <Hash className="h-4 w-4 text-white" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-sm">Explore Tags</h3>
+                  <p className="text-xs text-muted-foreground">Browse by topic</p>
+                </div>
+              </div>
+
+              <div className="flex overflow-x-auto scrollbar-hide gap-3 px-4 pb-1">
+                {allTags.map((tagMeta) => (
+                  <button
+                    key={tagMeta.id}
+                    onClick={() => navigate(`/tag/${tagToSlug(tagMeta.tag)}`)}
+                    className="shrink-0 w-36 rounded-xl overflow-hidden border border-border hover:border-primary/40 transition-colors group"
+                  >
+                    {tagMeta.banner_url ? (
+                      <div className="h-20 bg-cover bg-center" style={{ backgroundImage: `url(${tagMeta.banner_url})` }} />
+                    ) : (
+                      <div className="h-20 bg-secondary flex items-center justify-center">
+                        <Hash className="h-6 w-6 text-muted-foreground/40" />
+                      </div>
+                    )}
+                    <div className="px-3 py-2">
+                      <p className="text-sm font-medium truncate group-hover:text-primary transition-colors">#{tagMeta.tag}</p>
+                      {tagMeta.description && (
+                        <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">{tagMeta.description}</p>
+                      )}
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </motion.section>
+          )}
+
           {!isLoading && !error && allPoets.length > 0 && (
             <motion.section
               initial={{ opacity: 0, y: 20 }}
