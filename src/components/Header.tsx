@@ -98,8 +98,8 @@ export function Header({ activeTab = 'for-you', onTabChange, showTabs = false }:
               className="flex-1 flex justify-center md:hidden"
             >
               <img
-                src="/favicon.png"
-                alt="Word Weaver"
+                src="/logo.png"
+                alt="WordStack"
                 className="h-7 w-7 rounded-md"
               />
             </motion.div>
