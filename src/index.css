@@ -23,7 +23,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 10%;
 
-    --primary: 24 80% 50%;
+    --primary: 225 73% 57%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 0 0% 96%;
@@ -32,7 +32,7 @@
     --muted: 0 0% 94%;
     --muted-foreground: 0 0% 45%;
 
-    --accent: 24 70% 55%;
+    --accent: 225 73% 57%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 72% 51%;
@@ -40,20 +40,20 @@
 
     --border: 0 0% 90%;
     --input: 0 0% 90%;
-    --ring: 24 80% 50%;
+    --ring: 225 73% 57%;
 
     --radius: 0.75rem;
 
     /* Custom colors */
     --ink: 0 0% 10%;
     --paper: 0 0% 100%;
-    --warm-gold: 38 80% 50%;
-    --soft-coral: 15 70% 55%;
+    --warm-gold: 217 91% 60%;
+    --soft-coral: 234 89% 74%;
     --sage: 140 25% 40%;
     --poem-bg: 0 0% 99%;
 
     /* Gradients */
-    --gradient-warm: linear-gradient(135deg, hsl(24 80% 50%), hsl(38 80% 50%));
+    --gradient-warm: linear-gradient(135deg, hsl(225 73% 57%), hsl(217 91% 60%));
     --gradient-sunset: linear-gradient(180deg, hsl(0 0% 100%), hsl(0 0% 98%));
     
     /* Shadows */
@@ -68,7 +68,7 @@
     --sidebar-accent: 0 0% 96%;
     --sidebar-accent-foreground: 0 0% 10%;
     --sidebar-border: 0 0% 90%;
-    --sidebar-ring: 24 80% 50%;
+    --sidebar-ring: 225 73% 57%;
   }
 
   .dark {
@@ -81,7 +81,7 @@
     --popover: 0 0% 10%;
     --popover-foreground: 0 0% 92%;
 
-    --primary: 24 80% 55%;
+    --primary: 225 73% 65%;
     --primary-foreground: 0 0% 100%;
 
     --secondary: 0 0% 14%;
@@ -90,7 +90,7 @@
     --muted: 0 0% 14%;
     --muted-foreground: 0 0% 55%;
 
-    --accent: 24 70% 55%;
+    --accent: 225 73% 65%;
     --accent-foreground: 0 0% 100%;
 
     --destructive: 0 65% 55%;
@@ -98,12 +98,12 @@
 
     --border: 0 0% 18%;
     --input: 0 0% 18%;
-    --ring: 24 80% 55%;
+    --ring: 225 73% 65%;
 
     --ink: 0 0% 92%;
     --paper: 0 0% 7%;
-    --warm-gold: 38 80% 58%;
-    --soft-coral: 15 70% 60%;
+    --warm-gold: 217 91% 67%;
+    --soft-coral: 234 89% 78%;
     --sage: 140 25% 50%;
     --poem-bg: 0 0% 9%;
 
@@ -114,7 +114,7 @@
     --sidebar-accent: 0 0% 14%;
     --sidebar-accent-foreground: 0 0% 90%;
     --sidebar-border: 0 0% 18%;
-    --sidebar-ring: 24 80% 55%;
+    --sidebar-ring: 225 73% 65%;
   }
 }
 

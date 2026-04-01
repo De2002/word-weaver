@@ -41,7 +41,7 @@ type Props = {
 export function PoemEditor({ initial }: Props) {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user, isPoet, roles } = useAuth();
+  const { user, isPoet } = useAuth();
   const audioInputRef = useRef<HTMLInputElement>(null);
   const titleRef = useRef<HTMLTextAreaElement>(null);
   const poemRef = useRef<HTMLTextAreaElement>(null);
@@ -69,7 +69,6 @@ export function PoemEditor({ initial }: Props) {
   const isEdit = Boolean(initial?.id);
   const canSubmit = poemText.trim().length > 0;
   const canWritePoems = isPoet;
-  const isPro = roles.includes("pro");
 
   // Auto-grow textareas
   const autoGrow = useCallback((el: HTMLTextAreaElement | null) => {
@@ -81,9 +80,9 @@ export function PoemEditor({ initial }: Props) {
   useEffect(() => { autoGrow(titleRef.current); }, [title, autoGrow]);
   useEffect(() => { autoGrow(poemRef.current); }, [poemText, autoGrow]);
 
-  // Auto-populate copyright for Pro
+  // Auto-populate copyright
   useEffect(() => {
-    if (!roles.includes("pro") || initial?.copyright != null || !user?.id) return;
+    if (initial?.copyright != null || !user?.id) return;
     (async () => {
       const { data } = await db
         .from("profiles")
@@ -120,7 +119,7 @@ export function PoemEditor({ initial }: Props) {
             tags,
             status: "draft",
             slug: slugData as string,
-            copyright: isPro && copyright.trim() ? copyright.trim() : null,
+            copyright: copyright.trim() ? copyright.trim() : null,
           })
           .select("id")
           .single();
@@ -134,7 +133,7 @@ export function PoemEditor({ initial }: Props) {
             title: title.trim() || null,
             content: poemText,
             tags,
-            copyright: isPro && copyright.trim() ? copyright.trim() : null,
+            copyright: copyright.trim() ? copyright.trim() : null,
           })
           .eq("id", poemId);
         if (error) throw error;
@@ -147,7 +146,7 @@ export function PoemEditor({ initial }: Props) {
       setSaveStatus("error");
       setTimeout(() => setSaveStatus((s) => (s === "error" ? "idle" : s)), 3000);
     }
-  }, [user, canWritePoems, poemText, title, tags, isPro, copyright, draftPoemId]);
+  }, [user, canWritePoems, poemText, title, tags, copyright, draftPoemId]);
 
   // Debounce: save 3s after last keystroke
   useEffect(() => {
@@ -163,7 +162,7 @@ export function PoemEditor({ initial }: Props) {
     return () => { if (intervalTimerRef.current) clearInterval(intervalTimerRef.current); };
   }, [autoSave]);
 
-  const maxTags = isPro ? 3 : 1;
+  const maxTags = 3;
   const tagCountLabel = useMemo(() => `${tags.length}/${maxTags}`, [tags.length, maxTags]);
 
   const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -176,7 +175,7 @@ export function PoemEditor({ initial }: Props) {
       } else if (tags.length >= maxTags) {
         toast({
           title: "Tag limit reached",
-          description: isPro ? "Pro poets can add up to 3 tags." : "Free poets can add 1 tag. Upgrade to Pro for up to 3 tags.",
+          description: "You can add up to 3 tags.",
           variant: "destructive",
         });
       }
@@ -254,7 +253,7 @@ export function PoemEditor({ initial }: Props) {
             tags,
             status,
             slug: slugData as string,
-            copyright: isPro && copyright.trim() ? copyright.trim() : null,
+            copyright: copyright.trim() ? copyright.trim() : null,
           })
           .select("id")
           .single();
@@ -269,7 +268,7 @@ export function PoemEditor({ initial }: Props) {
             content: poemText,
             tags,
             status,
-            copyright: isPro && copyright.trim() ? copyright.trim() : null,
+            copyright: copyright.trim() ? copyright.trim() : null,
           })
           .eq("id", poemId);
         if (error) throw error;
@@ -512,7 +511,7 @@ export function PoemEditor({ initial }: Props) {
                     <Tag className="h-3.5 w-3.5" />
                     Tags
                     <span className="text-xs text-muted-foreground/50 ml-1">
-                      {isPro ? "up to 3" : "1 tag · upgrade for more"}
+                      up to 3
                     </span>
                     <span className="ml-auto text-xs text-muted-foreground/60">{tagCountLabel}</span>
                   </Label>
@@ -611,23 +610,21 @@ export function PoemEditor({ initial }: Props) {
                   )}
                 </div>
 
-                {/* Copyright — Pro only */}
-                {isPro && (
-                  <div className="space-y-2">
-                    <Label className="text-sm text-muted-foreground flex items-center gap-1.5">
-                      <Copyright className="h-3.5 w-3.5" />
-                      Copyright
-                      <span className="text-xs text-muted-foreground/60 ml-1">Pro feature</span>
-                    </Label>
-                    <Input
-                      placeholder={`© ${new Date().getFullYear()} ${user?.email?.split("@")[0] || "Your Name"} — All rights reserved`}
-                      value={copyright}
-                      onChange={(e) => setCopyright(e.target.value.slice(0, 200))}
-                      className="bg-secondary/40 border-border/60 text-sm"
-                    />
-                    <p className="text-xs text-muted-foreground">Displayed under your poem.</p>
-                  </div>
-                )}
+                {/* Copyright */}
+                <div className="space-y-2">
+                  <Label className="text-sm text-muted-foreground flex items-center gap-1.5">
+                    <Copyright className="h-3.5 w-3.5" />
+                    Copyright
+                    <span className="text-xs text-muted-foreground/60 ml-1">optional</span>
+                  </Label>
+                  <Input
+                    placeholder={`© ${new Date().getFullYear()} ${user?.email?.split("@")[0] || "Your Name"} — All rights reserved`}
+                    value={copyright}
+                    onChange={(e) => setCopyright(e.target.value.slice(0, 200))}
+                    className="bg-secondary/40 border-border/60 text-sm"
+                  />
+                  <p className="text-xs text-muted-foreground">Displayed under your poem.</p>
+                </div>
               </div>
             </motion.div>
           )}

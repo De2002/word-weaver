@@ -30,6 +30,11 @@ export default function MyPoems() {
   const [loading, setLoading] = useState(true);
   const [poems, setPoems] = useState<PoemRow[]>([]);
 
+  const normalizeStatus = (status: string | null | undefined): "draft" | "published" => {
+    const cleaned = status?.trim().toLowerCase();
+    return cleaned === "published" ? "published" : "draft";
+  };
+
   const load = async () => {
     if (!user) return;
     setLoading(true);
@@ -41,10 +46,20 @@ export default function MyPoems() {
 
     setLoading(false);
     if (error) {
-      toast({ title: "Couldn’t load poems", description: error.message, variant: "destructive" });
+      toast({
+        title: "Couldn’t load poems",
+        description: error.message,
+        variant: "destructive",
+      });
       return;
     }
-    setPoems((data ?? []) as PoemRow[]);
+
+    setPoems(
+      ((data ?? []) as Array<Omit<PoemRow, "status"> & { status: string | null }>).map((poem) => ({
+        ...poem,
+        status: normalizeStatus(poem.status),
+      })),
+    );
   };
 
   useEffect(() => {
@@ -78,7 +93,7 @@ export default function MyPoems() {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <main className="max-w-lg mx-auto px-4 py-10 pb-24">
+        <main className="max-w-lg mx-auto px-4 pt-20 pb-24">
           <h1 className="text-xl font-semibold">My Poems</h1>
           <p className="mt-2 text-sm text-muted-foreground">Turn on Poet mode to write and manage poems.</p>
           <Button asChild className="mt-4">
@@ -93,9 +108,9 @@ export default function MyPoems() {
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      <main className="max-w-lg mx-auto px-4 py-6 pb-24">
+      <main className="max-w-lg mx-auto px-4 pt-20 pb-24">
         <div className="flex items-center gap-3">
-          <Link to="/home" className="p-2 -ml-2 rounded-full hover:bg-secondary transition-colors">
+          <Link to="/" className="p-2 -ml-2 rounded-full hover:bg-secondary transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </Link>
           <h1 className="text-xl font-semibold">My Poems</h1>

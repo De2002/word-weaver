@@ -97,8 +97,8 @@ export default function QA() {
           <div className="mx-4 mt-4 mb-2 rounded-xl border border-amber-500/30 bg-amber-500/5 px-4 py-3 flex items-center gap-2">
             <Star className="h-4 w-4 text-amber-500 shrink-0 fill-amber-500" />
             <p className="text-sm text-foreground">
-              <span className="font-medium">Only Pro Poets can answer.</span>{' '}
-              <span className="text-muted-foreground">Answers come from experienced poets you can trust.</span>
+              <span className="font-medium">All poets can answer.</span>{' '}
+              <span className="text-muted-foreground">Learn from shared experience across the community.</span>
             </p>
           </div>
         )}

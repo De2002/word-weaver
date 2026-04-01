@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
-import { ThumbsUp, CheckCircle, Crown } from 'lucide-react';
+import { ThumbsUp, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
@@ -55,12 +55,6 @@ export function AnswerCard({ answer, isQuestionOwner, onVote, onAccept, currentU
               <span className="text-sm font-medium leading-none">
                 {answer.poet.display_name || `@${answer.poet.username}`}
               </span>
-              {answer.poet.is_pro && (
-                <Badge className="text-[9px] px-1.5 py-0 h-4 bg-amber-500/20 text-amber-600 border-amber-500/30 flex items-center gap-0.5">
-                  <Crown className="h-2.5 w-2.5" />
-                  PRO
-                </Badge>
-              )}
             </div>
             <span className="text-[11px] text-muted-foreground">
               {formatDistanceToNow(new Date(answer.created_at), { addSuffix: true })}

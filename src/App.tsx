@@ -2,15 +2,16 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { CSSProperties, useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "@/context/AuthProvider";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { AdminRoute } from "@/components/AdminRoute";
 import { BottomNav } from "@/components/BottomNav";
 import { ScrollToTop } from "@/components/ScrollToTop";
+import { DesktopSidebar } from "@/components/DesktopSidebar";
 import Index from "./pages/Index";
 import Profile from "./pages/Profile";
-import Discover from "./pages/Discover";
 import PoemDetail from "./pages/PoemDetail";
 import TagPage from "./pages/TagPage";
 import More from "./pages/More";
@@ -19,7 +20,6 @@ import Rules from "./pages/Rules";
 import UserAgreement from "./pages/UserAgreement";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import CreatePoetry from "./pages/CreatePoetry";
-import Start from "./pages/Start";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import MyPoems from "./pages/MyPoems";
@@ -58,17 +58,36 @@ import Challenges from "./pages/Challenges";
 import ChallengeDetail from "./pages/ChallengeDetail";
 const queryClient = new QueryClient();
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <AuthProvider>
-        <BrowserRouter>
-          <ScrollToTop />
-          <Routes>
-            <Route path="/" element={<Start />} />
-            <Route path="/home" element={<Index />} />
+const App = () => {
+  const [isDesktopSidebarCollapsed, setIsDesktopSidebarCollapsed] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.localStorage.getItem("desktop-sidebar-collapsed") === "true";
+  });
+
+  useEffect(() => {
+    window.localStorage.setItem("desktop-sidebar-collapsed", String(isDesktopSidebarCollapsed));
+  }, [isDesktopSidebarCollapsed]);
+
+  const layoutVars = {
+    "--desktop-sidebar-offset": isDesktopSidebarCollapsed ? "5rem" : "18rem",
+  } as CSSProperties;
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <Toaster />
+        <Sonner />
+        <AuthProvider>
+          <BrowserRouter>
+            <ScrollToTop />
+            <div className="min-h-screen" style={layoutVars}>
+            <DesktopSidebar
+              isCollapsed={isDesktopSidebarCollapsed}
+              onToggle={() => setIsDesktopSidebarCollapsed((prev) => !prev)}
+            />
+            <main className={`min-w-0 transition-[margin] duration-300 ease-in-out ${isDesktopSidebarCollapsed ? "md:ml-20" : "md:ml-72"}`}>
+            <Routes>
+            <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
 
@@ -80,7 +99,6 @@ const App = () => (
                 </ProtectedRoute>
               }
             />
-            <Route path="/discover" element={<Discover />} />
             <Route path="/search" element={<Search />} />
             <Route path="/poet/:username" element={<PoetProfile />} />
             <Route path="/poem/:slug" element={<PoemDetail />} />
@@ -229,12 +247,15 @@ const App = () => (
 
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
-          </Routes>
-          <BottomNav />
-        </BrowserRouter>
-      </AuthProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+            </Routes>
+            </main>
+            <BottomNav />
+            </div>
+          </BrowserRouter>
+        </AuthProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;

@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Crown } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthProvider';
@@ -24,7 +23,7 @@ interface HeaderProps {
 }
 
 export function Header({ activeTab = 'for-you', onTabChange, showTabs = false }: HeaderProps) {
-  const { user, profile, roles } = useAuth();
+  const { user, profile } = useAuth();
   const isVisible = useScrollDirection(15);
   const tabRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
@@ -61,7 +60,7 @@ export function Header({ activeTab = 'for-you', onTabChange, showTabs = false }:
         initial={{ y: 0 }}
         animate={{ y: isVisible ? 0 : -100 }}
         transition={{ duration: 0.3, ease: 'easeInOut' }}
-        className="fixed top-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-xl border-b border-border/50"
+        className="fixed top-0 left-0 right-0 z-40 bg-background/95 backdrop-blur-xl border-b border-border/50 md:left-[var(--desktop-sidebar-offset,0px)]"
       >
         <div className="max-w-2xl mx-auto">
           {/* Top Row: Avatar (left) + Brand (center) + Bell (right) */}
@@ -71,7 +70,7 @@ export function Header({ activeTab = 'for-you', onTabChange, showTabs = false }:
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ delay: 0.05 }}
-              className="flex-none"
+              className="flex-none md:hidden"
             >
               {user ? (
                 <button
@@ -97,27 +96,21 @@ export function Header({ activeTab = 'for-you', onTabChange, showTabs = false }:
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="flex-1 flex justify-center"
+              className="flex-1 flex justify-center md:hidden"
             >
+<<<<<<< lovable-sync-1775041576
               <img src={logoImg} alt="WordStack" className="h-8 w-8 rounded-lg" />
+=======
+              <img
+                src="/favicon.png"
+                alt="Word Weaver"
+                className="h-7 w-7 rounded-md"
+              />
+>>>>>>> main
             </motion.div>
 
-            {/* Right: Upgrade crown for non-pro / empty spacer for pro (bell is in Profile Drawer) */}
-            {/* Right: Upgrade crown for non-pro / empty spacer for pro (bell is in Profile Drawer) */}
-            <div className="flex-none flex items-center gap-1">
-              {!roles.includes('pro') && (
-                <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.03 }}>
-                  <Link
-                    to="/upgrade"
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all hover:opacity-90"
-                    style={{ background: 'linear-gradient(135deg, hsl(24 80% 50%), hsl(38 80% 50%))', color: 'hsl(0 0% 100%)' }}
-                  >
-                    <Crown className="h-3 w-3" />
-                    Pro
-                  </Link>
-                </motion.div>
-              )}
-            </div>
+            {/* Right: spacing to balance the centered brand */}
+            <div className="flex-none w-8 md:hidden" />
           </div>
 
           {/* Tabs Row */}
