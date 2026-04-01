@@ -10,12 +10,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { normalizeTag } from "@/lib/tags";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/integrations/supabase/client";
 import { db } from "@/lib/db";
 import { useAuth } from "@/context/AuthProvider";
 import { AddToTrailModal } from "@/components/trails/AddToTrailModal";
+import { TagSelector } from "@/components/TagSelector";
 
 const MAX_TITLE_LENGTH = 100;
 const MAX_POEM_LENGTH = 5000;
@@ -48,7 +48,6 @@ export function PoemEditor({ initial }: Props) {
 
   const [title, setTitle] = useState(initial?.title ?? "");
   const [poemText, setPoemText] = useState(initial?.content ?? "");
-  const [tagInput, setTagInput] = useState("");
   const [tags, setTags] = useState<string[]>(initial?.tags ?? []);
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [existingAudioPath, setExistingAudioPath] = useState<string | null>(initial?.audioPath ?? null);
@@ -67,7 +66,7 @@ export function PoemEditor({ initial }: Props) {
   const intervalTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const isEdit = Boolean(initial?.id);
-  const canSubmit = poemText.trim().length > 0;
+  const canSubmit = poemText.trim().length > 0 && tags.length === 2;
   const canWritePoems = isPoet;
 
   // Auto-grow textareas
@@ -162,27 +161,7 @@ export function PoemEditor({ initial }: Props) {
     return () => { if (intervalTimerRef.current) clearInterval(intervalTimerRef.current); };
   }, [autoSave]);
 
-  const maxTags = 3;
-  const tagCountLabel = useMemo(() => `${tags.length}/${maxTags}`, [tags.length, maxTags]);
-
-  const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter" || e.key === ",") {
-      e.preventDefault();
-      const normalized = normalizeTag(tagInput);
-      if (normalized && !tags.includes(normalized) && tags.length < maxTags) {
-        setTags([...tags, normalized]);
-        setTagInput("");
-      } else if (tags.length >= maxTags) {
-        toast({
-          title: "Tag limit reached",
-          description: "You can add up to 3 tags.",
-          variant: "destructive",
-        });
-      }
-    }
-  };
-
-  const handleRemoveTag = (tagToRemove: string) => setTags(tags.filter((t) => t !== tagToRemove));
+  const maxTags = 2;
 
   const handleAudioUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -234,6 +213,14 @@ export function PoemEditor({ initial }: Props) {
     }
     if (!poemText.trim()) {
       toast({ title: "Poem is empty", description: "Write something first.", variant: "destructive" });
+      return;
+    }
+    if (status === "published" && tags.length !== 2) {
+      toast({ 
+        title: "Tags required", 
+        description: "You must select exactly 2 tags before publishing.",
+        variant: "destructive" 
+      });
       return;
     }
     setIsSubmitting(true);
@@ -511,50 +498,17 @@ export function PoemEditor({ initial }: Props) {
                     <Tag className="h-3.5 w-3.5" />
                     Tags
                     <span className="text-xs text-muted-foreground/50 ml-1">
-                      up to 3
+                      required
                     </span>
-                    <span className="ml-auto text-xs text-muted-foreground/60">{tagCountLabel}</span>
                   </Label>
-                  <Input
-                    placeholder="love, nature, grief… (Enter to add)"
-                    value={tagInput}
-                    onChange={(e) => setTagInput(e.target.value)}
-                    onKeyDown={handleAddTag}
-                    className="bg-secondary/40 border-border/60 focus-visible:ring-1"
+                  <TagSelector
+                    selectedTags={tags}
+                    onTagsChange={setTags}
+                    maxTags={2}
                   />
-                  <AnimatePresence mode="popLayout">
-                    {tags.length > 0 && (
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="flex flex-wrap gap-2 pt-1"
-                      >
-                        {tags.map((tag) => (
-                          <motion.div
-                            key={tag}
-                            initial={{ opacity: 0, scale: 0.8 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0, scale: 0.8 }}
-                            layout
-                          >
-                            <Badge
-                              variant="secondary"
-                              className="pl-2 pr-1 py-1 gap-1 bg-primary/10 text-primary hover:bg-primary/20 cursor-default"
-                            >
-                              #{tag}
-                              <button
-                                onClick={() => handleRemoveTag(tag)}
-                                className="ml-1 hover:bg-primary/20 rounded-full p-0.5"
-                              >
-                                <X className="h-3 w-3" />
-                              </button>
-                            </Badge>
-                          </motion.div>
-                        ))}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  {tags.length < 2 && (
+                    <p className="text-xs text-amber-600/70">Select 2 tags to publish your poem</p>
+                  )}
                 </div>
 
                 {/* Audio */}

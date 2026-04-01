@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Pencil, Trash2, Upload, Hash, Loader2, X } from "lucide-react";
+import { Plus, Pencil, Trash2, Upload, Hash, Loader2, X, Image as ImageIcon } from "lucide-react";
 import { db } from "@/lib/db";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -9,13 +9,16 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { usePoemCountByTag } from "@/hooks/usePoemCountByTag";
 
 interface TagMeta {
   id: string;
   tag: string;
   description: string | null;
   banner_url: string | null;
+  image_url: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -24,16 +27,18 @@ interface TagForm {
   tag: string;
   description: string;
   banner_url: string;
+  image_url: string;
 }
 
-const EMPTY_FORM: TagForm = { tag: "", description: "", banner_url: "" };
+const EMPTY_FORM: TagForm = { tag: "", description: "", banner_url: "", image_url: "" };
 
 export function TagsAdminPanel() {
   const queryClient = useQueryClient();
+  const { counts: poemCounts } = usePoemCountByTag();
   const [open, setOpen] = useState(false);
   const [editing, setEditing] = useState<TagMeta | null>(null);
   const [form, setForm] = useState<TagForm>(EMPTY_FORM);
-  const [uploading, setUploading] = useState(false);
+  const [uploading, setUploading] = useState<"banner" | "image" | null>(null);
 
   const { data: tags = [], isLoading } = useQuery<TagMeta[]>({
     queryKey: ["admin-tag-metadata"],
@@ -55,6 +60,7 @@ export function TagsAdminPanel() {
           .update({
             description: values.description || null,
             banner_url: values.banner_url || null,
+            image_url: values.image_url || null,
           })
           .eq("id", editing.id);
         if (error) throw error;
@@ -63,6 +69,7 @@ export function TagsAdminPanel() {
           tag: values.tag.toLowerCase().trim(),
           description: values.description || null,
           banner_url: values.banner_url || null,
+          image_url: values.image_url || null,
         });
         if (error) throw error;
       }
@@ -92,7 +99,12 @@ export function TagsAdminPanel() {
   const handleOpen = (meta?: TagMeta) => {
     if (meta) {
       setEditing(meta);
-      setForm({ tag: meta.tag, description: meta.description ?? "", banner_url: meta.banner_url ?? "" });
+      setForm({ 
+        tag: meta.tag, 
+        description: meta.description ?? "", 
+        banner_url: meta.banner_url ?? "",
+        image_url: meta.image_url ?? ""
+      });
     } else {
       setEditing(null);
       setForm(EMPTY_FORM);
@@ -106,7 +118,7 @@ export function TagsAdminPanel() {
     setForm(EMPTY_FORM);
   };
 
-  const handleBannerUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, imageType: "banner" | "image") => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith("image/")) {
@@ -117,23 +129,28 @@ export function TagsAdminPanel() {
       toast.error("Image must be under 5MB");
       return;
     }
-    setUploading(true);
+    setUploading(imageType);
     try {
       const ext = file.name.split(".").pop();
       const path = `${Date.now()}.${ext}`;
+      const bucketName = imageType === "banner" ? "tag-banners" : "tag-images";
       const { error } = await supabase.storage
-        .from("tag-banners")
+        .from(bucketName)
         .upload(path, file, { upsert: true });
       if (error) throw error;
       const { data: urlData } = supabase.storage
-        .from("tag-banners")
+        .from(bucketName)
         .getPublicUrl(path);
-      setForm((f) => ({ ...f, banner_url: urlData.publicUrl }));
-      toast.success("Banner uploaded");
+      if (imageType === "banner") {
+        setForm((f) => ({ ...f, banner_url: urlData.publicUrl }));
+      } else {
+        setForm((f) => ({ ...f, image_url: urlData.publicUrl }));
+      }
+      toast.success(`${imageType === "banner" ? "Banner" : "Image"} uploaded`);
     } catch (err: unknown) {
       toast.error((err as Error).message);
     } finally {
-      setUploading(false);
+      setUploading(null);
     }
   };
 
@@ -167,7 +184,12 @@ export function TagsAdminPanel() {
           {tags.map((meta) => (
             <Card key={meta.id} className="overflow-hidden">
               <div className="flex items-stretch">
-                {meta.banner_url ? (
+                {meta.image_url ? (
+                  <div
+                    className="w-24 shrink-0 bg-cover bg-center"
+                    style={{ backgroundImage: `url(${meta.image_url})` }}
+                  />
+                ) : meta.banner_url ? (
                   <div
                     className="w-24 shrink-0 bg-cover bg-center"
                     style={{ backgroundImage: `url(${meta.banner_url})` }}
@@ -179,7 +201,12 @@ export function TagsAdminPanel() {
                 )}
                 <CardContent className="flex-1 py-3 px-4 flex items-center justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="font-semibold text-sm">#{meta.tag}</p>
+                    <div className="flex items-center gap-2">
+                      <p className="font-semibold text-sm">#{meta.tag}</p>
+                      <Badge variant="secondary" className="text-xs">
+                        {poemCounts[meta.tag] || 0} poem{(poemCounts[meta.tag] || 0) !== 1 ? "s" : ""}
+                      </Badge>
+                    </div>
                     {meta.description ? (
                       <p className="text-xs text-muted-foreground line-clamp-2 mt-0.5">{meta.description}</p>
                     ) : (
@@ -238,7 +265,41 @@ export function TagsAdminPanel() {
             </div>
 
             <div className="space-y-1.5">
-              <Label>Banner image</Label>
+              <Label>Category Image</Label>
+              {form.image_url ? (
+                <div className="relative rounded-lg overflow-hidden border border-border">
+                  <img
+                    src={form.image_url}
+                    alt="Category preview"
+                    className="w-full h-32 object-cover"
+                  />
+                  <Button
+                    variant="secondary"
+                    size="icon"
+                    className="absolute top-2 right-2 h-7 w-7 rounded-full"
+                    onClick={() => setForm((f) => ({ ...f, image_url: "" }))}
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </Button>
+                </div>
+              ) : (
+                <label className="flex flex-col items-center gap-2 border-2 border-dashed border-border rounded-lg p-6 cursor-pointer hover:border-primary/50 transition-colors">
+                  {uploading === "image" ? (
+                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                  ) : (
+                    <>
+                      <ImageIcon className="h-6 w-6 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">Click to upload category image</span>
+                      <span className="text-xs text-muted-foreground/60">PNG, JPG up to 5MB</span>
+                    </>
+                  )}
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, "image")} disabled={uploading !== null} />
+                </label>
+              )}
+            </div>
+
+            <div className="space-y-1.5">
+              <Label>Banner Image</Label>
               {form.banner_url ? (
                 <div className="relative rounded-lg overflow-hidden border border-border">
                   <img
@@ -257,7 +318,7 @@ export function TagsAdminPanel() {
                 </div>
               ) : (
                 <label className="flex flex-col items-center gap-2 border-2 border-dashed border-border rounded-lg p-6 cursor-pointer hover:border-primary/50 transition-colors">
-                  {uploading ? (
+                  {uploading === "banner" ? (
                     <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
                   ) : (
                     <>
@@ -266,7 +327,7 @@ export function TagsAdminPanel() {
                       <span className="text-xs text-muted-foreground/60">PNG, JPG up to 5MB</span>
                     </>
                   )}
-                  <input type="file" accept="image/*" className="hidden" onChange={handleBannerUpload} disabled={uploading} />
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, "banner")} disabled={uploading !== null} />
                 </label>
               )}
             </div>

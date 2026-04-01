@@ -14,6 +14,7 @@ import Index from "./pages/Index";
 import Profile from "./pages/Profile";
 import PoemDetail from "./pages/PoemDetail";
 import TagPage from "./pages/TagPage";
+import ExploreTags from "./pages/ExploreTags";
 import More from "./pages/More";
 import About from "./pages/About";
 import Rules from "./pages/Rules";
@@ -100,6 +101,7 @@ const App = () => {
               }
             />
             <Route path="/search" element={<Search />} />
+            <Route path="/explore" element={<ExploreTags />} />
             <Route path="/poet/:username" element={<PoetProfile />} />
             <Route path="/poem/:slug" element={<PoemDetail />} />
             <Route path="/tag/:tag" element={<TagPage />} />

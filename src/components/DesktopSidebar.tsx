@@ -1,4 +1,4 @@
-import { LayoutList, HelpCircle, Trophy, Feather, User, BookOpen, Bookmark, Bell, Settings, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LayoutList, HelpCircle, Trophy, Feather, User, BookOpen, Bookmark, Bell, Settings, ChevronLeft, ChevronRight, Compass } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/context/AuthProvider';
@@ -17,6 +17,7 @@ interface NavItem {
 
 const mainNavItems: NavItem[] = [
   { icon: LayoutList, label: 'Feed', href: '/', description: 'Latest poems and discovery' },
+  { icon: Compass, label: 'Explore', href: '/explore', description: 'Browse all tags' },
   { icon: HelpCircle, label: 'Q&A', href: '/qa', description: 'Poetry questions and answers' },
   { icon: Trophy, label: 'Challenges', href: '/challenges', description: 'Prompts and contests' },
   { icon: Feather, label: 'Classics', href: '/classics', description: 'Classic poetry library' },
