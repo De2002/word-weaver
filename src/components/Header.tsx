@@ -9,6 +9,7 @@ import { useScrollDirection } from '@/hooks/useScrollDirection';
 import { ProfileDrawer } from '@/components/ProfileDrawer';
 import { cn } from '@/lib/utils';
 import { useRef, useState, useEffect } from 'react';
+import logoImg from '@/assets/logo.png';
 
 const tabs = [
   { id: 'for-you', label: 'For You' },
