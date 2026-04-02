@@ -526,6 +526,81 @@ export type Database = {
         }
         Relationships: []
       }
+      ink_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          from_user_id: string
+          id: string
+          note: string | null
+          period_id: string | null
+          poem_id: string | null
+          to_user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          from_user_id: string
+          id?: string
+          note?: string | null
+          period_id?: string | null
+          poem_id?: string | null
+          to_user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          from_user_id?: string
+          id?: string
+          note?: string | null
+          period_id?: string | null
+          poem_id?: string | null
+          to_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ink_transactions_period_id_fkey"
+            columns: ["period_id"]
+            isOneToOne: false
+            referencedRelation: "payout_periods"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ink_transactions_poem_id_fkey"
+            columns: ["poem_id"]
+            isOneToOne: false
+            referencedRelation: "poems"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ink_wallets: {
+        Row: {
+          balance: number
+          id: string
+          total_poured: number
+          total_received: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          id?: string
+          total_poured?: number
+          total_received?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          id?: string
+          total_poured?: number
+          total_received?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       introduction_reactions: {
         Row: {
           created_at: string
@@ -809,6 +884,36 @@ export type Database = {
           },
         ]
       }
+      payout_periods: {
+        Row: {
+          created_at: string
+          id: string
+          period_end: string
+          period_start: string
+          pool_amount: number
+          status: string
+          total_ink: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          period_end: string
+          period_start: string
+          pool_amount?: number
+          status?: string
+          total_ink?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          period_end?: string
+          period_start?: string
+          pool_amount?: number
+          status?: string
+          total_ink?: number
+        }
+        Relationships: []
+      }
       poem_audio_files: {
         Row: {
           created_at: string
@@ -966,6 +1071,41 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      poet_pool: {
+        Row: {
+          id: string
+          period_id: string | null
+          platform_share: number
+          poet_share: number
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          period_id?: string | null
+          platform_share?: number
+          poet_share?: number
+          total_amount?: number
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          period_id?: string | null
+          platform_share?: number
+          poet_share?: number
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "poet_pool_period_id_fkey"
+            columns: ["period_id"]
+            isOneToOne: false
+            referencedRelation: "payout_periods"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -1133,6 +1273,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      subscription_events: {
+        Row: {
+          amount: number | null
+          created_at: string
+          currency: string | null
+          customer_email: string | null
+          event_type: string
+          id: string
+          paddle_event_id: string | null
+          price_id: string | null
+          raw_payload: Json
+          subscription_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          amount?: number | null
+          created_at?: string
+          currency?: string | null
+          customer_email?: string | null
+          event_type: string
+          id?: string
+          paddle_event_id?: string | null
+          price_id?: string | null
+          raw_payload?: Json
+          subscription_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number | null
+          created_at?: string
+          currency?: string | null
+          customer_email?: string | null
+          event_type?: string
+          id?: string
+          paddle_event_id?: string | null
+          price_id?: string | null
+          raw_payload?: Json
+          subscription_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
       }
       tag_metadata: {
         Row: {
@@ -1441,7 +1623,14 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "user" | "poet" | "moderator" | "admin" | "pro"
+      app_role:
+        | "user"
+        | "poet"
+        | "moderator"
+        | "admin"
+        | "pro"
+        | "lyric"
+        | "epic"
       poem_status: "draft" | "published"
     }
     CompositeTypes: {
@@ -1570,7 +1759,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["user", "poet", "moderator", "admin", "pro"],
+      app_role: ["user", "poet", "moderator", "admin", "pro", "lyric", "epic"],
       poem_status: ["draft", "published"],
     },
   },
