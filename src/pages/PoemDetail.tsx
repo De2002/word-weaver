@@ -39,6 +39,7 @@ export default function PoemDetail() {
   const [isPouringInk, setIsPouringInk] = useState(false);
   const [pouredAmount, setPouredAmount] = useState<number | null>(null);
   const shareMenuRef = useRef<HTMLDivElement>(null);
+  const inkTimeoutRef = useRef<number | null>(null);
   const inkOptions = [5, 10, 25, 50, 100];
 
   // Extract comment ID from URL hash (e.g., #comment-abc123)
@@ -270,11 +271,22 @@ export default function PoemDetail() {
     if (isPouringInk) return;
     setPouredAmount(amount);
     setIsPouringInk(true);
-    window.setTimeout(() => {
+    if (inkTimeoutRef.current) {
+      window.clearTimeout(inkTimeoutRef.current);
+    }
+    inkTimeoutRef.current = window.setTimeout(() => {
       setIsPouringInk(false);
       setShowInkSheet(false);
     }, 1800);
   };
+
+  useEffect(() => {
+    return () => {
+      if (inkTimeoutRef.current) {
+        window.clearTimeout(inkTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const poetBadge = poem.poet.badges[0];
 
@@ -489,6 +501,10 @@ export default function PoemDetail() {
         onOpenChange={(open) => {
           setShowInkSheet(open);
           if (!open) {
+            if (inkTimeoutRef.current) {
+              window.clearTimeout(inkTimeoutRef.current);
+              inkTimeoutRef.current = null;
+            }
             setIsPouringInk(false);
             setPouredAmount(null);
           }
@@ -534,7 +550,7 @@ export default function PoemDetail() {
                   >
                     <PaintBucket className="h-8 w-8 text-primary" />
                   </motion.div>
-                  <p className="text-sm font-semibold text-foreground">Pouring {pouredAmount} ink…</p>
+                  <p className="text-sm font-semibold text-foreground">Pouring {pouredAmount ?? 0} ink…</p>
                   <p className="text-xs text-muted-foreground mt-1">Your support is landing on this poem ✨</p>
                   <motion.div
                     initial={{ opacity: 0 }}
