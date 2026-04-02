@@ -54,7 +54,7 @@ const Index = () => {
   // Following
   const { poems: followingPoems, isLoading: followingLoading, error: followingError, hasMore: followingHasMore, loadMore: loadMoreFollowing, refresh: refreshFollowing, isAuthenticated } = useFollowingPoems();
 
-  const { trendingPoets, risingPoets, newPoets, isLoading: poetsLoading } = useDiscoverPoets();
+  const { risingPoets, newPoets, isLoading: poetsLoading } = useDiscoverPoets();
   const loadMoreRef = useRef<HTMLDivElement>(null);
 
   // Determine which data to show based on active tab
@@ -126,15 +126,6 @@ const Index = () => {
         {activeTab === 'for-you' && !poetsLoading && (
           <>
             <div className="space-y-6 py-4">
-              {trendingPoets.length > 0 && (
-                <DiscoverSection 
-                  title="Trending Poets" 
-                  subtitle="Most loved this week"
-                  poets={trendingPoets}
-                  type="trending"
-                />
-              )}
-              
               {newPoets.length > 0 && (
                 <DiscoverSection 
                   title="New Voices" 
