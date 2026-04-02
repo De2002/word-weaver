@@ -52,8 +52,9 @@ function FadeUp({ children, delay = 0, className }: { children: React.ReactNode;
 }
 
 export default function Upgrade() {
-  const { roles } = useAuth();
+  const { user, roles } = useAuth();
   const isPro = roles.includes('pro');
+  const { openCheckout } = usePaddle();
 
   return (
     <div className="min-h-screen bg-background">
