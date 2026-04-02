@@ -1,4 +1,4 @@
-import { LayoutList, HelpCircle, Trophy, Feather, User, BookOpen, Bookmark, Bell, Settings, ChevronLeft, ChevronRight, Compass } from 'lucide-react';
+import { LayoutList, HelpCircle, Trophy, Feather, User, BookOpen, Bookmark, Bell, Settings, ChevronLeft, ChevronRight, Compass, Wallet } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/context/AuthProvider';
@@ -27,6 +27,7 @@ const accountNavItems: NavItem[] = [
   { icon: User, label: 'Profile', href: '/poet/:username', requiresAuth: true, dynamic: true },
   { icon: BookOpen, label: 'My Poems', href: '/my-poems', requiresAuth: true },
   { icon: Bookmark, label: 'Saved Poems', href: '/saved', requiresAuth: true },
+  { icon: Wallet, label: 'Wallet', href: '/wallet', requiresAuth: true },
   { icon: Bell, label: 'Notifications', href: '/notifications', requiresAuth: true, showBadge: true },
   { icon: Settings, label: 'Edit Profile', href: '/profile', requiresAuth: true },
 ];

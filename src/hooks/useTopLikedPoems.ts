@@ -25,7 +25,6 @@ interface DbPoem {
   created_at: string;
   updated_at: string;
   user_id: string;
-  copyright: string | null;
 }
 
 interface DbProfile {
@@ -74,7 +73,6 @@ function mapDbPoemToPoem(
     isUpvoted: false,
     isSaved: false,
     audioUrl,
-    copyright: dbPoem.copyright || null,
   };
 }
 
@@ -94,7 +92,7 @@ export function useTopLikedPoems(): UseTopLikedPoemsReturn {
 
       const { data: poemsData, error: poemsError } = await db
         .from('poems')
-        .select('id, slug, title, content, tags, status, created_at, updated_at, user_id, copyright')
+        .select('id, slug, title, content, tags, status, created_at, updated_at, user_id')
         .eq('status', 'published')
         .order('created_at', { ascending: false })
         .limit(250);

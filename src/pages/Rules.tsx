@@ -149,9 +149,6 @@ export default function Rules() {
               <p>
                 <strong className="text-foreground">Original Work:</strong> Only share poetry that you have written yourself. If you're sharing a response to or inspired by another work, give proper attribution.
               </p>
-              <p>
-                <strong className="text-foreground">Copyright:</strong> You retain full copyright to your original work. By posting on WordStack, you grant us a license to display your content on our platform.
-              </p>
             </div>
           </section>
 

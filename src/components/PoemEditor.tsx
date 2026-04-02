@@ -1,12 +1,11 @@
 import { useMemo, useRef, useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Loader2, Music, Upload, X, Copyright, AlignLeft, AlignCenter,
+  Loader2, Music, Upload, X, AlignLeft, AlignCenter,
   ChevronDown, ChevronUp, Tag, Check, BookOpen, Cloud, CloudOff
 } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
@@ -29,7 +28,6 @@ export type PoemEditorInitial = {
   tags?: string[] | null;
   status?: "draft" | "published";
   audioPath?: string | null;
-  copyright?: string | null;
 };
 
 type SaveStatus = "idle" | "saving" | "saved" | "error";
@@ -51,7 +49,6 @@ export function PoemEditor({ initial }: Props) {
   const [tags, setTags] = useState<string[]>(initial?.tags ?? []);
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [existingAudioPath, setExistingAudioPath] = useState<string | null>(initial?.audioPath ?? null);
-  const [copyright, setCopyright] = useState(initial?.copyright ?? "");
   const [alignment, setAlignment] = useState<"left" | "center">("left");
   const [metaOpen, setMetaOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -79,20 +76,6 @@ export function PoemEditor({ initial }: Props) {
   useEffect(() => { autoGrow(titleRef.current); }, [title, autoGrow]);
   useEffect(() => { autoGrow(poemRef.current); }, [poemText, autoGrow]);
 
-  // Auto-populate copyright
-  useEffect(() => {
-    if (initial?.copyright != null || !user?.id) return;
-    (async () => {
-      const { data } = await db
-        .from("profiles")
-        .select("display_name, username")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      const name = data?.display_name || data?.username || user.email?.split("@")[0] || "Your Name";
-      setCopyright(`© ${new Date().getFullYear()} ${name} — All rights reserved`);
-    })();
-  }, [user?.id]);
-
   // ── Auto-save logic ────────────────────────────────────────────────────────
   const autoSave = useCallback(async () => {
     if (!user || !canWritePoems || !poemText.trim()) return;
@@ -118,7 +101,6 @@ export function PoemEditor({ initial }: Props) {
             tags,
             status: "draft",
             slug: slugData as string,
-            copyright: copyright.trim() ? copyright.trim() : null,
           })
           .select("id")
           .single();
@@ -132,7 +114,6 @@ export function PoemEditor({ initial }: Props) {
             title: title.trim() || null,
             content: poemText,
             tags,
-            copyright: copyright.trim() ? copyright.trim() : null,
           })
           .eq("id", poemId);
         if (error) throw error;
@@ -145,7 +126,7 @@ export function PoemEditor({ initial }: Props) {
       setSaveStatus("error");
       setTimeout(() => setSaveStatus((s) => (s === "error" ? "idle" : s)), 3000);
     }
-  }, [user, canWritePoems, poemText, title, tags, copyright, draftPoemId]);
+  }, [user, canWritePoems, poemText, title, tags, draftPoemId]);
 
   // Debounce: save 3s after last keystroke
   useEffect(() => {
@@ -240,7 +221,6 @@ export function PoemEditor({ initial }: Props) {
             tags,
             status,
             slug: slugData as string,
-            copyright: copyright.trim() ? copyright.trim() : null,
           })
           .select("id")
           .single();
@@ -255,7 +235,6 @@ export function PoemEditor({ initial }: Props) {
             content: poemText,
             tags,
             status,
-            copyright: copyright.trim() ? copyright.trim() : null,
           })
           .eq("id", poemId);
         if (error) throw error;
@@ -461,7 +440,7 @@ export function PoemEditor({ initial }: Props) {
         )}
       </div>
 
-      {/* ── Meta panel (tags, audio, copyright) ── */}
+      {/* ── Meta panel (tags, audio) ── */}
       <div className="mt-10 border-t border-border/60">
         <button
           type="button"
@@ -564,21 +543,6 @@ export function PoemEditor({ initial }: Props) {
                   )}
                 </div>
 
-                {/* Copyright */}
-                <div className="space-y-2">
-                  <Label className="text-sm text-muted-foreground flex items-center gap-1.5">
-                    <Copyright className="h-3.5 w-3.5" />
-                    Copyright
-                    <span className="text-xs text-muted-foreground/60 ml-1">optional</span>
-                  </Label>
-                  <Input
-                    placeholder={`© ${new Date().getFullYear()} ${user?.email?.split("@")[0] || "Your Name"} — All rights reserved`}
-                    value={copyright}
-                    onChange={(e) => setCopyright(e.target.value.slice(0, 200))}
-                    className="bg-secondary/40 border-border/60 text-sm"
-                  />
-                  <p className="text-xs text-muted-foreground">Displayed under your poem.</p>
-                </div>
               </div>
             </motion.div>
           )}

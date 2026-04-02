@@ -11,6 +11,7 @@ import {
   Shield, 
   ScrollText,
   DollarSign,
+  Wallet,
   ChevronDown,
   X
 } from 'lucide-react';
@@ -33,6 +34,7 @@ const sidebarSections: SidebarSection[] = [
       { label: 'Chapbooks Store', icon: BookOpen, href: '/chapbooks' },
       { label: 'Poets of the Month', icon: Award, href: '/poets-of-the-month' },
       { label: 'Poet Journals', icon: Newspaper, href: '/journals' },
+      { label: 'Wallet', icon: Wallet, href: '/wallet' },
     ],
   },
   {
