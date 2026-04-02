@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Check, Crown, Star, TrendingUp, MessageSquare, Users, BarChart2, Heart, Shield } from 'lucide-react';
 import { useAuth } from '@/context/AuthProvider';
+import { usePaddle, PADDLE_PRICE_IDS } from '@/hooks/usePaddle';
 
 const proFeatures = [
   { icon: Crown, label: 'Verified Pro badge on your profile' },
