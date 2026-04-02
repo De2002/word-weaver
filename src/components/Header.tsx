@@ -1,8 +1,10 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Bell } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/context/AuthProvider';
+import { useNotifications } from '@/hooks/useNotifications';
 import { useNotificationsRealtime } from '@/hooks/useNotificationsRealtime';
 import { useScrollDirection } from '@/hooks/useScrollDirection';
 import { ProfileDrawer } from '@/components/ProfileDrawer';
@@ -23,6 +25,7 @@ interface HeaderProps {
 
 export function Header({ activeTab = 'for-you', onTabChange, showTabs = false }: HeaderProps) {
   const { user, profile } = useAuth();
+  const { unreadCount } = useNotifications();
   const isVisible = useScrollDirection(15);
   const tabRefs = useRef<Map<string, HTMLButtonElement>>(new Map());
   const [indicatorStyle, setIndicatorStyle] = useState({ left: 0, width: 0 });
@@ -104,8 +107,28 @@ export function Header({ activeTab = 'for-you', onTabChange, showTabs = false }:
               />
             </motion.div>
 
-            {/* Right: spacing to balance the centered brand */}
-            <div className="flex-none w-8 md:hidden" />
+            {/* Right: Notifications */}
+            <div className="flex-none md:hidden">
+              {user ? (
+                <Button
+                  asChild
+                  variant="ghost"
+                  size="icon"
+                  className="relative h-8 w-8 rounded-full"
+                >
+                  <Link to="/notifications" aria-label="Open notifications">
+                    <Bell className="h-5 w-5" />
+                    {unreadCount > 0 && (
+                      <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-0.5 flex items-center justify-center rounded-full bg-soft-coral text-white text-[10px] font-bold leading-none">
+                        {unreadCount > 99 ? '99+' : unreadCount}
+                      </span>
+                    )}
+                  </Link>
+                </Button>
+              ) : (
+                <div className="w-8" />
+              )}
+            </div>
           </div>
 
           {/* Tabs Row */}
