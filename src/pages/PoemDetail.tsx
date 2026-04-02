@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, Heart, MessageCircle, Bookmark, Share2, 
+  Sparkles, TrendingUp, Twitter, Facebook, Link2, MessageSquare, PaintBucket, Droplets
   Sparkles, TrendingUp, Twitter, Facebook, Link2, MessageSquare, PaintBucket
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -36,7 +37,7 @@ export default function PoemDetail() {
   const location = useLocation();
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [showInkSheet, setShowInkSheet] = useState(false);
-  const shareMenuRef = useRef<HTMLDivElement>(null);
+
   const inkOptions = [5, 10, 25, 50, 100];
 
   // Extract comment ID from URL hash (e.g., #comment-abc123)
@@ -264,6 +265,27 @@ export default function PoemDetail() {
     toggleSave();
   };
 
+  const handlePourInk = (amount: number) => {
+    if (isPouringInk) return;
+    setPouredAmount(amount);
+    setIsPouringInk(true);
+    if (inkTimeoutRef.current) {
+      window.clearTimeout(inkTimeoutRef.current);
+    }
+    inkTimeoutRef.current = window.setTimeout(() => {
+      setIsPouringInk(false);
+      setShowInkSheet(false);
+    }, 1800);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (inkTimeoutRef.current) {
+        window.clearTimeout(inkTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const poetBadge = poem.poet.badges[0];
 
   return (
@@ -472,6 +494,20 @@ export default function PoemDetail() {
           <CommentSection poemId={poem.id} highlightCommentId={highlightCommentId} />
         </motion.article>
       </main>
+      <Drawer
+        open={showInkSheet}
+        onOpenChange={(open) => {
+          setShowInkSheet(open);
+          if (!open) {
+            if (inkTimeoutRef.current) {
+              window.clearTimeout(inkTimeoutRef.current);
+              inkTimeoutRef.current = null;
+            }
+            setIsPouringInk(false);
+            setPouredAmount(null);
+          }
+        }}
+      >
       <Drawer open={showInkSheet} onOpenChange={setShowInkSheet}>
         <DrawerContent>
           <DrawerHeader>
@@ -484,12 +520,60 @@ export default function PoemDetail() {
                 key={amount}
                 variant="outline"
                 className="h-11"
+                disabled={isPouringInk}
+                onClick={() => handlePourInk(amount)}
                 onClick={() => setShowInkSheet(false)}
               >
                 {amount} ink
               </Button>
             ))}
           </div>
+          <AnimatePresence>
+            {isPouringInk && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="px-4 pb-2"
+              >
+                <motion.div
+                  initial={{ scale: 0.92, opacity: 0.5 }}
+                  animate={{ scale: [0.92, 1.05, 1], opacity: 1 }}
+                  transition={{ duration: 0.8, ease: 'easeOut' }}
+                  className="relative overflow-hidden rounded-2xl border border-primary/25 bg-primary/10 py-6 text-center"
+                >
+                  <motion.div
+                    initial={{ y: -10, rotate: -8 }}
+                    animate={{ y: [0, -2, 0], rotate: [-8, 8, 0] }}
+                    transition={{ duration: 0.9 }}
+                    className="mx-auto mb-2 w-fit"
+                  >
+                    <PaintBucket className="h-8 w-8 text-primary" />
+                  </motion.div>
+                  <p className="text-sm font-semibold text-foreground">Pouring {pouredAmount ?? 0} ink…</p>
+                  <p className="text-xs text-muted-foreground mt-1">Your support is landing on this poem ✨</p>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: [0, 1, 0], y: [0, -14] }}
+                    transition={{ duration: 1.1 }}
+                    className="absolute left-6 bottom-3"
+                  >
+                    <Droplets className="h-4 w-4 text-primary" />
+                  </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: [0, 1, 0], y: [0, -16] }}
+                    transition={{ duration: 1.2, delay: 0.08 }}
+                    className="absolute right-7 bottom-4"
+                  >
+                    <Droplets className="h-4 w-4 text-primary" />
+                  </motion.div>
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          <DrawerFooter>
+            <Button variant="secondary" disabled={isPouringInk} onClick={() => setShowInkSheet(false)}>
           <DrawerFooter>
             <Button variant="secondary" onClick={() => setShowInkSheet(false)}>
               Cancel
