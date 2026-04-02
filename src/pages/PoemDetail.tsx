@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, Heart, MessageCircle, Bookmark, Share2, 
-  Sparkles, TrendingUp, Twitter, Facebook, Link2, MessageSquare, PaintBucket
+  Sparkles, TrendingUp, Twitter, Facebook, Link2, MessageSquare, PaintBucket, Droplets
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { TagBadge } from '@/components/TagBadge';
@@ -36,6 +36,8 @@ export default function PoemDetail() {
   const location = useLocation();
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [showInkSheet, setShowInkSheet] = useState(false);
+  const [isPouringInk, setIsPouringInk] = useState(false);
+  const [pouredAmount, setPouredAmount] = useState<number | null>(null);
   const shareMenuRef = useRef<HTMLDivElement>(null);
   const inkOptions = [5, 10, 25, 50, 100];
 
@@ -264,6 +266,16 @@ export default function PoemDetail() {
     toggleSave();
   };
 
+  const handlePourInk = (amount: number) => {
+    if (isPouringInk) return;
+    setPouredAmount(amount);
+    setIsPouringInk(true);
+    window.setTimeout(() => {
+      setIsPouringInk(false);
+      setShowInkSheet(false);
+    }, 1800);
+  };
+
   const poetBadge = poem.poet.badges[0];
 
   return (
@@ -472,7 +484,16 @@ export default function PoemDetail() {
           <CommentSection poemId={poem.id} highlightCommentId={highlightCommentId} />
         </motion.article>
       </main>
-      <Drawer open={showInkSheet} onOpenChange={setShowInkSheet}>
+      <Drawer
+        open={showInkSheet}
+        onOpenChange={(open) => {
+          setShowInkSheet(open);
+          if (!open) {
+            setIsPouringInk(false);
+            setPouredAmount(null);
+          }
+        }}
+      >
         <DrawerContent>
           <DrawerHeader>
             <DrawerTitle>Pour ink</DrawerTitle>
@@ -484,12 +505,43 @@ export default function PoemDetail() {
                 key={amount}
                 variant="outline"
                 className="h-11"
-                onClick={() => setShowInkSheet(false)}
+                disabled={isPouringInk}
+                onClick={() => handlePourInk(amount)}
               >
                 {amount} ink
               </Button>
             ))}
           </div>
+          <AnimatePresence>
+            {isPouringInk && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                className="flex flex-col items-center justify-center py-8 gap-4"
+              >
+                <motion.div
+                  animate={{ y: [0, -10, 0] }}
+                  transition={{ repeat: Infinity, duration: 0.8 }}
+                  className="text-primary"
+                >
+                  <Droplets className="h-12 w-12" />
+                </motion.div>
+                <p className="text-lg font-medium">Pouring {pouredAmount} ink…</p>
+                <p className="text-sm text-muted-foreground">Your support is landing on this poem ✨</p>
+                <motion.div
+                  className="h-1 w-32 bg-primary/20 rounded-full overflow-hidden"
+                >
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: '100%' }}
+                    transition={{ duration: 1.6, ease: 'easeInOut' }}
+                    className="h-full bg-primary rounded-full"
+                  />
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
           <DrawerFooter>
             <Button variant="secondary" onClick={() => setShowInkSheet(false)}>
               Cancel
