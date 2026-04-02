@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, MessageCircle, Bookmark, Share2, Sparkles, Twitter, Facebook, Link2, MessageSquare, TrendingUp, Crown } from 'lucide-react';
 import { Poem } from '@/types/poem';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { TagBadge } from '@/components/TagBadge';
 import { AudioPlayButton } from '@/components/AudioPlayButton';
 import { FollowButton } from '@/components/FollowButton';
 import { CommentSection } from '@/components/CommentSection';
@@ -138,15 +137,6 @@ export function PoemCard({ poem, index = 0, showProBadge = false }: PoemCardProp
         )}
       </div>
 
-      {/* Tags */}
-      {poem.tags.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 mb-4">
-          {poem.tags.slice(0, 3).map(tag => (
-            <TagBadge key={tag} tag={tag} />
-          ))}
-        </div>
-      )}
-
       {/* Poet info — bottom, like before */}
       <div className="flex items-center justify-between mb-3">
         <Link
@@ -199,14 +189,6 @@ export function PoemCard({ poem, index = 0, showProBadge = false }: PoemCardProp
         <span className="mx-2">·</span>
         <span>{formatDistanceToNow(new Date(poem.createdAt), { addSuffix: true })}</span>
       </div>
-
-      {/* Copyright */}
-      {poem.copyright && (
-        <p className="text-[11px] text-muted-foreground/70 italic mb-3 flex items-center gap-1">
-          <Crown className="h-3 w-3 text-amber-500/70 shrink-0" />
-          {poem.copyright}
-        </p>
-      )}
 
       <Separator className="mb-3" />
 

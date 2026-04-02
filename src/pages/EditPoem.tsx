@@ -26,7 +26,7 @@ export default function EditPoem() {
       setLoading(true);
       const { data: poem, error } = await db
         .from("poems")
-        .select("id, title, content, tags, status, copyright")
+        .select("id, title, content, tags, status")
         .eq("id", id)
         .maybeSingle();
       if (error) {
@@ -55,7 +55,6 @@ export default function EditPoem() {
         tags: poem.tags ?? [],
         status: poem.status,
         audioPath: audio?.storage_path ?? null,
-        copyright: (poem as any).copyright ?? null,
       });
       setLoading(false);
     })();
