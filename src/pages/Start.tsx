@@ -1,268 +1,205 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import {
-  Sparkles, TrendingUp, Users, Mic, BookOpen, Calendar,
-  MessageCircle, HelpCircle, Feather, ArrowRight,
-  BookMarked, Map
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthProvider";
 import { useSEO } from "@/hooks/useSEO";
 
-const features = [
+const pricingTiers = [
   {
-    icon: Feather,
-    title: "Write & Publish",
-    description: "Draft privately, publish when ready. Your words, your timeline.",
+    name: "The Observer",
+    price: "Free",
+    description: "Perfect if you just want to explore.",
+    perks: ["Read poems", "Discover poets", "Ad-supported"],
+    cta: "Keep Reading",
   },
   {
-    icon: Mic,
-    title: "Audio Readings",
-    description: "Record your voice. Let readers hear your poem the way you intended.",
+    name: "The Lyric",
+    price: "$0.99/mo",
+    description: "Start sharing your voice.",
+    perks: ["Publish up to 10 poems/month", "Earn from ink (locked balance)", "No ads"],
+    cta: "Get Started",
+    featured: true,
   },
   {
-    icon: Map,
-    title: "Poetry Trails",
-    description: "Curated journeys through poems. Follow a theme, mood, or poet.",
-  },
-  {
-    icon: BookMarked,
-    title: "Chapbook Store",
-    description: "Submit or discover independently published poetry collections.",
-  },
-  {
-    icon: Calendar,
-    title: "Events",
-    description: "Open mics, workshops, and readings — online and in-person.",
-  },
-  {
-    icon: HelpCircle,
-    title: "Q&A with Poets",
-    description: "Ask craft questions. Get real answers from the community.",
-  },
-  {
-    icon: BookOpen,
-    title: "Classics Library",
-    description: "Read the canon. From Dickinson to Rumi, all in one place.",
-  },
-  {
-    icon: MessageCircle,
-    title: "Connect & Message",
-    description: "Follow poets, meet writers, and have real conversations.",
+    name: "The Epic",
+    price: "$2.99/mo",
+    description: "For poets ready to grow.",
+    perks: ["Unlimited publishing", "Priority spotlight (get seen more)", "Withdraw your earnings", "No ads"],
+    cta: "Go Professional",
   },
 ];
 
-
-import type { Variants } from "framer-motion";
-
-const staggerContainer: Variants = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.07 } },
-};
-
-const fadeUp: Variants = {
-  hidden: { opacity: 0, y: 18 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.45 } },
-};
-
 export default function Start() {
   useSEO({
-    title: "WordStack – Publish Poems & Connect with Poets",
+    title: "Where Your Poetry Finally Matters",
     description:
-      "Join WordStack to read poetry, publish your poems, explore classics, ask questions, and connect with poets worldwide.",
+      "Publish your poems, get real support, and receive ink from readers who truly feel your words.",
     fullTitle: true,
   });
+
   const { user } = useAuth();
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border/50">
-        <div className="flex items-center justify-between h-14 px-4 max-w-3xl mx-auto">
+      <header className="sticky top-0 z-40 bg-background/90 backdrop-blur-xl border-b border-border/60">
+        <div className="flex items-center justify-between h-14 px-4 max-w-5xl mx-auto">
           <div className="flex items-center gap-2">
             <img src="/logo.png" alt="WordStack" className="h-7 w-7" />
             <span className="font-semibold text-sm tracking-wide">WordStack</span>
           </div>
-          <div className="flex items-center gap-2">
-            {user ? (
-              <Button asChild size="sm">
-                <Link to="/">Open app</Link>
+          {user ? (
+            <Button asChild size="sm">
+              <Link to="/feed">Open app</Link>
+            </Button>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Button asChild size="sm" variant="ghost" className="hidden sm:inline-flex">
+                <Link to="/login">Sign in</Link>
               </Button>
-            ) : (
-              <>
-                <Button asChild size="sm" variant="ghost" className="hidden sm:inline-flex">
-                  <Link to="/login">Sign in</Link>
-                </Button>
-                <Button asChild size="sm">
-                  <Link to="/signup">Join free</Link>
-                </Button>
-              </>
-            )}
-          </div>
+              <Button asChild size="sm">
+                <Link to="/signup">Join free</Link>
+              </Button>
+            </div>
+          )}
         </div>
       </header>
 
-      <main className="max-w-3xl mx-auto px-4 pb-24">
-
-        {/* ── Hero ─────────────────────────────────────────────────────── */}
+      <main className="max-w-5xl mx-auto px-4 pb-24">
         <motion.section
-          variants={staggerContainer}
-          initial="hidden"
-          animate="show"
-          className="pt-14 pb-10 text-center"
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center pt-16 pb-12"
         >
-          <motion.div variants={fadeUp} className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full border border-border bg-secondary text-xs font-semibold text-muted-foreground mb-6">
-            <Sparkles className="h-3 w-3 text-primary" />
-            The home for serious poets
-          </motion.div>
-
-          <motion.h1
-            variants={fadeUp}
-            className="font-poem text-4xl sm:text-5xl leading-tight text-foreground"
-          >
-            Write poems that matter.
-            <span className="block text-gradient-warm mt-1">Build an audience that lasts.</span>
-          </motion.h1>
-
-          <motion.p
-            variants={fadeUp}
-            className="mt-5 text-base text-muted-foreground leading-relaxed max-w-xl mx-auto"
-          >
-            WordStack is a full-featured poetry platform — publish, record audio readings, join events, explore classic poetry, and connect with a community that actually reads.
-          </motion.p>
-
-          <motion.div variants={fadeUp} className="mt-7 flex flex-wrap gap-3 justify-center">
-            <Button asChild size="lg" className="gap-2 rounded-full px-7">
-              <Link to={user ? "/" : "/signup"}>
-                Start writing free
+          <h1 className="font-poem text-4xl sm:text-5xl text-foreground leading-tight">
+            Where Your Poetry Finally Matters
+          </h1>
+          <p className="mt-5 text-base sm:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
+            Publish your poems. Get real support. Receive <em>ink</em> from people who feel your words.
+          </p>
+          <div className="mt-7 flex flex-wrap justify-center gap-3">
+            <Button asChild size="lg" className="rounded-full px-8 gap-2">
+              <Link to={user ? "/create/poetry" : "/signup"}>
+                Start Writing
                 <ArrowRight className="h-4 w-4" />
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="rounded-full px-7">
-              <Link to="/">Browse the feed</Link>
-            </Button>
-          </motion.div>
-
-          <motion.p variants={fadeUp} className="mt-4 text-xs text-muted-foreground">
-            Free forever · No credit card needed
-          </motion.p>
-        </motion.section>
-
-        {/* ── Feature grid ─────────────────────────────────────────────── */}
-        <motion.section
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-60px" }}
-          className="mb-14"
-        >
-          <motion.h2 variants={fadeUp} className="text-xs font-bold uppercase tracking-widest text-muted-foreground text-center mb-6">
-            Everything a poet needs
-          </motion.h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-            {features.map((f) => (
-              <motion.div
-                key={f.title}
-                variants={fadeUp}
-                className="rounded-2xl border border-border bg-card p-4 flex flex-col gap-2"
-              >
-                <div className="p-2 rounded-lg bg-primary/10 w-fit">
-                  <f.icon className="h-4 w-4 text-primary" />
-                </div>
-                <p className="font-semibold text-sm">{f.title}</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">{f.description}</p>
-              </motion.div>
-            ))}
-          </div>
-        </motion.section>
-
-        {/* ── Trails callout ───────────────────────────────────────────── */}
-        <motion.section
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="mb-14 rounded-3xl border border-border bg-card overflow-hidden"
-        >
-          <div className="p-6 sm:p-8">
-            <div className="flex items-center gap-2 mb-3">
-              <TrendingUp className="h-4 w-4 text-primary" />
-              <span className="text-xs font-bold uppercase tracking-widest text-primary">Featured</span>
-            </div>
-            <h2 className="font-poem text-2xl sm:text-3xl mb-3">Discover poems through Trails</h2>
-            <p className="text-sm text-muted-foreground leading-relaxed mb-5 max-w-lg">
-              Poets and editors curate reading journeys around themes, moods, and movements. Follow a trail from start to finish and discover voices you'd never find otherwise.
-            </p>
-            <Button asChild variant="outline" className="rounded-full gap-2">
-              <Link to="/trails">
-                Explore trails <ArrowRight className="h-3.5 w-3.5" />
-              </Link>
+            <Button asChild variant="outline" size="lg" className="rounded-full px-8">
+              <Link to="/feed">Explore Poems</Link>
             </Button>
           </div>
+          <p className="text-xs text-muted-foreground mt-4">Join poets already sharing their voice.</p>
         </motion.section>
 
-        {/* ── Community highlights ─────────────────────────────────────── */}
-        <motion.section
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="mb-14 text-center"
-        >
-          <h2 className="font-poem text-2xl sm:text-3xl mb-3">A community worth joining</h2>
-          <p className="text-sm text-muted-foreground mb-8 max-w-lg mx-auto">
-            From first drafts to chapbook launches — WordStack is where poetry lives online.
+        <section className="py-10 border-t border-border/70">
+          <h2 className="font-poem text-2xl sm:text-3xl mb-4">This Isn’t Just Another Poetry Platform</h2>
+          <p className="text-muted-foreground leading-relaxed max-w-3xl">
+            Most places give you likes. We give you <em>ink</em>. Ink is how readers support poems that truly move
+            them. It’s not noise. It’s not random. It’s real backing from real people.
           </p>
-          <div className="grid grid-cols-3 gap-4">
+          <p className="text-muted-foreground leading-relaxed max-w-3xl mt-3">
+            When someone pours ink on your poem… they’re saying <em>“this meant something to me.”</em>
+          </p>
+        </section>
+
+        <section className="py-10 border-t border-border/70">
+          <h2 className="font-poem text-2xl sm:text-3xl mb-5">Simple. Honest. Powerful.</h2>
+          <div className="grid gap-4 sm:grid-cols-3">
             {[
-              { label: "Publish poems", icon: Feather, href: "/signup" },
-              { label: "Explore classics", icon: BookOpen, href: "/classics" },
-              { label: "Find events", icon: Calendar, href: "/events" },
+              {
+                step: "1",
+                title: "Publish Your Poetry",
+                text: "Share your thoughts, your feelings, your story.",
+              },
+              {
+                step: "2",
+                title: "Receive Ink",
+                text: "Readers support your work when it resonates.",
+              },
+              {
+                step: "3",
+                title: "Grow & Earn",
+                text: "Build your audience and unlock real earnings.",
+              },
             ].map((item) => (
-              <Link
-                key={item.label}
-                to={item.href}
-                className="rounded-2xl border border-border bg-card p-4 flex flex-col items-center gap-2 hover:bg-secondary/50 transition-colors"
-              >
-                <div className="p-2.5 rounded-xl bg-primary/10">
-                  <item.icon className="h-5 w-5 text-primary" />
-                </div>
-                <span className="text-xs font-semibold">{item.label}</span>
-              </Link>
+              <div key={item.step} className="rounded-2xl border border-border bg-card p-5">
+                <p className="text-xs font-bold tracking-widest text-primary mb-2">STEP {item.step}</p>
+                <h3 className="font-semibold text-foreground mb-1.5">{item.title}</h3>
+                <p className="text-sm text-muted-foreground">{item.text}</p>
+              </div>
             ))}
           </div>
-        </motion.section>
+        </section>
 
-        {/* ── Final CTA ────────────────────────────────────────────────── */}
-        <motion.section
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="mb-10 text-center py-12 rounded-3xl border border-border bg-card"
-        >
-          <Users className="h-8 w-8 text-primary mx-auto mb-4 opacity-80" />
-          <h2 className="font-poem text-2xl sm:text-3xl mb-3">Your poems deserve an audience.</h2>
-          <p className="text-sm text-muted-foreground mb-6 max-w-sm mx-auto">
-            Join thousands of poets already writing, sharing, and connecting on WordStack.
+        <section className="py-10 border-t border-border/70">
+          <h2 className="font-poem text-2xl sm:text-3xl mb-4">A Space That Actually Supports You</h2>
+          <p className="text-muted-foreground max-w-3xl leading-relaxed">
+            No pressure. No hate. No fighting for attention. Just poets reading poets. Supporting each other. Growing
+            together.
           </p>
-          <Button asChild size="lg" className="rounded-full gap-2 px-8">
-            <Link to={user ? "/" : "/signup"}>
-              Create your poet profile
-              <ArrowRight className="h-4 w-4" />
-            </Link>
-          </Button>
-        </motion.section>
+          <ul className="mt-4 space-y-2 text-sm text-foreground">
+            <li>• Follow voices you love</li>
+            <li>• Discover new poets every day</li>
+            <li>• Pour ink on words that hit deep</li>
+          </ul>
+          <p className="text-muted-foreground mt-4 italic">This is a space where people want you to win.</p>
+        </section>
 
-        {/* Footer */}
-        <div className="text-xs text-muted-foreground text-center flex flex-wrap justify-center gap-x-4 gap-y-1">
-          <span>© {new Date().getFullYear()} WordStack</span>
-          <Link to="/privacy-policy" className="hover:underline">Privacy</Link>
-          <Link to="/user-agreement" className="hover:underline">Terms</Link>
-          <Link to="/refund-policy" className="hover:underline">Refunds</Link>
-          <Link to="/about" className="hover:underline">About</Link>
-        </div>
+        <section className="py-10 border-t border-border/70">
+          <h2 className="font-poem text-2xl sm:text-3xl mb-4">Your Words Can Pay You Back</h2>
+          <p className="text-muted-foreground leading-relaxed max-w-3xl">
+            When readers support your poetry with ink, you don’t just feel it—you earn from it. Start small. Grow
+            naturally. Upgrade when you’re ready.
+          </p>
+        </section>
 
+        <section className="py-10 border-t border-border/70">
+          <h2 className="font-poem text-2xl sm:text-3xl mb-5">Choose Your Path</h2>
+          <div className="grid gap-4 md:grid-cols-3">
+            {pricingTiers.map((tier) => (
+              <article
+                key={tier.name}
+                className={`rounded-2xl border p-5 ${tier.featured ? "border-primary/40 bg-primary/5" : "border-border bg-card"}`}
+              >
+                <h3 className="font-semibold text-lg">{tier.name}</h3>
+                <p className="text-primary font-semibold mt-1">{tier.price}</p>
+                <p className="text-sm text-muted-foreground mt-2">{tier.description}</p>
+                <ul className="mt-4 space-y-1.5 text-sm text-foreground">
+                  {tier.perks.map((perk) => (
+                    <li key={perk}>• {perk}</li>
+                  ))}
+                </ul>
+                <Button asChild variant={tier.featured ? "default" : "outline"} className="mt-5 w-full">
+                  <Link to={user ? "/upgrade" : "/signup"}>{tier.cta}</Link>
+                </Button>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="py-10 border-t border-border/70">
+          <h2 className="font-poem text-2xl sm:text-3xl mb-4">Not Sure If You’re “Good Enough”?</h2>
+          <p className="text-muted-foreground max-w-3xl leading-relaxed">
+            You don’t need to be perfect. You don’t need a big audience. If you write… you belong here.
+          </p>
+        </section>
+
+        <section className="mt-4 text-center py-12 rounded-3xl border border-border bg-card">
+          <h2 className="font-poem text-3xl mb-3">Start Sharing Your Poetry Today</h2>
+          <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
+            Your words are already inside you. This is where they get seen.
+          </p>
+          <div className="flex flex-wrap justify-center gap-3">
+            <Button asChild size="lg" className="rounded-full px-8">
+              <Link to={user ? "/create/poetry" : "/signup"}>Write Your First Poem</Link>
+            </Button>
+            <Button asChild variant="outline" size="lg" className="rounded-full px-8">
+              <Link to={user ? "/feed" : "/signup"}>Join the Community</Link>
+            </Button>
+          </div>
+        </section>
+
+        <p className="text-center text-sm text-muted-foreground mt-8 italic">Write. Share. Be Felt.</p>
       </main>
     </div>
   );

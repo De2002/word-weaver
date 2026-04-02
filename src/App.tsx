@@ -53,6 +53,7 @@ import Classics from "./pages/Classics";
 import ClassicPoetsList from "./pages/ClassicPoetPage";
 import ClassicPoetDetail from "./pages/ClassicPoetDetail";
 import ClassicPoemDetail from "./pages/ClassicPoemDetail";
+import Start from "./pages/Start";
 import Upgrade from "./pages/Upgrade";
 import RefundPolicy from "./pages/RefundPolicy";
 import Challenges from "./pages/Challenges";
@@ -88,7 +89,8 @@ const App = () => {
             />
             <main className={`min-w-0 transition-[margin] duration-300 ease-in-out ${isDesktopSidebarCollapsed ? "md:ml-20" : "md:ml-72"}`}>
             <Routes>
-            <Route path="/" element={<Index />} />
+            <Route path="/" element={<Start />} />
+            <Route path="/feed" element={<Index />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
 

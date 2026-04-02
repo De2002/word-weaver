@@ -12,6 +12,7 @@ export default function ClassicPoetDetail() {
   const { slug } = useParams<{ slug: string }>();
   const { data: poet, isLoading: poetLoading } = useClassicPoet(slug ?? '');
   const { data: poems, isLoading: poemsLoading } = useClassicPoetPoems(poet?.id ?? '');
+  const isPoemsSectionLoading = poetLoading || !poet?.id || poemsLoading;
 
   useSEO({
     title: poet ? `${poet.name} — Classic Poems` : 'Classic Poet',
@@ -129,9 +130,9 @@ export default function ClassicPoetDetail() {
           transition={{ delay: 0.14 }}
         >
           <h2 className="text-sm font-semibold uppercase tracking-wider text-muted-foreground mb-4">
-            Poems ({poemsLoading ? '…' : poems?.length ?? 0})
+            Poems ({isPoemsSectionLoading ? '…' : poems?.length ?? 0})
           </h2>
-          {poemsLoading ? (
+          {isPoemsSectionLoading ? (
             <div className="space-y-3">
               {Array.from({ length: 5 }).map((_, i) => <Skeleton key={i} className="h-16 rounded-xl" />)}
             </div>
