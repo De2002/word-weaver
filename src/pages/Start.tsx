@@ -43,6 +43,7 @@ export default function Start() {
   });
 
   const { user } = useAuth();
+  const { openCheckout } = usePaddle();
 
   return (
     <div className="min-h-screen bg-background">
