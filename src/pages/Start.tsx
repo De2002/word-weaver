@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthProvider";
 import { useSEO } from "@/hooks/useSEO";
+import { usePaddle, PADDLE_PRICE_IDS } from "@/hooks/usePaddle";
 
 const pricingTiers = [
   {
@@ -12,6 +13,7 @@ const pricingTiers = [
     description: "Perfect if you just want to explore.",
     perks: ["Read poems", "Discover poets", "Ad-supported"],
     cta: "Keep Reading",
+    priceId: null,
   },
   {
     name: "The Lyric",
@@ -20,6 +22,7 @@ const pricingTiers = [
     perks: ["Publish up to 10 poems/month", "Earn from ink (locked balance)", "No ads"],
     cta: "Get Started",
     featured: true,
+    priceId: PADDLE_PRICE_IDS.lyric,
   },
   {
     name: "The Epic",
@@ -27,6 +30,7 @@ const pricingTiers = [
     description: "For poets ready to grow.",
     perks: ["Unlimited publishing", "Priority spotlight (get seen more)", "Withdraw your earnings", "No ads"],
     cta: "Go Professional",
+    priceId: PADDLE_PRICE_IDS.epic,
   },
 ];
 
