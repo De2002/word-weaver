@@ -65,7 +65,7 @@ export default function ExploreTags() {
       )
       .sort((a, b) => {
         // Prioritize exact matches
-        const aExact = normalizeTag(tag.tag) === query;
+        const aExact = normalizeTag(a.tag) === query;
         const bExact = normalizeTag(b.tag) === query;
         if (aExact !== bExact) return bExact ? 1 : -1;
 

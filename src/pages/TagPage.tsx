@@ -163,7 +163,7 @@ export default function TagPage() {
             <div>
               <h1 className="text-xl font-semibold">#{displayTag}</h1>
               <p className="text-sm text-muted-foreground">
-                {isLoading ? '...' : `${totalCount} ${totalCount === 1 ? 'poem' : 'poems'}`}
+                {recentLoading ? '...' : `${totalCount} ${totalCount === 1 ? 'poem' : 'poems'}`}
               </p>
             </div>
           </div>
