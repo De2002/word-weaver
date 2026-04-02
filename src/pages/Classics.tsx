@@ -62,8 +62,7 @@ export default function Classics() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8 text-center pt-4"
         >
-          <div className="flex items-center justify-center gap-2 mb-3">
-            <Feather className="h-6 w-6 text-primary" />
+          <div className="mb-3">
             <span className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
               Classic Poetry Library
             </span>

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mic2, Plus, Calendar as CalendarIcon, List, Sparkles } from 'lucide-react';
+import { Plus, Calendar as CalendarIcon, List, Sparkles } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -45,8 +45,7 @@ export default function Events() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <Mic2 className="h-6 w-6 text-primary" />
+          <div className="mb-2">
             <h1 className="font-display text-2xl sm:text-3xl font-bold text-foreground">
               Poetry Events Around the World
             </h1>
@@ -124,7 +123,6 @@ export default function Events() {
               </div>
             ) : events.length === 0 ? (
               <div className="text-center py-12 bg-muted/30 rounded-xl">
-                <Mic2 className="h-12 w-12 text-muted-foreground/50 mx-auto mb-3" />
                 <p className="text-muted-foreground">No events found matching your filters.</p>
                 <p className="text-sm text-muted-foreground mt-1">
                   Try adjusting your search or{' '}
