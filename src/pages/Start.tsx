@@ -174,9 +174,25 @@ export default function Start() {
                     <li key={perk}>• {perk}</li>
                   ))}
                 </ul>
-                <Button asChild variant={tier.featured ? "default" : "outline"} className="mt-5 w-full">
-                  <Link to={user ? "/upgrade" : "/signup"}>{tier.cta}</Link>
-                </Button>
+                {tier.priceId ? (
+                  <Button
+                    variant={tier.featured ? "default" : "outline"}
+                    className="mt-5 w-full"
+                    onClick={() => {
+                      if (!user) {
+                        window.location.href = "/signup";
+                        return;
+                      }
+                      openCheckout(tier.priceId!, user.email ?? undefined);
+                    }}
+                  >
+                    {tier.cta}
+                  </Button>
+                ) : (
+                  <Button asChild variant="outline" className="mt-5 w-full">
+                    <Link to={user ? "/feed" : "/signup"}>{tier.cta}</Link>
+                  </Button>
+                )}
               </article>
             ))}
           </div>
