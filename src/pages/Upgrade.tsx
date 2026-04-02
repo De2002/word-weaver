@@ -2,6 +2,7 @@ import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Check, Crown, Star, TrendingUp, MessageSquare, Users, BarChart2, Heart, Shield } from 'lucide-react';
 import { useAuth } from '@/context/AuthProvider';
+import { usePaddle, PADDLE_PRICE_IDS } from '@/hooks/usePaddle';
 
 const proFeatures = [
   { icon: Crown, label: 'Verified Pro badge on your profile' },
@@ -51,8 +52,9 @@ function FadeUp({ children, delay = 0, className }: { children: React.ReactNode;
 }
 
 export default function Upgrade() {
-  const { roles } = useAuth();
+  const { user, roles } = useAuth();
   const isPro = roles.includes('pro');
+  const { openCheckout } = usePaddle();
 
   return (
     <div className="min-h-screen bg-background">
@@ -104,14 +106,17 @@ export default function Upgrade() {
               </div>
             ) : (
               <div className="flex flex-col items-center gap-3">
-                <Link
-                  to="/login"
-                  className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-primary-foreground font-semibold text-base shadow-lg hover:shadow-xl hover:opacity-95 transition-all duration-300"
+                <button
+                  onClick={() => {
+                    if (!user) { window.location.href = '/login'; return; }
+                    openCheckout(PADDLE_PRICE_IDS.epic, user.email ?? undefined);
+                  }}
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-primary-foreground font-semibold text-base shadow-lg hover:shadow-xl hover:opacity-95 transition-all duration-300 cursor-pointer"
                   style={{ background: 'var(--gradient-warm)' }}
                 >
                   <Crown className="h-4 w-4" />
                   Become a Pro Poet — $2.99/month
-                </Link>
+                </button>
                 <p className="text-muted-foreground/60 text-xs">
                   Cancel anytime. No pressure.{' '}
                   <Link to="/refund-policy" className="underline underline-offset-2 hover:text-muted-foreground transition-colors">Refund policy</Link>
@@ -228,14 +233,17 @@ export default function Upgrade() {
 
             <FadeUp delay={0.1}>
               <div className="flex flex-col items-center gap-3">
-                <Link
-                  to="/login"
-                  className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-primary-foreground font-semibold text-base shadow-lg hover:shadow-xl hover:opacity-95 transition-all duration-300"
+                <button
+                  onClick={() => {
+                    if (!user) { window.location.href = '/login'; return; }
+                    openCheckout(PADDLE_PRICE_IDS.epic, user.email ?? undefined);
+                  }}
+                  className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-primary-foreground font-semibold text-base shadow-lg hover:shadow-xl hover:opacity-95 transition-all duration-300 cursor-pointer"
                   style={{ background: 'var(--gradient-warm)' }}
                 >
                   <Crown className="h-4 w-4" />
                   Upgrade to Pro — $2.99/month
-                </Link>
+                </button>
                 <p className="text-muted-foreground/60 text-xs mt-1">
                   Your voice deserves more than ordinary.{' '}
                   <Link to="/refund-policy" className="underline underline-offset-2 hover:text-muted-foreground transition-colors">Refund policy</Link>
