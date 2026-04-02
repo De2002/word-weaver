@@ -58,6 +58,7 @@ import Upgrade from "./pages/Upgrade";
 import RefundPolicy from "./pages/RefundPolicy";
 import Challenges from "./pages/Challenges";
 import ChallengeDetail from "./pages/ChallengeDetail";
+import Wallet from "./pages/Wallet";
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -160,6 +161,14 @@ const App = () => {
               element={
                 <ProtectedRoute>
                   <SavedPoems />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/wallet"
+              element={
+                <ProtectedRoute>
+                  <Wallet />
                 </ProtectedRoute>
               }
             />

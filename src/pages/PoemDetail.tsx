@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, Heart, MessageCircle, Bookmark, Share2, 
-  Sparkles, TrendingUp, Twitter, Facebook, Link2, MessageSquare
+  Sparkles, TrendingUp, Twitter, Facebook, Link2, MessageSquare, PaintBucket
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { TagBadge } from '@/components/TagBadge';
@@ -13,6 +13,15 @@ import { FollowButton } from '@/components/FollowButton';
 import { CommentSection } from '@/components/CommentSection';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+} from '@/components/ui/drawer';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import { usePoemInteractions } from '@/hooks/usePoemInteractions';
@@ -26,7 +35,9 @@ export default function PoemDetail() {
   const navigate = useNavigate();
   const location = useLocation();
   const [showShareMenu, setShowShareMenu] = useState(false);
+  const [showInkSheet, setShowInkSheet] = useState(false);
   const shareMenuRef = useRef<HTMLDivElement>(null);
+  const inkOptions = [5, 10, 25, 50, 100];
 
   // Extract comment ID from URL hash (e.g., #comment-abc123)
   const highlightCommentId = useMemo(() => {
@@ -47,7 +58,7 @@ export default function PoemDetail() {
       const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(slug);
       let query = db
         .from('poems')
-        .select('id, slug, title, content, tags, created_at, user_id, copyright')
+        .select('id, slug, title, content, tags, created_at, user_id')
         .eq('status', 'published');
       
       if (isUuid) {
@@ -91,7 +102,6 @@ export default function PoemDetail() {
         comments: 0,
         saves: 0,
         reads: 0,
-        copyright: (poemData as any).copyright || null,
         poet: {
           id: profileData?.user_id || poemData.user_id,
           name: profileData?.display_name || 'Anonymous',
@@ -269,6 +279,16 @@ export default function PoemDetail() {
             <ArrowLeft className="h-5 w-5" />
           </motion.button>
           <span className="font-medium">Poem</span>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="ml-auto text-primary"
+            aria-label="Give ink"
+            onClick={() => setShowInkSheet(true)}
+          >
+            <PaintBucket className="h-5 w-5" />
+          </Button>
         </div>
       </header>
 
@@ -350,14 +370,6 @@ export default function PoemDetail() {
             <span className="mx-2">·</span>
             <span>{formatDistanceToNow(new Date(poem.createdAt), { addSuffix: true })}</span>
           </div>
-
-          {/* Copyright */}
-          {poem.copyright && (
-            <p className="text-[11px] text-muted-foreground/70 italic mb-4 flex items-center gap-1.5">
-              <span className="shrink-0">©</span>
-              {poem.copyright}
-            </p>
-          )}
 
           <Separator className="mb-4" />
 
@@ -460,6 +472,31 @@ export default function PoemDetail() {
           <CommentSection poemId={poem.id} highlightCommentId={highlightCommentId} />
         </motion.article>
       </main>
+      <Drawer open={showInkSheet} onOpenChange={setShowInkSheet}>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle>Pour ink</DrawerTitle>
+            <DrawerDescription>Support this poem with an ink amount.</DrawerDescription>
+          </DrawerHeader>
+          <div className="px-4 pb-2 grid grid-cols-3 gap-2">
+            {inkOptions.map((amount) => (
+              <Button
+                key={amount}
+                variant="outline"
+                className="h-11"
+                onClick={() => setShowInkSheet(false)}
+              >
+                {amount} ink
+              </Button>
+            ))}
+          </div>
+          <DrawerFooter>
+            <Button variant="secondary" onClick={() => setShowInkSheet(false)}>
+              Cancel
+            </Button>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }
