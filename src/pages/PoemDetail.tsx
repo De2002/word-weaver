@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, Heart, MessageCircle, Bookmark, Share2, 
   Sparkles, TrendingUp, Twitter, Facebook, Link2, MessageSquare, PaintBucket, Droplets
+  Sparkles, TrendingUp, Twitter, Facebook, Link2, MessageSquare, PaintBucket
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { TagBadge } from '@/components/TagBadge';
@@ -36,10 +37,7 @@ export default function PoemDetail() {
   const location = useLocation();
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [showInkSheet, setShowInkSheet] = useState(false);
-  const [isPouringInk, setIsPouringInk] = useState(false);
-  const [pouredAmount, setPouredAmount] = useState<number | null>(null);
-  const shareMenuRef = useRef<HTMLDivElement>(null);
-  const inkTimeoutRef = useRef<number | null>(null);
+
   const inkOptions = [5, 10, 25, 50, 100];
 
   // Extract comment ID from URL hash (e.g., #comment-abc123)
@@ -510,6 +508,7 @@ export default function PoemDetail() {
           }
         }}
       >
+      <Drawer open={showInkSheet} onOpenChange={setShowInkSheet}>
         <DrawerContent>
           <DrawerHeader>
             <DrawerTitle>Pour ink</DrawerTitle>
@@ -523,6 +522,7 @@ export default function PoemDetail() {
                 className="h-11"
                 disabled={isPouringInk}
                 onClick={() => handlePourInk(amount)}
+                onClick={() => setShowInkSheet(false)}
               >
                 {amount} ink
               </Button>
@@ -574,6 +574,8 @@ export default function PoemDetail() {
           </AnimatePresence>
           <DrawerFooter>
             <Button variant="secondary" disabled={isPouringInk} onClick={() => setShowInkSheet(false)}>
+          <DrawerFooter>
+            <Button variant="secondary" onClick={() => setShowInkSheet(false)}>
               Cancel
             </Button>
           </DrawerFooter>
