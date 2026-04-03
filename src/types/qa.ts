@@ -5,6 +5,7 @@ export type QACategory =
   | 'spoken-word'
   | 'editing-revision'
   | 'poetry-books'
+  | 'platform'
   | 'general';
 
 export const QA_CATEGORIES: { value: QACategory; label: string }[] = [
@@ -14,6 +15,7 @@ export const QA_CATEGORIES: { value: QACategory; label: string }[] = [
   { value: 'spoken-word', label: 'Spoken Word & Performance' },
   { value: 'editing-revision', label: 'Editing & Revision' },
   { value: 'poetry-books', label: 'Poetry Books' },
+  { value: 'platform', label: 'Platform' },
   { value: 'general', label: 'General' },
 ];
 
