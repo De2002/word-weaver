@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { db } from '@/lib/db';
 import { useAuth } from '@/context/AuthProvider';
 import { Poem, Poet } from '@/types/poem';
- import { fetchPoemAudioUrls } from '@/lib/poemAudio';
+import { fetchPoemAudioUrls } from '@/lib/poemAudio';
 
 const PAGE_SIZE = 10;
 
@@ -131,6 +131,8 @@ export function useFollowingPoems() {
       };
     },
     enabled: !!userId,
+    retry: false,
+    refetchOnWindowFocus: false,
   });
 
   const loadMore = useCallback(() => {

@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Hash, Loader2, AlertCircle, Users, Star } from 'lucide-react';
+import { ArrowLeft, Hash, Loader2, Users, Star } from 'lucide-react';
 import { PoemCard } from '@/components/PoemCard';
 import { slugToTag, normalizeTag } from '@/lib/tags';
 import { cn } from '@/lib/utils';
@@ -11,6 +11,7 @@ import { useTagMetadata } from '@/hooks/useTagMetadata';
 import { useTagForYouPoems } from '@/hooks/useTagForYouPoems';
 import { useTagFollowingPoems } from '@/hooks/useTagFollowingPoems';
 import { Button } from '@/components/ui/button';
+import { PoemLoadError } from '@/components/PoemLoadError';
 
 const feedTabs = [
   { value: 'for-you', label: 'For You' },
@@ -33,8 +34,8 @@ export default function TagPage() {
 
   // Fetch poems for different tabs
   const { poems: recentPoems, isLoading: recentLoading, hasMore: recentHasMore, loadMore: loadMoreRecent, totalCount } = useTagPoems(displayTag);
-  const { poems: forYouPoems, isLoading: forYouLoading, error: forYouError, hasMore: forYouHasMore, loadMore: loadMoreForYou } = useTagForYouPoems(displayTag);
-  const { poems: followingPoems, isLoading: followingLoading, error: followingError, hasMore: followingHasMore, loadMore: loadMoreFollowing, isAuthenticated } = useTagFollowingPoems(displayTag);
+  const { poems: forYouPoems, isLoading: forYouLoading, error: forYouError, hasMore: forYouHasMore, loadMore: loadMoreForYou, refresh: refreshForYou } = useTagForYouPoems(displayTag);
+  const { poems: followingPoems, isLoading: followingLoading, error: followingError, hasMore: followingHasMore, loadMore: loadMoreFollowing, refresh: refreshFollowing, isAuthenticated } = useTagFollowingPoems(displayTag);
   
   const { data: tagMeta } = useTagMetadata(displayTag);
 
@@ -42,13 +43,13 @@ export default function TagPage() {
   const getCurrentData = useCallback(() => {
     switch (activeTab) {
       case 'following':
-        return { poems: followingPoems, loading: followingLoading, error: followingError, hasMore: followingHasMore, loadMore: loadMoreFollowing, isAuthenticated };
+        return { poems: followingPoems, loading: followingLoading, error: followingError, hasMore: followingHasMore, loadMore: loadMoreFollowing, refresh: refreshFollowing, isAuthenticated };
       case 'recent':
-        return { poems: recentPoems, loading: recentLoading, error: null, hasMore: recentHasMore, loadMore: loadMoreRecent, isAuthenticated: true };
+        return { poems: recentPoems, loading: recentLoading, error: null, hasMore: recentHasMore, loadMore: loadMoreRecent, refresh: () => window.location.reload(), isAuthenticated: true };
       default: // for-you
-        return { poems: forYouPoems, loading: forYouLoading, error: forYouError, hasMore: forYouHasMore, loadMore: loadMoreForYou, isAuthenticated: true };
+        return { poems: forYouPoems, loading: forYouLoading, error: forYouError, hasMore: forYouHasMore, loadMore: loadMoreForYou, refresh: refreshForYou, isAuthenticated: true };
     }
-  }, [activeTab, recentPoems, recentLoading, recentHasMore, loadMoreRecent, forYouPoems, forYouLoading, forYouError, forYouHasMore, loadMoreForYou, followingPoems, followingLoading, followingError, followingHasMore, loadMoreFollowing, isAuthenticated]);
+  }, [activeTab, recentPoems, recentLoading, recentHasMore, loadMoreRecent, forYouPoems, forYouLoading, forYouError, forYouHasMore, loadMoreForYou, refreshForYou, followingPoems, followingLoading, followingError, followingHasMore, loadMoreFollowing, refreshFollowing, isAuthenticated]);
 
   const currentData = getCurrentData();
 
@@ -209,14 +210,7 @@ export default function TagPage() {
           <>
             {/* Error State */}
             {currentData.error && (
-              <div className="flex flex-col items-center justify-center py-12 text-center">
-                <AlertCircle className="w-12 h-12 text-destructive mb-4" />
-                <p className="text-muted-foreground mb-4">{currentData.error}</p>
-                <Button onClick={() => window.location.reload()} variant="outline">
-                  <Loader2 className="w-4 h-4 mr-2" />
-                  Try Again
-                </Button>
-              </div>
+              <PoemLoadError error={currentData.error} onRetry={currentData.refresh} />
             )}
 
             {/* Empty State for Following Tab (not authenticated) */}
