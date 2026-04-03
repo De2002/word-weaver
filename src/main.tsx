@@ -3,7 +3,7 @@ import { ThemeProvider } from "next-themes";
 import App from "./App.tsx";
 import "./index.css";
 
-const GLOBAL_FAVICON_URL = "/logo.png?v=global-favicon";
+const GLOBAL_FAVICON_URL = "/favicon.svg?v=global-favicon";
 const ICON_RELS = ["icon", "shortcut icon", "apple-touch-icon"] as const;
 
 const enforceGlobalFavicon = () => {
@@ -26,7 +26,7 @@ const enforceGlobalFavicon = () => {
       const link = document.createElement("link");
       link.setAttribute("rel", rel);
       if (rel === "icon") {
-        link.setAttribute("type", "image/png");
+        link.setAttribute("type", "image/svg+xml");
       }
       if (rel === "apple-touch-icon") {
         link.setAttribute("sizes", "180x180");
