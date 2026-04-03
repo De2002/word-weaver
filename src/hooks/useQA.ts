@@ -134,9 +134,14 @@ export function useQA(options: UseQAOptions = {}) {
     category: QACategory
   ) => {
     if (!user) throw new Error('Must be logged in');
+    const { data: slugData, error: slugError } = await db.rpc('generate_qa_question_slug', {
+      title_input: title,
+    });
+    if (slugError) throw slugError;
+
     const { data, error } = await db
       .from('qa_questions')
-      .insert({ user_id: user.id, title, details, category })
+      .insert({ user_id: user.id, title, details, category, slug: slugData as string })
       .select()
       .single();
     if (error) throw error;

@@ -42,6 +42,7 @@ export interface QAAnswer {
 
 export interface QAQuestion {
   id: string;
+  slug: string;
   user_id: string;
   title: string;
   details: string | null;
