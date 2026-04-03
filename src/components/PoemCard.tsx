@@ -39,6 +39,7 @@ export function PoemCard({ poem, index = 0, showProBadge = false }: PoemCardProp
 
   const [showComments, setShowComments] = useState(false);
   const [showShareMenu, setShowShareMenu] = useState(false);
+  const [showInkDrawer, setShowInkDrawer] = useState(false);
   const shareMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
