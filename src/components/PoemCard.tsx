@@ -180,6 +180,14 @@ export function PoemCard({ poem, index = 0, showProBadge = false }: PoemCardProp
             </div>
         </Link>
         <div className="flex items-center gap-2">
+          <motion.button
+            whileTap={{ scale: 0.88 }}
+            onClick={(e) => { e.stopPropagation(); setShowInkDrawer(true); }}
+            className="p-1.5 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+            aria-label="Pour ink"
+          >
+            <Droplets className="h-4 w-4" />
+          </motion.button>
           {poem.audioUrl && <AudioPlayButton audioUrl={poem.audioUrl} size="sm" />}
           <FollowButton poetUserId={poem.poet.id} variant="outline" />
         </div>
