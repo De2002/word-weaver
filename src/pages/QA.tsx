@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Search, PenLine, HelpCircle } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Search, PenLine, HelpCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { QuestionCard } from '@/components/qa/QuestionCard';
@@ -16,6 +16,9 @@ export default function QA() {
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
   const [showAskForm, setShowAskForm] = useState(false);
+  const categoryScrollRef = useRef<HTMLDivElement | null>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(false);
 
   const { questions, isLoading, isLoadingMore, hasMore, loadMore, askQuestion } = useQA({
     category,
@@ -26,6 +29,29 @@ export default function QA() {
     e.preventDefault();
     setSearch(searchInput);
   };
+
+  const updateScrollButtons = () => {
+    const el = categoryScrollRef.current;
+    if (!el) return;
+    setCanScrollLeft(el.scrollLeft > 2);
+    setCanScrollRight(el.scrollLeft + el.clientWidth < el.scrollWidth - 2);
+  };
+
+  const scrollCategories = (direction: 'left' | 'right') => {
+    const el = categoryScrollRef.current;
+    if (!el) return;
+    el.scrollBy({
+      left: direction === 'left' ? -180 : 180,
+      behavior: 'smooth',
+    });
+  };
+
+  useEffect(() => {
+    updateScrollButtons();
+    const handleResize = () => updateScrollButtons();
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -61,32 +87,60 @@ export default function QA() {
           </form>
 
           {/* Category pills */}
-          <div className="flex flex-wrap gap-2 pb-1">
-            <button
-              onClick={() => setCategory('all')}
-              className={cn(
-                "text-xs px-3 py-1.5 rounded-full border transition-colors whitespace-nowrap",
-                category === 'all'
-                  ? "bg-primary text-primary-foreground border-primary"
-                  : "border-border text-muted-foreground hover:text-foreground"
-              )}
-            >
-              All
-            </button>
-            {QA_CATEGORIES.map(cat => (
+          <div className="flex items-center gap-2 pb-1">
+            {canScrollLeft && (
               <button
-                key={cat.value}
-                onClick={() => setCategory(cat.value)}
+                type="button"
+                aria-label="Scroll categories left"
+                onClick={() => scrollCategories('left')}
+                className="h-7 w-7 shrink-0 rounded-full border border-border text-muted-foreground hover:text-foreground transition-colors flex items-center justify-center"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+            )}
+
+            <div
+              ref={categoryScrollRef}
+              onScroll={updateScrollButtons}
+              className="flex-1 min-w-0 flex gap-2 overflow-x-auto whitespace-nowrap [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+            >
+              <button
+                onClick={() => setCategory('all')}
                 className={cn(
-                  "text-xs px-3 py-1.5 rounded-full border transition-colors whitespace-nowrap",
-                  category === cat.value
+                  "text-xs px-3 py-1.5 rounded-full border transition-colors whitespace-nowrap shrink-0",
+                  category === 'all'
                     ? "bg-primary text-primary-foreground border-primary"
                     : "border-border text-muted-foreground hover:text-foreground"
                 )}
               >
-                {cat.label}
+                All
               </button>
-            ))}
+              {QA_CATEGORIES.map(cat => (
+                <button
+                  key={cat.value}
+                  onClick={() => setCategory(cat.value)}
+                  className={cn(
+                    "text-xs px-3 py-1.5 rounded-full border transition-colors whitespace-nowrap shrink-0",
+                    category === cat.value
+                      ? "bg-primary text-primary-foreground border-primary"
+                      : "border-border text-muted-foreground hover:text-foreground"
+                  )}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+
+            {canScrollRight && (
+              <button
+                type="button"
+                aria-label="Scroll categories right"
+                onClick={() => scrollCategories('right')}
+                className="h-7 w-7 shrink-0 rounded-full border border-border text-muted-foreground hover:text-foreground transition-colors flex items-center justify-center"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            )}
           </div>
         </div>
       </div>
