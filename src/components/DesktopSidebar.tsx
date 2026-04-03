@@ -1,4 +1,4 @@
-import { LayoutList, HelpCircle, Trophy, Feather, User, BookOpen, Bookmark, Bell, Settings, ChevronLeft, ChevronRight, Compass, Wallet } from 'lucide-react';
+import { LayoutList, HelpCircle, Trophy, Feather, User, BookOpen, Bookmark, Bell, Settings, ChevronLeft, ChevronRight, Compass, Wallet, Calendar, MessageCircle, Map, Newspaper, Info, ScrollText, FileText, Shield, DollarSign } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/context/AuthProvider';
@@ -30,6 +30,19 @@ const accountNavItems: NavItem[] = [
   { icon: Wallet, label: 'Wallet', href: '/wallet', requiresAuth: true },
   { icon: Bell, label: 'Notifications', href: '/notifications', requiresAuth: true, showBadge: true },
   { icon: Settings, label: 'Edit Profile', href: '/profile', requiresAuth: true },
+];
+
+const moreNavItems: NavItem[] = [
+  { icon: Calendar, label: 'Events', href: '/events' },
+  { icon: MessageCircle, label: 'Messages', href: '/messages', requiresAuth: true },
+  { icon: BookOpen, label: 'Bookstore', href: '/chapbooks' },
+  { icon: Map, label: 'Trails', href: '/trails' },
+  { icon: Newspaper, label: 'Journals', href: '/journals' },
+  { icon: Info, label: 'About', href: '/about' },
+  { icon: ScrollText, label: 'Rules', href: '/rules' },
+  { icon: FileText, label: 'User Agreement', href: '/user-agreement' },
+  { icon: Shield, label: 'Privacy Policy', href: '/privacy-policy' },
+  { icon: DollarSign, label: 'Refund Policy', href: '/refund-policy' },
 ];
 
 interface DesktopSidebarProps {
@@ -160,6 +173,19 @@ export function DesktopSidebar({ isCollapsed, onToggle }: DesktopSidebarProps) {
             </nav>
           </>
         )}
+
+        <div className="my-4 border-t border-border/60" />
+        <p
+          className={cn(
+            'px-3 pb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground transition-opacity duration-300',
+            isCollapsed ? 'opacity-0' : 'opacity-100'
+          )}
+        >
+          More
+        </p>
+        <nav className="space-y-1.5" aria-label="Desktop more navigation">
+          {moreNavItems.map(renderNavLink)}
+        </nav>
       </div>
     </aside>
   );
