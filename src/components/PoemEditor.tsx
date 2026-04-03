@@ -60,7 +60,9 @@ export function PoemEditor({ initial }: Props) {
   const intervalTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const isEdit = Boolean(initial?.id);
-  const canSubmit = poemText.trim().length > 0 && tags.length === 2;
+  const hasPoemContent = poemText.trim().length > 0;
+  const canSaveDraft = hasPoemContent;
+  const canPublish = hasPoemContent && tags.length >= 1;
   const canWritePoems = true;
 
   // Auto-grow textareas
@@ -184,14 +186,14 @@ export function PoemEditor({ initial }: Props) {
       navigate("/login");
       return;
     }
-    if (!poemText.trim()) {
+    if (!hasPoemContent) {
       toast({ title: "Poem is empty", description: "Write something first.", variant: "destructive" });
       return;
     }
-    if (status === "published" && tags.length !== 2) {
+    if (status === "published" && tags.length < 1) {
       toast({ 
         title: "Tags required", 
-        description: "You must select exactly 2 tags before publishing.",
+        description: "Tag 1 is required before publishing. Tag 2 is optional.",
         variant: "destructive" 
       });
       return;
@@ -328,7 +330,7 @@ export function PoemEditor({ initial }: Props) {
           <Button
             variant="ghost"
             size="sm"
-            disabled={!canSubmit || isSubmitting}
+            disabled={!canSaveDraft || isSubmitting}
             onClick={() => save("draft")}
             className="text-muted-foreground hover:text-foreground"
           >
@@ -336,7 +338,7 @@ export function PoemEditor({ initial }: Props) {
           </Button>
           <Button
             size="sm"
-            disabled={!canSubmit || isSubmitting}
+            disabled={!canPublish || isSubmitting}
             onClick={() => save("published")}
             className="gap-1.5"
           >
@@ -467,8 +469,8 @@ export function PoemEditor({ initial }: Props) {
                     onTagsChange={setTags}
                     maxTags={2}
                   />
-                  {tags.length < 2 && (
-                    <p className="text-xs text-amber-600/70">Select 2 tags to publish your poem</p>
+                  {tags.length < 1 && (
+                    <p className="text-xs text-amber-600/70">Tag 1 is required. Tag 2 is optional.</p>
                   )}
                 </div>
 
