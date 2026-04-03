@@ -220,15 +220,15 @@ export default function TagPage() {
         {/* Related Tags */}
         {relatedTags.length > 0 && (
           <div className="px-5 pt-4">
-            <p className="text-xs text-muted-foreground mb-2">Related tags</p>
-            <div className="flex flex-wrap gap-2">
+            <p className="text-xs text-muted-foreground mb-2 text-center">Poems under</p>
+            <div className="flex flex-wrap justify-center gap-2">
               {relatedTags.map(relatedTag => (
                 <button
                   key={relatedTag}
                   onClick={() => navigate(`/tag/${encodeURIComponent(relatedTag)}`)}
-                  className="text-sm px-3 py-1 rounded-full bg-secondary hover:bg-secondary/80 text-foreground transition-colors"
+                  className="text-sm px-3 py-1 rounded-full border border-accent text-accent hover:bg-accent/10 transition-colors"
                 >
-                  #{relatedTag}
+                  {relatedTag}
                 </button>
               ))}
             </div>
