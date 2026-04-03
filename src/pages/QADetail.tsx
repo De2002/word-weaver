@@ -5,13 +5,14 @@ import { formatDistanceToNow } from 'date-fns';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Textarea } from '@/components/ui/textarea';
 import { Skeleton } from '@/components/ui/skeleton';
 import { AnswerCard } from '@/components/qa/AnswerCard';
+import { RichTextEditor } from '@/components/qa/RichTextEditor';
 import { useQAQuestion } from '@/hooks/useQAQuestion';
 import { useAuth } from '@/context/AuthProvider';
 import { QA_CATEGORIES } from '@/types/qa';
 import { useToast } from '@/hooks/use-toast';
+import { richTextToPlainText, sanitizeRichTextHtml } from '@/lib/qaRichText';
 
 export default function QADetail() {
   const { id } = useParams<{ id: string }>();
@@ -27,10 +28,11 @@ export default function QADetail() {
   const categoryLabel = QA_CATEGORIES.find(c => c.value === question?.category)?.label || 'General';
 
   const handlePostAnswer = async () => {
-    if (!answerText.trim()) return;
+    const cleanAnswer = sanitizeRichTextHtml(answerText);
+    if (!richTextToPlainText(cleanAnswer)) return;
     setIsPosting(true);
     try {
-      await postAnswer(answerText.trim());
+      await postAnswer(cleanAnswer);
       setAnswerText('');
       toast({ title: 'Answer posted!' });
     } catch (err: any) {
@@ -181,16 +183,15 @@ export default function QADetail() {
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-sm font-medium">Post an answer</span>
               </div>
-              <Textarea
+              <RichTextEditor
                 value={answerText}
-                onChange={e => setAnswerText(e.target.value)}
+                onChange={setAnswerText}
                 placeholder="Share your expertise…"
-                className="resize-none mb-3"
-                rows={4}
+                className="mb-3"
               />
               <Button
                 onClick={handlePostAnswer}
-                disabled={isPosting || !answerText.trim()}
+                disabled={isPosting || !richTextToPlainText(answerText)}
                 className="gap-2"
               >
                 <Send className="h-3.5 w-3.5" />
