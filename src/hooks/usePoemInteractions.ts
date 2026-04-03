@@ -21,6 +21,22 @@ export function usePoemInteractions(poemId: string): UsePoemInteractionsResult {
   const queryClient = useQueryClient();
   const userId = session?.user?.id;
 
+  const hasViewedInSession = useCallback(() => {
+    if (!poemId || typeof window === 'undefined') return false;
+    const viewed = window.sessionStorage.getItem('wordstack-viewed-poems');
+    if (!viewed) return false;
+    const viewedPoems = viewed.split(',').filter(Boolean);
+    return viewedPoems.includes(poemId);
+  }, [poemId]);
+
+  const markViewedInSession = useCallback(() => {
+    if (!poemId || typeof window === 'undefined') return;
+    const viewed = window.sessionStorage.getItem('wordstack-viewed-poems');
+    const viewedPoems = new Set((viewed || '').split(',').filter(Boolean));
+    viewedPoems.add(poemId);
+    window.sessionStorage.setItem('wordstack-viewed-poems', Array.from(viewedPoems).join(','));
+  }, [poemId]);
+
   // Check if user has upvoted
   const { data: upvoteData, isLoading: upvoteLoading } = useQuery({
     queryKey: ['poem-upvote', poemId, userId],
@@ -233,6 +249,7 @@ export function usePoemInteractions(poemId: string): UsePoemInteractionsResult {
       if (error && !error.message.includes('duplicate')) throw error;
     },
     onSuccess: () => {
+      markViewedInSession();
       queryClient.invalidateQueries({ queryKey: ['poem-read-count', poemId] });
     },
   });
@@ -268,8 +285,9 @@ export function usePoemInteractions(poemId: string): UsePoemInteractionsResult {
   }, [userId, saveData, saveMutation, unsaveMutation]);
 
   const recordRead = useCallback(() => {
+    if (hasViewedInSession()) return;
     readMutation.mutate();
-  }, [readMutation]);
+  }, [hasViewedInSession, readMutation]);
 
   return {
     isUpvoted: !!upvoteData,

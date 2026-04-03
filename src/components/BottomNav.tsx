@@ -11,7 +11,7 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { icon: LayoutList, label: 'Feed', href: '/' },
+  { icon: LayoutList, label: 'Feed', href: '/feed' },
   { icon: Compass, label: 'Explore', href: '/explore' },
   { icon: HelpCircle, label: 'Q&A', href: '/qa' },
   { icon: Feather, label: 'Classics', href: '/classics' },
@@ -23,7 +23,7 @@ export function BottomNav() {
   const { user } = useAuth();
   
   const isActive = (href: string) => {
-    if (href === '/') return location.pathname === '/';
+    if (href === '/feed') return location.pathname === '/feed';
     return location.pathname.startsWith(href);
   };
 

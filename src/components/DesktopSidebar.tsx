@@ -16,7 +16,7 @@ interface NavItem {
 }
 
 const mainNavItems: NavItem[] = [
-  { icon: LayoutList, label: 'Feed', href: '/', description: 'Latest poems and discovery' },
+  { icon: LayoutList, label: 'Feed', href: '/feed', description: 'Latest poems and discovery' },
   { icon: Compass, label: 'Explore', href: '/explore', description: 'Browse all tags' },
   { icon: HelpCircle, label: 'Q&A', href: '/qa', description: 'Poetry questions and answers' },
   { icon: Trophy, label: 'Challenges', href: '/challenges', description: 'Prompts and contests' },
@@ -43,7 +43,7 @@ export function DesktopSidebar({ isCollapsed, onToggle }: DesktopSidebarProps) {
   const { unreadCount } = useNotifications();
 
   const isActive = (href: string) => {
-    if (href === '/') return location.pathname === '/';
+    if (href === '/feed') return location.pathname === '/feed';
     return location.pathname.startsWith(href);
   };
 

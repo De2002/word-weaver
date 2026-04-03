@@ -102,7 +102,7 @@ export function PoetCard({ poet, index = 0, variant = 'compact' }: PoetCardProps
           <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
             <span>{poet.totalPoems} poems</span>
             <span>·</span>
-            <span>{(poet.totalReads / 1000).toFixed(1)}k reads</span>
+            <span>{(poet.totalReads / 1000).toFixed(1)}k views</span>
           </div>
         </div>
         <FollowButton poetUserId={poet.id} variant="compact" />

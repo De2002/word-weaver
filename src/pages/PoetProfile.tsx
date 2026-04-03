@@ -253,13 +253,6 @@ export default function PoetProfile() {
 
             {/* Action buttons */}
             <div className="flex items-center gap-2 pb-1">
-              {supportLinks.buyMeACoffee && (
-                <a href={supportLinks.buyMeACoffee} target="_blank" rel="noopener noreferrer">
-                  <Button variant="outline" size="icon" className="rounded-full h-9 w-9 border-amber-300 bg-amber-50 hover:bg-amber-100 dark:bg-amber-900/20 dark:border-amber-700">
-                    <Coffee className="h-4 w-4 text-amber-500" />
-                  </Button>
-                </a>
-              )}
               {!isOwnProfile && poet && (
                 <Button variant="outline" size="icon" className="rounded-full h-9 w-9" onClick={handleMessage} title="Send message">
                   <MessageCircle className="h-4 w-4" />
@@ -299,7 +292,7 @@ export default function PoetProfile() {
             </div>
             <div>
               <span className="font-bold">{(poet?.totalReads || 0).toLocaleString()}</span>
-              <span className="text-muted-foreground text-xs ml-1 uppercase tracking-wider font-medium">Reads</span>
+              <span className="text-muted-foreground text-xs ml-1 uppercase tracking-wider font-medium">Views</span>
             </div>
           </div>
         </motion.div>
@@ -321,7 +314,7 @@ export default function PoetProfile() {
             </div>
             <div className="grid grid-cols-3 gap-3 text-center">
               {[
-                { label: 'Reads', value: poet?.totalReads || 0, icon: Eye },
+                { label: 'Views', value: poet?.totalReads || 0, icon: Eye },
                 { label: 'Upvotes', value: poet?.totalUpvotes || 0, icon: Heart },
                 { label: 'Saves', value: (poet as any)?.totalSaves || 0, icon: BookOpen },
               ].map(({ label, value, icon: Icon }) => (
@@ -366,13 +359,13 @@ export default function PoetProfile() {
         {/* ── Tabs ─────────────────────────────────────────────────────────── */}
         {profileTabs.length > 1 && (
           <div className="border-b border-border px-4 mb-6">
-            <div className="flex gap-6">
+            <div className="grid grid-cols-3">
               {profileTabs.map(tab => (
                 <button
                   key={tab}
                   onClick={() => setProfileTab(tab)}
                   className={cn(
-                    "pb-3 text-xs font-bold tracking-[0.15em] uppercase relative transition-all",
+                    "pb-3 text-xs font-bold tracking-[0.15em] uppercase relative transition-all text-center",
                     profileTab === tab ? "text-foreground" : "text-muted-foreground hover:text-foreground/70"
                   )}
                 >
@@ -400,14 +393,14 @@ export default function PoetProfile() {
               className="px-4"
             >
               {/* Sort + view controls */}
-              <div className="flex items-center justify-between mb-4">
-                <div className="flex items-center gap-1 bg-secondary rounded-lg p-0.5">
+              <div className="flex items-center justify-between mb-4 gap-2">
+                <div className="flex-1 flex items-center bg-secondary rounded-lg p-0.5">
                   {(['all', 'popular'] as SortTab[]).map(s => (
                     <button
                       key={s}
                       onClick={() => setSortTab(s)}
                       className={cn(
-                        "px-3 py-1.5 text-xs font-semibold rounded-md capitalize transition-colors",
+                        "flex-1 px-3 py-1.5 text-xs font-semibold rounded-md capitalize transition-colors",
                         sortTab === s ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
                       )}
                     >
@@ -489,20 +482,6 @@ export default function PoetProfile() {
               exit={{ opacity: 0 }}
               className="px-4 space-y-3 max-w-sm"
             >
-              {supportLinks.buyMeACoffee && (
-                <a
-                  href={supportLinks.buyMeACoffee}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-4 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-2xl hover:bg-amber-100 dark:hover:bg-amber-900/30 transition-colors group border border-amber-200/50 dark:border-amber-800/50"
-                >
-                  <Coffee className="h-5 w-5 text-amber-500 shrink-0" />
-                  <span className="text-sm font-semibold flex-1">
-                    {supportLinks.buyMeACoffee.includes('ko-fi') ? 'Support on Ko-fi' : 'Buy Me a Coffee'}
-                  </span>
-                  <ExternalLink className="h-3.5 w-3.5 text-muted-foreground group-hover:text-foreground transition-colors" />
-                </a>
-              )}
               {supportLinks.kofi && (
                 <a
                   href={supportLinks.kofi}

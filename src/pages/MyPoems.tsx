@@ -25,7 +25,7 @@ export default function MyPoems() {
     description: "Manage your drafts and published poems on WordStack."
   });
 
-  const { user, isPoet } = useAuth();
+  const { user } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [poems, setPoems] = useState<PoemRow[]>([]);
@@ -89,28 +89,12 @@ export default function MyPoems() {
     await load();
   };
 
-  if (!isPoet) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Header />
-        <main className="max-w-lg mx-auto px-4 pt-20 pb-24">
-          <h1 className="text-xl font-semibold">My Poems</h1>
-          <p className="mt-2 text-sm text-muted-foreground">Turn on Poet mode to write and manage poems.</p>
-          <Button asChild className="mt-4">
-            <Link to="/profile">Enable Poet mode</Link>
-          </Button>
-        </main>
-        <CreateButton />
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-background">
       <Header />
       <main className="max-w-lg mx-auto px-4 pt-20 pb-24">
         <div className="flex items-center gap-3">
-          <Link to="/" className="p-2 -ml-2 rounded-full hover:bg-secondary transition-colors">
+          <Link to="/feed" className="p-2 -ml-2 rounded-full hover:bg-secondary transition-colors">
             <ArrowLeft className="h-5 w-5" />
           </Link>
           <h1 className="text-xl font-semibold">My Poems</h1>

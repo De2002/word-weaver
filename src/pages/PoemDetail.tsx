@@ -359,7 +359,7 @@ export default function PoemDetail() {
 
           {/* Meta Info */}
           <div className="text-xs text-muted-foreground mb-3">
-            <span>{readCount.toLocaleString()} reads</span>
+            <span>{readCount.toLocaleString()} views</span>
             <span className="mx-2">·</span>
             <span>{formatDistanceToNow(new Date(poem.createdAt), { addSuffix: true })}</span>
           </div>

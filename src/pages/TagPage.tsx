@@ -208,10 +208,10 @@ export default function TagPage() {
               </div>
 
               <button
-                onClick={() => navigate('/create-poetry')}
+                onClick={() => navigate('/create/poetry')}
                 className="w-full mt-4 bg-zinc-800 text-white rounded-xl py-3 md:py-3 text-base md:text-base font-semibold hover:bg-zinc-700 transition-colors"
               >
-                Submit a Poem to {displayTag}
+                Submit a poem about {displayTag}
               </button>
             </div>
           </div>
