@@ -38,7 +38,7 @@ export default function Rules() {
               Community Guidelines
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed">
-              Our rules exist to keep WordStack a safe, welcoming, and inspiring space for all poets.
+              WordStack is a safe, welcoming space for poetry lovers of all ages. We encourage honest expression while keeping content suitable for a general audience.
             </p>
           </div>
 
@@ -77,7 +77,7 @@ export default function Rules() {
             <ul className="space-y-2 text-muted-foreground">
               <li className="flex items-start gap-3">
                 <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
-                <span>Sharing original poetry in any style or form</span>
+                <span>Sharing original poetry about love, heartbreak, growth, healing, and everyday life</span>
               </li>
               <li className="flex items-start gap-3">
                 <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
@@ -85,7 +85,7 @@ export default function Rules() {
               </li>
               <li className="flex items-start gap-3">
                 <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
-                <span>Using content warnings for sensitive topics</span>
+                <span>Using content warnings (CW) for sensitive topics like mental health, grief, or personal struggles</span>
               </li>
               <li className="flex items-start gap-3">
                 <Check className="h-4 w-4 text-green-500 mt-1 flex-shrink-0" />
@@ -123,7 +123,11 @@ export default function Rules() {
               </li>
               <li className="flex items-start gap-3">
                 <X className="h-4 w-4 text-destructive mt-1 flex-shrink-0" />
-                <span>Explicit sexual content or graphic violence without warning</span>
+                <span>Sexual or pornographic content, or graphic descriptions of intimacy</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <X className="h-4 w-4 text-destructive mt-1 flex-shrink-0" />
+                <span>Detailed or disturbing depictions of violence or harm</span>
               </li>
               <li className="flex items-start gap-3">
                 <X className="h-4 w-4 text-destructive mt-1 flex-shrink-0" />
@@ -132,6 +136,10 @@ export default function Rules() {
               <li className="flex items-start gap-3">
                 <X className="h-4 w-4 text-destructive mt-1 flex-shrink-0" />
                 <span>Impersonating other users or public figures</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <X className="h-4 w-4 text-destructive mt-1 flex-shrink-0" />
+                <span>Encouraging self-harm, dangerous behavior, or illegal activity</span>
               </li>
             </ul>
           </section>
@@ -144,7 +152,7 @@ export default function Rules() {
             </h3>
             <div className="space-y-3 text-muted-foreground">
               <p>
-                <strong className="text-foreground">Sensitive Topics:</strong> Poetry often explores difficult themes. If your work deals with topics like mental health, violence, or mature themes, please use appropriate content warnings.
+                <strong className="text-foreground">Sensitive Topics:</strong> Poetry often explores difficult themes. If your work deals with topics like mental health, loss, grief, violence, or personal struggles, add a clear content warning at the beginning (example: <em>CW: Mental Health</em>) and avoid graphic detail.
               </p>
               <p>
                 <strong className="text-foreground">Original Work:</strong> Only share poetry that you have written yourself. If you're sharing a response to or inspired by another work, give proper attribution.
