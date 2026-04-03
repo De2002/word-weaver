@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Hash, Loader2, Users, Star } from 'lucide-react';
+import { ArrowLeft, Hash, Loader2, Users, Star, FileText, UserCircle2 } from 'lucide-react';
 import { PoemCard } from '@/components/PoemCard';
 import { slugToTag, normalizeTag } from '@/lib/tags';
 import { cn } from '@/lib/utils';
@@ -38,6 +38,7 @@ export default function TagPage() {
   const { poems: followingPoems, isLoading: followingLoading, error: followingError, hasMore: followingHasMore, loadMore: loadMoreFollowing, refresh: refreshFollowing, isAuthenticated, followingCount } = useTagFollowingPoems(displayTag);
   
   const { data: tagMeta } = useTagMetadata(displayTag);
+  const formatCount = useCallback((value: number) => value.toLocaleString(), []);
 
   // Get current data based on active tab
   const getCurrentData = useCallback(() => {
@@ -72,6 +73,24 @@ export default function TagPage() {
       .slice(0, 8)
       .map(([tag]) => tag);
   }, [recentPoems, normalizedTag]);
+
+  const poetCount = useMemo(() => {
+    return new Set(recentPoems.map((poem) => poem.poet.id)).size;
+  }, [recentPoems]);
+
+  const topPoets = useMemo(() => {
+    const uniquePoets = new Map<string, { id: string; name: string; avatar: string }>();
+    recentPoems.forEach((poem) => {
+      if (!uniquePoets.has(poem.poet.id)) {
+        uniquePoets.set(poem.poet.id, {
+          id: poem.poet.id,
+          name: poem.poet.name,
+          avatar: poem.poet.avatar,
+        });
+      }
+    });
+    return Array.from(uniquePoets.values()).slice(0, 5);
+  }, [recentPoems]);
 
   // Infinite scroll observer
   const handleObserver = useCallback(
@@ -119,69 +138,105 @@ export default function TagPage() {
         </div>
       </header>
 
-      <main className="max-w-2xl mx-auto pb-24">
-        {/* Banner Image */}
-        {tagMeta?.banner_url && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="relative h-40 overflow-hidden"
-          >
-            <img
-              src={tagMeta.banner_url}
-              alt={`#${displayTag} banner`}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent to-background/60" />
-          </motion.div>
-        )}
-
-        {/* Tag Info */}
-        <motion.div 
+      <main className="max-w-5xl mx-auto pb-24">
+        <motion.section
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="p-5 border-b border-border"
+          className="bg-black text-white p-4 md:p-8 md:rounded-2xl md:mt-6"
         >
-          <div className="flex items-center gap-3 mb-3">
-            <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
-              <Hash className="h-6 w-6 text-primary" />
-            </div>
+          <div className="grid gap-6 md:grid-cols-[1fr,360px] md:items-start">
             <div>
-              <h1 className="text-xl font-semibold">#{displayTag}</h1>
-              <p className="text-sm text-muted-foreground">
-                {recentLoading ? '...' : `${totalCount} ${totalCount === 1 ? 'poem' : 'poems'}`}
-              </p>
+              {tagMeta?.banner_url ? (
+                <div className="relative overflow-hidden rounded-none md:rounded-lg h-44 md:h-56">
+                  <img
+                    src={tagMeta.banner_url}
+                    alt={`#${displayTag} banner`}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-black/40" />
+                  <h1 className="absolute inset-0 flex items-center justify-center text-6xl md:text-5xl font-serif tracking-wide">
+                    {displayTag.toUpperCase()}
+                  </h1>
+                </div>
+              ) : (
+                <div className="rounded-none md:rounded-lg h-44 md:h-56 bg-neutral-800 flex items-center justify-center">
+                  <h1 className="text-5xl md:text-4xl font-serif tracking-wide">{displayTag.toUpperCase()}</h1>
+                </div>
+              )}
+
+              {tagMeta?.description && (
+                <p className="mt-5 text-2xl md:text-xl leading-relaxed text-white/95">
+                  {tagMeta.description}
+                </p>
+              )}
+            </div>
+
+            <div className="bg-zinc-100 text-zinc-900 rounded-3xl md:rounded-lg p-5 md:p-4">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between border-b border-zinc-300 pb-3">
+                  <div className="flex items-center gap-3 text-xl md:text-lg">
+                    <FileText className="h-7 w-7 md:h-5 md:w-5 text-zinc-500" />
+                    <span>Poems</span>
+                  </div>
+                  <span className="text-4xl md:text-2xl font-semibold">{recentLoading ? '...' : formatCount(totalCount)}</span>
+                </div>
+
+                <div className="flex items-center justify-between border-b border-zinc-300 pb-3">
+                  <div className="flex items-center gap-3 text-xl md:text-lg">
+                    <UserCircle2 className="h-7 w-7 md:h-5 md:w-5 text-zinc-500" />
+                    <span>Poets</span>
+                  </div>
+                  <span className="text-4xl md:text-2xl font-semibold">{recentLoading ? '...' : formatCount(poetCount)}</span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3 text-xl md:text-lg">
+                    <Users className="h-7 w-7 md:h-5 md:w-5 text-zinc-500" />
+                    <span>Top Poets</span>
+                  </div>
+                  <div className="flex -space-x-2">
+                    {topPoets.map((poet) => (
+                      <img
+                        key={poet.id}
+                        src={poet.avatar}
+                        alt={poet.name}
+                        className="h-9 w-9 rounded-full border-2 border-zinc-100 object-cover"
+                      />
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <button
+                onClick={() => navigate('/create-poetry')}
+                className="w-full mt-5 bg-zinc-800 text-white rounded-xl py-4 md:py-3 text-lg md:text-base font-semibold hover:bg-zinc-700 transition-colors"
+              >
+                Submit a Poem to {displayTag}
+              </button>
             </div>
           </div>
+        </motion.section>
 
-          {/* Description */}
-          {tagMeta?.description && (
-            <p className="text-sm text-muted-foreground leading-relaxed mt-1 mb-3">
-              {tagMeta.description}
-            </p>
-          )}
-          
-          {/* Related Tags */}
-          {relatedTags.length > 0 && (
-            <div className="mt-4">
-              <p className="text-xs text-muted-foreground mb-2">Related tags</p>
-              <div className="flex flex-wrap gap-2">
-                {relatedTags.map(relatedTag => (
-                  <button
-                    key={relatedTag}
-                    onClick={() => navigate(`/tag/${encodeURIComponent(relatedTag)}`)}
-                    className="text-sm px-3 py-1 rounded-full bg-secondary hover:bg-secondary/80 text-foreground transition-colors"
-                  >
-                    #{relatedTag}
-                  </button>
-                ))}
-              </div>
+        {/* Related Tags */}
+        {relatedTags.length > 0 && (
+          <div className="px-5 pt-4">
+            <p className="text-xs text-muted-foreground mb-2">Related tags</p>
+            <div className="flex flex-wrap gap-2">
+              {relatedTags.map(relatedTag => (
+                <button
+                  key={relatedTag}
+                  onClick={() => navigate(`/tag/${encodeURIComponent(relatedTag)}`)}
+                  className="text-sm px-3 py-1 rounded-full bg-secondary hover:bg-secondary/80 text-foreground transition-colors"
+                >
+                  #{relatedTag}
+                </button>
+              ))}
             </div>
-          )}
-        </motion.div>
+          </div>
+        )}
 
         {/* Feed Tabs */}
-        <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-border">
+        <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-border mt-3">
           {feedTabs.map((feedTab) => {
             const isActive = activeTab === feedTab.value;
             return (
