@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
-  Map, 
   BookOpen, 
   Award, 
   Newspaper, 
@@ -30,8 +29,7 @@ const sidebarSections: SidebarSection[] = [
   {
     title: 'Explore',
     items: [
-      { label: 'Trails', icon: Map, href: '/trails' },
-      { label: 'Chapbooks Store', icon: BookOpen, href: '/chapbooks' },
+      { label: 'Bookstore', icon: BookOpen, href: '/bookstore' },
       { label: 'Poets of the Month', icon: Award, href: '/poets-of-the-month' },
       { label: 'Poet Journals', icon: Newspaper, href: '/journals' },
       { label: 'Wallet', icon: Wallet, href: '/wallet' },

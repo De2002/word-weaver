@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
-  Map, 
   BookOpen, 
   Award, 
   Newspaper, 
@@ -60,8 +59,7 @@ const menuSections: MenuSection[] = [
   {
     title: 'Explore',
     items: [
-      { icon: Map, label: 'Trails', href: '/trails', description: 'Poetry journeys' },
-      { icon: BookOpen, label: 'Chapbooks Store', href: '/chapbooks', description: 'Browse collections' },
+      { icon: BookOpen, label: 'Bookstore', href: '/bookstore', description: 'Browse collections' },
       { icon: Award, label: 'Poets of the Month', href: '/poets-of-the-month', description: 'Featured poets', comingSoon: true },
       { icon: Newspaper, label: 'Poet Journals', href: '/journals', description: 'Stories & reflections' },
     ],
@@ -70,9 +68,9 @@ const menuSections: MenuSection[] = [
     title: 'Ways to Earn',
     comingSoon: true,
     items: [
-      { icon: Sparkles, label: 'Featured in Trails', href: '/earn/trails', description: 'Get featured' },
+      { icon: Sparkles, label: 'Featured Collections', href: '/earn/collections', description: 'Get featured' },
       { icon: TrendingUp, label: 'Poet Fund Bonuses', href: '/earn/poet-fund', description: 'Monthly bonuses' },
-      { icon: BookOpen, label: 'Chapbook Listing', href: '/earn/chapbook', description: 'Sell your work' },
+      { icon: BookOpen, label: 'Bookstore Listing', href: '/earn/bookstore', description: 'Sell your work' },
       { icon: Heart, label: 'Fan Tips', href: '/earn/tips', description: 'Receive support' },
       { icon: Star, label: 'Poets of the Month', href: '/earn/potm', description: 'Win recognition' },
       { icon: Crown, label: "Founder's Outstanding Poet", href: '/earn/founders', description: 'Top honor' },
@@ -98,7 +96,7 @@ const menuSections: MenuSection[] = [
 export default function More() {
   useSEO({
     title: "More",
-    description: "Explore more of WordStack. Community, events, trails, chapbooks, and settings."
+    description: "Explore more of WordStack. Community, events, bookstore, and settings."
   });
   return (
     <div className="min-h-screen bg-background">

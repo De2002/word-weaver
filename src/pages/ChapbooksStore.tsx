@@ -14,8 +14,8 @@ import { useSEO } from '@/hooks/useSEO';
 
 export default function ChapbooksStore() {
   useSEO({
-    title: "Chapbooks Store",
-    description: "Discover chapbooks by poets from around the world. Browse and buy from original publishers."
+    title: "Bookstore",
+    description: "Discover poetry books by poets from around the world. Browse and buy from original publishers."
   });
   const [filters, setFilters] = useState<ChapbookFilters>({});
   const [page, setPage] = useState(1);
@@ -55,16 +55,16 @@ export default function ChapbooksStore() {
             <div className="text-center md:text-left">
               <h1 className="text-2xl md:text-3xl font-serif font-bold flex items-center justify-center md:justify-start gap-2">
                 <Book className="w-7 h-7" />
-                Chapbooks Store
+                Bookstore
               </h1>
               <p className="text-muted-foreground mt-1 text-sm md:text-base">
-                Discover chapbooks by poets from around the world. Click to buy from the original publisher or store.
+                Discover poetry books by poets from around the world. Click to buy from the original publisher or store.
               </p>
             </div>
             <Button asChild className="w-full md:w-auto shrink-0">
-              <Link to="/chapbooks/submit">
+              <Link to="/bookstore/submit">
                 <Plus className="w-4 h-4 mr-2" />
-                List a Chapbook
+                List a Book
               </Link>
             </Button>
           </div>
@@ -80,7 +80,7 @@ export default function ChapbooksStore() {
         {/* View toggle & results count */}
         <div className="flex items-center justify-between mt-4 mb-4">
           <p className="text-sm text-muted-foreground">
-            {data?.totalCount ?? 0} chapbook{data?.totalCount !== 1 ? 's' : ''} found
+            {data?.totalCount ?? 0} book{data?.totalCount !== 1 ? 's' : ''} found
           </p>
           <div className="flex items-center gap-1 border rounded-lg p-1">
             <Button
@@ -129,7 +129,7 @@ export default function ChapbooksStore() {
           </div>
         ) : error ? (
           <div className="text-center py-12">
-            <p className="text-muted-foreground">Failed to load chapbooks. Please try again.</p>
+            <p className="text-muted-foreground">Failed to load bookstore listings. Please try again.</p>
           </div>
         ) : data?.chapbooks.length === 0 ? (
           <motion.div
@@ -138,11 +138,11 @@ export default function ChapbooksStore() {
             className="text-center py-16"
           >
             <Book className="w-16 h-16 mx-auto text-muted-foreground/50 mb-4" />
-            <h3 className="text-lg font-medium mb-2">No chapbooks found</h3>
+            <h3 className="text-lg font-medium mb-2">No books found</h3>
             <p className="text-muted-foreground mb-4">
               {Object.keys(filters).length > 0
                 ? 'Try adjusting your filters'
-                : 'Be the first to list a chapbook!'}
+                : 'Be the first to list a book!'}
             </p>
             {Object.keys(filters).length > 0 && (
               <Button variant="outline" onClick={clearFilters}>
@@ -222,9 +222,9 @@ export default function ChapbooksStore() {
             className="fixed bottom-24 right-4 z-40 md:hidden"
           >
             <Button asChild size="lg" className="rounded-full shadow-lg h-14 px-5">
-              <Link to="/chapbooks/submit">
+              <Link to="/bookstore/submit">
                 <Plus className="w-5 h-5 mr-2" />
-                List a Chapbook
+                List a Book
               </Link>
             </Button>
           </motion.div>

@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, User, BookOpen, Bookmark, Bell, Settings, LogOut, Sun, Moon, Trophy, Calendar, MessageCircle, Map, Newspaper, Info, ScrollText, FileText, Shield, DollarSign } from 'lucide-react';
+import { X, User, BookOpen, Bookmark, Bell, Settings, LogOut, Sun, Moon, Trophy, Calendar, MessageCircle, Newspaper, Info, ScrollText, FileText, Shield, DollarSign } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/context/AuthProvider';
@@ -26,8 +26,7 @@ const menuItems = [
 const moreMenuItems = [
   { icon: Calendar, label: 'Events', href: '/events' },
   { icon: MessageCircle, label: 'Messages', href: '/messages', requiresAuth: true },
-  { icon: BookOpen, label: 'Bookstore', href: '/chapbooks' },
-  { icon: Map, label: 'Trails', href: '/trails' },
+  { icon: BookOpen, label: 'Bookstore', href: '/bookstore' },
   { icon: Newspaper, label: 'Journals', href: '/journals' },
   { icon: Info, label: 'About', href: '/about' },
   { icon: ScrollText, label: 'Rules', href: '/rules' },

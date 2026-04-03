@@ -77,7 +77,7 @@ export default function About() {
               </li>
               <li className="flex items-start gap-3">
                 <span className="h-2 w-2 rounded-full bg-primary mt-2 flex-shrink-0" />
-                <span><strong className="text-foreground">Curated Experiences:</strong> Explore poetry trails, chapbooks, and themed collections.</span>
+                <span><strong className="text-foreground">Curated Experiences:</strong> Explore the bookstore, journals, and themed collections.</span>
               </li>
             </ul>
           </section>
