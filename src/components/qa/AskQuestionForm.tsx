@@ -46,7 +46,7 @@ export function AskQuestionForm({ onSubmit, onClose }: AskQuestionFormProps) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/50">
-      <div className="w-full max-w-lg bg-background rounded-t-2xl sm:rounded-2xl p-6 shadow-xl">
+      <div className="w-full max-w-lg max-h-[90vh] overflow-y-auto bg-background rounded-t-2xl sm:rounded-2xl p-6 pb-[calc(6rem+env(safe-area-inset-bottom))] sm:pb-6 shadow-xl">
         <div className="flex items-center justify-between mb-5">
           <h2 className="font-serif text-xl font-semibold">Ask a Question</h2>
           <Button variant="ghost" size="icon" onClick={onClose}>
