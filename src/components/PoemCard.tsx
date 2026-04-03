@@ -41,10 +41,29 @@ export function PoemCard({ poem, index = 0, showProBadge = false }: PoemCardProp
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [showInkDrawer, setShowInkDrawer] = useState(false);
   const shareMenuRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLElement>(null);
+  const hasRecordedViewRef = useRef(false);
 
   useEffect(() => {
-    recordRead();
-  }, []);
+    hasRecordedViewRef.current = false;
+    const element = cardRef.current;
+    if (!element) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry.isIntersecting && !hasRecordedViewRef.current) {
+          recordRead();
+          hasRecordedViewRef.current = true;
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.6 }
+    );
+
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [recordRead, poem.id]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -111,6 +130,7 @@ export function PoemCard({ poem, index = 0, showProBadge = false }: PoemCardProp
 
   return (
     <motion.article
+      ref={cardRef}
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.3 }}
@@ -195,7 +215,7 @@ export function PoemCard({ poem, index = 0, showProBadge = false }: PoemCardProp
 
       {/* Meta */}
       <div className="text-xs text-muted-foreground mb-3">
-        <span>{readCount.toLocaleString()} reads</span>
+        <span>{readCount.toLocaleString()} views</span>
         <span className="mx-2">·</span>
         <span>{formatDistanceToNow(new Date(poem.createdAt), { addSuffix: true })}</span>
       </div>

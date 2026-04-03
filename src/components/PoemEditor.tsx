@@ -39,7 +39,7 @@ type Props = {
 export function PoemEditor({ initial }: Props) {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user, isPoet } = useAuth();
+  const { user } = useAuth();
   const audioInputRef = useRef<HTMLInputElement>(null);
   const titleRef = useRef<HTMLTextAreaElement>(null);
   const poemRef = useRef<HTMLTextAreaElement>(null);
@@ -64,7 +64,7 @@ export function PoemEditor({ initial }: Props) {
 
   const isEdit = Boolean(initial?.id);
   const canSubmit = poemText.trim().length > 0 && tags.length === 2;
-  const canWritePoems = isPoet;
+  const canWritePoems = true;
 
   // Auto-grow textareas
   const autoGrow = useCallback((el: HTMLTextAreaElement | null) => {
@@ -185,11 +185,6 @@ export function PoemEditor({ initial }: Props) {
     if (!user) {
       toast({ title: "Please sign in", variant: "destructive" });
       navigate("/login");
-      return;
-    }
-    if (!canWritePoems) {
-      toast({ title: "Enable Poet mode first", description: "Go to your profile to enable it.", variant: "destructive" });
-      navigate("/profile");
       return;
     }
     if (!poemText.trim()) {

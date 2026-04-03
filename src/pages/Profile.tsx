@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArrowLeft, Sparkles, Twitter, Instagram, Globe, Coffee, Pin } from "lucide-react";
+import { ArrowLeft, Sparkles, Twitter, Instagram, Globe, Pin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,7 +20,7 @@ export default function Profile() {
     title: "Your Profile",
     description: "Manage your WordStack profile. Update your username, bio, avatar, and poet settings."
   });
-  const { user, profile, isPoet, roles, refreshProfile, refreshRoles, signOut } = useAuth();
+  const { user, profile, roles, refreshProfile, signOut } = useAuth();
   const { toast } = useToast();
 
   const profileLinks = (profile?.links || {}) as Record<string, string>;
@@ -32,7 +32,6 @@ export default function Profile() {
   const [about, setAbout] = useState((profile as any)?.about ?? "");
   const [headerImage, setHeaderImage] = useState<string | null>(profile?.header_image ?? null);
   const [pinnedPoemId, setPinnedPoemId] = useState<string>((profile as any)?.pinned_poem_id ?? "none");
-  const [buyMeACoffeeUrl, setBuyMeACoffeeUrl] = useState(profileLinks.buyMeACoffee ?? "");
   const [twitterUrl, setTwitterUrl] = useState(profileLinks.twitter ?? "");
   const [instagramUrl, setInstagramUrl] = useState(profileLinks.instagram ?? "");
   const [websiteUrl, setWebsiteUrl] = useState(profileLinks.website ?? "");
@@ -63,7 +62,6 @@ export default function Profile() {
     setAbout((profile as any)?.about ?? "");
     setHeaderImage(profile?.header_image ?? null);
     setPinnedPoemId((profile as any)?.pinned_poem_id ?? "none");
-    setBuyMeACoffeeUrl(links.buyMeACoffee ?? "");
     setTwitterUrl(links.twitter ?? "");
     setInstagramUrl(links.instagram ?? "");
     setWebsiteUrl(links.website ?? "");
@@ -74,7 +72,6 @@ export default function Profile() {
     setSaving(true);
 
     const updatedLinks: Record<string, string> = {};
-    if (buyMeACoffeeUrl.trim()) updatedLinks.buyMeACoffee = buyMeACoffeeUrl.trim();
     if (twitterUrl.trim()) updatedLinks.twitter = twitterUrl.trim();
     if (instagramUrl.trim()) updatedLinks.instagram = instagramUrl.trim();
     if (websiteUrl.trim()) updatedLinks.website = websiteUrl.trim();
@@ -100,17 +97,6 @@ export default function Profile() {
     }
     await refreshProfile();
     toast({ title: "Saved", description: "Your profile was updated." });
-  };
-
-  const enablePoet = async () => {
-    if (!user) return;
-    const { error } = await db.from("user_roles").insert({ user_id: user.id, role: "poet" });
-    if (error) {
-      toast({ title: "Couldn't enable Poet mode", description: error.message, variant: "destructive" });
-      return;
-    }
-    await refreshRoles();
-    toast({ title: "Poet mode enabled", description: "You can now create drafts and publish poems." });
   };
 
   if (!user) return null;
@@ -217,20 +203,6 @@ export default function Profile() {
 
           <Separator />
 
-          {/* Support link (all poets) */}
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <Coffee className="h-4 w-4 text-muted-foreground" />
-              <Label htmlFor="coffee">Buy Me a Coffee URL</Label>
-            </div>
-            <Input
-              id="coffee"
-              value={buyMeACoffeeUrl}
-              onChange={(e) => setBuyMeACoffeeUrl(e.target.value)}
-              placeholder="https://buymeacoffee.com/yourname"
-            />
-          </div>
-
           {/* Social links */}
           <div className="space-y-4 p-4 rounded-xl bg-secondary/30 border border-border">
               <div className="flex items-center gap-2">
@@ -282,13 +254,9 @@ export default function Profile() {
 
           <div className="flex flex-wrap gap-2 pt-1">
             <Button onClick={saveProfile} disabled={saving}>{saving ? 'Saving…' : 'Save profile'}</Button>
-            {isPoet ? (
-              <Button asChild variant="outline">
-                <Link to="/my-poems">My Poems</Link>
-              </Button>
-            ) : (
-              <Button variant="outline" onClick={enablePoet}>Enable Poet mode</Button>
-            )}
+            <Button asChild variant="outline">
+              <Link to="/my-poems">My Poems</Link>
+            </Button>
             {roles.includes("admin") && (
               <Button asChild variant="outline" className="border-primary/50 text-primary hover:bg-primary/10">
                 <Link to="/admin">Admin Dashboard</Link>
