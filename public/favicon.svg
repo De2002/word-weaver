@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="WordStack favicon">
-  <rect width="512" height="512" rx="82" fill="#4467D3" />
-  <polygon points="100,100 295,100 198,410" fill="#ECECEC" />
-  <polygon points="255,100 444,100 314,410" fill="#9AB0F5" fill-opacity="0.85" />
+  <rect width="512" height="512" rx="90" fill="#4969D9" />
+  <polygon points="100,101 295,101 198,410" fill="#E6E6E6" />
+  <polygon points="255,101 444,101 314,410" fill="#A0AFE7" fill-opacity="0.9" />
 </svg>
