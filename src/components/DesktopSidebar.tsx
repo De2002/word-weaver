@@ -1,4 +1,4 @@
-import { LayoutList, HelpCircle, Trophy, Feather, User, BookOpen, Bookmark, Bell, Settings, ChevronLeft, ChevronRight, Compass, Wallet, Calendar, MessageCircle, Map, Newspaper, Info, ScrollText, FileText, Shield, DollarSign } from 'lucide-react';
+import { LayoutList, HelpCircle, Trophy, Feather, User, BookOpen, Bookmark, Bell, Settings, ChevronLeft, ChevronRight, Compass, Wallet, Calendar, MessageCircle, Newspaper, Info, ScrollText, FileText, Shield, DollarSign } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/context/AuthProvider';
@@ -35,8 +35,7 @@ const accountNavItems: NavItem[] = [
 const moreNavItems: NavItem[] = [
   { icon: Calendar, label: 'Events', href: '/events' },
   { icon: MessageCircle, label: 'Messages', href: '/messages', requiresAuth: true },
-  { icon: BookOpen, label: 'Bookstore', href: '/chapbooks' },
-  { icon: Map, label: 'Trails', href: '/trails' },
+  { icon: BookOpen, label: 'Bookstore', href: '/bookstore' },
   { icon: Newspaper, label: 'Journals', href: '/journals' },
   { icon: Info, label: 'About', href: '/about' },
   { icon: ScrollText, label: 'Rules', href: '/rules' },

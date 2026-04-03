@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { ArrowLeft, Users, FileText, Calendar, BookOpen, MessageSquare, Flag, Shield, TrendingUp, Loader2, HelpCircle, MessageCircleQuestion, CheckCircle, Crown } from "lucide-react";
+import { ArrowLeft, Users, FileText, Calendar, MessageSquare, Flag, Shield, TrendingUp, Loader2, HelpCircle, MessageCircleQuestion, CheckCircle, Crown } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -30,7 +30,6 @@ export default function AdminDashboard() {
     { label: "Total Users", value: stats?.totalUsers ?? 0, icon: Users, color: "text-blue-500" },
     { label: "Published Poems", value: stats?.publishedPoems ?? 0, icon: FileText, color: "text-green-500" },
     { label: "Events", value: stats?.approvedEvents ?? 0, icon: Calendar, color: "text-purple-500" },
-    { label: "Trails", value: stats?.publishedTrails ?? 0, icon: BookOpen, color: "text-orange-500" },
   ];
 
   const qaStatCards = [

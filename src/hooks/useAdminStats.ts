@@ -6,7 +6,6 @@ interface AdminStats {
   totalUsers: number;
   publishedPoems: number;
   approvedEvents: number;
-  publishedTrails: number;
   pendingReports: number;
 }
 
@@ -32,14 +31,12 @@ export function useAdminStats() {
         usersResult,
         poemsResult,
         eventsResult,
-        trailsResult,
         msgReportsResult,
         userReportsResult,
       ] = await Promise.all([
         supabase.from("profiles").select("user_id", { count: "exact", head: true }),
         supabase.from("poems").select("id", { count: "exact", head: true }).eq("status", "published"),
         supabase.from("events").select("id", { count: "exact", head: true }).eq("status", "approved"),
-        supabase.from("trails").select("id", { count: "exact", head: true }).eq("status", "published"),
         supabase.from("message_reports").select("id", { count: "exact", head: true }).eq("status", "pending"),
         db.from("user_reports").select("id", { count: "exact", head: true }).eq("status", "pending"),
       ]);
@@ -48,7 +45,6 @@ export function useAdminStats() {
         totalUsers: usersResult.count ?? 0,
         publishedPoems: poemsResult.count ?? 0,
         approvedEvents: eventsResult.count ?? 0,
-        publishedTrails: trailsResult.count ?? 0,
         pendingReports: (msgReportsResult.count ?? 0) + (userReportsResult.count ?? 0),
       };
     },

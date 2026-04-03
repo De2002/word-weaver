@@ -54,7 +54,7 @@ export function ChapbookCard({ chapbook, view = 'grid' }: ChapbookCardProps) {
         )}
         
         <div className="flex-1 min-w-0">
-          <Link to={`/chapbooks/${chapbook.id}`} className="font-medium hover:text-primary truncate block">
+          <Link to={`/bookstore/${chapbook.id}`} className="font-medium hover:text-primary truncate block">
             {chapbook.title}
           </Link>
           <p className="text-sm text-muted-foreground truncate">by {chapbook.poet_name}</p>
@@ -74,7 +74,7 @@ export function ChapbookCard({ chapbook, view = 'grid' }: ChapbookCardProps) {
 
         <div className="flex items-center gap-1">
           <Button variant="ghost" size="sm" asChild>
-            <Link to={`/chapbooks/${chapbook.id}`}>View</Link>
+            <Link to={`/bookstore/${chapbook.id}`}>View</Link>
           </Button>
           {user && (
             <Button
@@ -97,7 +97,7 @@ export function ChapbookCard({ chapbook, view = 'grid' }: ChapbookCardProps) {
       animate={{ opacity: 1, y: 0 }}
       className="group bg-card rounded-lg border border-border overflow-hidden hover:shadow-md transition-all duration-200"
     >
-      <Link to={`/chapbooks/${chapbook.id}`} className="block">
+      <Link to={`/bookstore/${chapbook.id}`} className="block">
         <div className="aspect-[3/4] bg-muted relative overflow-hidden">
           {chapbook.cover_url ? (
             <img
@@ -121,7 +121,7 @@ export function ChapbookCard({ chapbook, view = 'grid' }: ChapbookCardProps) {
       </Link>
 
       <div className="p-3">
-        <Link to={`/chapbooks/${chapbook.id}`}>
+        <Link to={`/bookstore/${chapbook.id}`}>
           <h3 className="font-semibold text-sm line-clamp-1 group-hover:text-primary transition-colors">
             {chapbook.title}
           </h3>
@@ -151,7 +151,7 @@ export function ChapbookCard({ chapbook, view = 'grid' }: ChapbookCardProps) {
           
           <div className="flex items-center gap-1">
             <Button variant="outline" size="sm" className="h-7 text-xs px-2" asChild>
-              <Link to={`/chapbooks/${chapbook.id}`}>
+              <Link to={`/bookstore/${chapbook.id}`}>
                 View
               </Link>
             </Button>

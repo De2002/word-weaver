@@ -87,7 +87,7 @@ export default function ChapbookDetail() {
     return (
       <div className="min-h-screen bg-background pb-20 md:pb-6">
         <div className="max-w-4xl mx-auto px-4 py-6">
-          <Button variant="ghost" onClick={() => navigate('/chapbooks')} className="mb-6">
+          <Button variant="ghost" onClick={() => navigate('/bookstore')} className="mb-6">
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Store
           </Button>
@@ -108,7 +108,7 @@ export default function ChapbookDetail() {
   return (
     <div className="min-h-screen bg-background pb-20 md:pb-6">
       <div className="max-w-4xl mx-auto px-4 py-6">
-        <Button variant="ghost" onClick={() => navigate('/chapbooks')} className="mb-6">
+        <Button variant="ghost" onClick={() => navigate('/bookstore')} className="mb-6">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Store
         </Button>

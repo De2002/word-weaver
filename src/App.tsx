@@ -36,10 +36,6 @@ import ChapbooksStore from "./pages/ChapbooksStore";
 import ChapbookDetail from "./pages/ChapbookDetail";
 import SubmitChapbook from "./pages/SubmitChapbook";
 import Meet from "./pages/Meet";
-import Trails from "./pages/Trails";
-import TrailDetail from "./pages/TrailDetail";
-import CreateTrail from "./pages/CreateTrail";
-import EditTrail from "./pages/EditTrail";
 import Messages from "./pages/Messages";
 import NotFound from "./pages/NotFound";
 import PoetJournals from "./pages/PoetJournals";
@@ -172,25 +168,14 @@ const App = () => {
                 </ProtectedRoute>
               }
             />
-            {/* Chapbooks Store */}
-            <Route path="/chapbooks" element={<ChapbooksStore />} />
-            <Route path="/chapbooks/:id" element={<ChapbookDetail />} />
+            {/* Bookstore */}
+            <Route path="/bookstore" element={<ChapbooksStore />} />
+            <Route path="/bookstore/:id" element={<ChapbookDetail />} />
             <Route
-              path="/chapbooks/submit"
+              path="/bookstore/submit"
               element={
                 <ProtectedRoute>
                   <SubmitChapbook />
-                </ProtectedRoute>
-              }
-            />
-            {/* Trails */}
-            <Route path="/trails" element={<Trails />} />
-            <Route path="/trails/:id" element={<TrailDetail />} />
-            <Route
-              path="/trails/create"
-              element={
-                <ProtectedRoute>
-                  <CreateTrail />
                 </ProtectedRoute>
               }
             />
@@ -199,14 +184,6 @@ const App = () => {
               element={
                 <ProtectedRoute>
                   <Messages />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/trails/:id/edit"
-              element={
-                <ProtectedRoute>
-                  <EditTrail />
                 </ProtectedRoute>
               }
             />
