@@ -142,56 +142,56 @@ export default function TagPage() {
         <motion.section
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-black text-white p-3 md:p-8 md:rounded-2xl md:mt-6"
+          className="bg-black text-white p-4 md:p-8 md:rounded-2xl md:mt-6"
         >
-          <div className="grid gap-4 md:gap-6 md:grid-cols-[1fr,360px] md:items-start">
+          <div className="grid gap-6 md:grid-cols-[1fr,360px] md:items-start">
             <div>
               {tagMeta?.banner_url ? (
-                <div className="relative overflow-hidden rounded-none md:rounded-lg h-36 md:h-56">
+                <div className="relative overflow-hidden rounded-none md:rounded-lg h-44 md:h-56">
                   <img
                     src={tagMeta.banner_url}
                     alt={`#${displayTag} banner`}
                     className="w-full h-full object-cover"
                   />
                   <div className="absolute inset-0 bg-black/40" />
-                  <h1 className="absolute inset-0 flex items-center justify-center text-4xl md:text-5xl font-serif tracking-wide">
+                  <h1 className="absolute inset-0 flex items-center justify-center text-6xl md:text-5xl font-serif tracking-wide">
                     {displayTag.toUpperCase()}
                   </h1>
                 </div>
               ) : (
-                <div className="rounded-none md:rounded-lg h-36 md:h-56 bg-neutral-800 flex items-center justify-center">
-                  <h1 className="text-4xl md:text-4xl font-serif tracking-wide">{displayTag.toUpperCase()}</h1>
+                <div className="rounded-none md:rounded-lg h-44 md:h-56 bg-neutral-800 flex items-center justify-center">
+                  <h1 className="text-5xl md:text-4xl font-serif tracking-wide">{displayTag.toUpperCase()}</h1>
                 </div>
               )}
 
               {tagMeta?.description && (
-                <p className="mt-4 text-base md:text-xl leading-relaxed text-white/95">
+                <p className="mt-5 text-2xl md:text-xl leading-relaxed text-white/95">
                   {tagMeta.description}
                 </p>
               )}
             </div>
 
-            <div className="bg-zinc-100 text-zinc-900 rounded-xl md:rounded-lg p-4 md:p-4">
-              <div className="space-y-3">
-                <div className="flex items-center justify-between border-b border-zinc-300 pb-2.5">
-                  <div className="flex items-center gap-3 text-base md:text-lg">
-                    <FileText className="h-5 w-5 text-zinc-500" />
+            <div className="bg-zinc-100 text-zinc-900 rounded-3xl md:rounded-lg p-5 md:p-4">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between border-b border-zinc-300 pb-3">
+                  <div className="flex items-center gap-3 text-xl md:text-lg">
+                    <FileText className="h-7 w-7 md:h-5 md:w-5 text-zinc-500" />
                     <span>Poems</span>
                   </div>
-                  <span className="text-2xl md:text-2xl font-semibold">{recentLoading ? '...' : formatCount(totalCount)}</span>
+                  <span className="text-4xl md:text-2xl font-semibold">{recentLoading ? '...' : formatCount(totalCount)}</span>
                 </div>
 
-                <div className="flex items-center justify-between border-b border-zinc-300 pb-2.5">
-                  <div className="flex items-center gap-3 text-base md:text-lg">
-                    <UserCircle2 className="h-5 w-5 text-zinc-500" />
+                <div className="flex items-center justify-between border-b border-zinc-300 pb-3">
+                  <div className="flex items-center gap-3 text-xl md:text-lg">
+                    <UserCircle2 className="h-7 w-7 md:h-5 md:w-5 text-zinc-500" />
                     <span>Poets</span>
                   </div>
-                  <span className="text-2xl md:text-2xl font-semibold">{recentLoading ? '...' : formatCount(poetCount)}</span>
+                  <span className="text-4xl md:text-2xl font-semibold">{recentLoading ? '...' : formatCount(poetCount)}</span>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3 text-base md:text-lg">
-                    <Users className="h-5 w-5 text-zinc-500" />
+                  <div className="flex items-center gap-3 text-xl md:text-lg">
+                    <Users className="h-7 w-7 md:h-5 md:w-5 text-zinc-500" />
                     <span>Top Poets</span>
                   </div>
                   <div className="flex -space-x-2">
@@ -200,7 +200,7 @@ export default function TagPage() {
                         key={poet.id}
                         src={poet.avatar}
                         alt={poet.name}
-                        className="h-7 w-7 md:h-9 md:w-9 rounded-full border-2 border-zinc-100 object-cover"
+                        className="h-9 w-9 rounded-full border-2 border-zinc-100 object-cover"
                       />
                     ))}
                   </div>
@@ -209,7 +209,7 @@ export default function TagPage() {
 
               <button
                 onClick={() => navigate('/create-poetry')}
-                className="w-full mt-4 bg-zinc-800 text-white rounded-lg py-3 md:py-3 text-base md:text-base font-semibold hover:bg-zinc-700 transition-colors"
+                className="w-full mt-5 bg-zinc-800 text-white rounded-xl py-4 md:py-3 text-lg md:text-base font-semibold hover:bg-zinc-700 transition-colors"
               >
                 Submit a Poem to {displayTag}
               </button>
