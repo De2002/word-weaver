@@ -1,10 +1,9 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, User, BookOpen, Bookmark, Bell, Settings, LogOut, Sun, Moon, Trophy, Calendar, MessageCircle, Newspaper, Info, ScrollText, FileText, Shield, DollarSign } from 'lucide-react';
+import { X, User, BookOpen, Bookmark, LogOut, Sun, Moon, Trophy, Calendar, MessageCircle, Newspaper, Info, ScrollText, FileText, Shield, DollarSign } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/context/AuthProvider';
-import { useNotifications } from '@/hooks/useNotifications';
 import { useQuery } from '@tanstack/react-query';
 import { useTheme } from 'next-themes';
 import { db } from '@/lib/db';
@@ -19,8 +18,6 @@ const menuItems = [
   { icon: BookOpen, label: 'My Poems', href: '/my-poems' },
   { icon: Trophy, label: 'Challenges', href: '/challenges' },
   { icon: Bookmark, label: 'Saved Poems', href: '/saved' },
-  { icon: Bell, label: 'Notifications', href: '/notifications', showBadge: true },
-  { icon: Settings, label: 'Edit Profile', href: '/profile' },
 ];
 
 const moreMenuItems = [
@@ -39,7 +36,6 @@ export function ProfileDrawer({ open, onClose }: ProfileDrawerProps) {
   const { user, profile, signOut } = useAuth();
   const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
-  const { unreadCount } = useNotifications();
 
   const displayName = profile?.display_name || profile?.username || user?.email || 'You';
   const username = profile?.username;
@@ -170,16 +166,8 @@ export function ProfileDrawer({ open, onClose }: ProfileDrawerProps) {
                   >
                     <div className="relative">
                       <item.icon className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
-                      {item.showBadge && unreadCount > 0 && (
-                        <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 px-0.5 flex items-center justify-center rounded-full bg-soft-coral text-white text-[10px] font-bold leading-none">
-                          {unreadCount > 99 ? '99+' : unreadCount}
-                        </span>
-                      )}
                     </div>
                     <span className="font-medium text-base flex-1">{item.label}</span>
-                    {item.showBadge && unreadCount > 0 && (
-                      <span className="text-xs font-medium text-soft-coral">{unreadCount}</span>
-                    )}
                   </Link>
                 );
               })}

@@ -15,7 +15,6 @@ import Profile from "./pages/Profile";
 import PoemDetail from "./pages/PoemDetail";
 import TagPage from "./pages/TagPage";
 import ExploreTags from "./pages/ExploreTags";
-import More from "./pages/More";
 import About from "./pages/About";
 import Rules from "./pages/Rules";
 import UserAgreement from "./pages/UserAgreement";
@@ -104,7 +103,6 @@ const App = () => {
             <Route path="/poet/:username" element={<PoetProfile />} />
             <Route path="/poem/:slug" element={<PoemDetail />} />
             <Route path="/tag/:tag" element={<TagPage />} />
-            <Route path="/more" element={<More />} />
             <Route path="/meet" element={<Meet />} />
             <Route path="/about" element={<About />} />
             <Route path="/rules" element={<Rules />} />

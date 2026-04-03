@@ -38,9 +38,9 @@ export default function Meet() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-6"
         >
-          <Link to="/more" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4">
+          <Link to="/feed" className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-4">
             <ArrowLeft className="w-4 h-4 mr-1" />
-            Back to More
+            Back to Feed
           </Link>
           
           <div className="text-center mb-6">

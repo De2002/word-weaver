@@ -1,8 +1,7 @@
-import { LayoutList, HelpCircle, Trophy, Feather, User, BookOpen, Bookmark, Bell, Settings, ChevronLeft, ChevronRight, Compass, Wallet, Calendar, MessageCircle, Newspaper, Info, ScrollText, FileText, Shield, DollarSign } from 'lucide-react';
+import { LayoutList, HelpCircle, Trophy, Feather, User, BookOpen, Bookmark, ChevronLeft, ChevronRight, Compass, Wallet, Calendar, MessageCircle, Newspaper, Info, ScrollText, FileText, Shield, DollarSign } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/context/AuthProvider';
-import { useNotifications } from '@/hooks/useNotifications';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 interface NavItem {
@@ -12,7 +11,6 @@ interface NavItem {
   description?: string;
   requiresAuth?: boolean;
   dynamic?: boolean;
-  showBadge?: boolean;
 }
 
 const mainNavItems: NavItem[] = [
@@ -28,8 +26,6 @@ const accountNavItems: NavItem[] = [
   { icon: BookOpen, label: 'My Poems', href: '/my-poems', requiresAuth: true },
   { icon: Bookmark, label: 'Saved Poems', href: '/saved', requiresAuth: true },
   { icon: Wallet, label: 'Wallet', href: '/wallet', requiresAuth: true },
-  { icon: Bell, label: 'Notifications', href: '/notifications', requiresAuth: true, showBadge: true },
-  { icon: Settings, label: 'Edit Profile', href: '/profile', requiresAuth: true },
 ];
 
 const moreNavItems: NavItem[] = [
@@ -52,7 +48,6 @@ interface DesktopSidebarProps {
 export function DesktopSidebar({ isCollapsed, onToggle }: DesktopSidebarProps) {
   const location = useLocation();
   const { user, profile } = useAuth();
-  const { unreadCount } = useNotifications();
 
   const isActive = (href: string) => {
     if (href === '/feed') return location.pathname === '/feed';
@@ -91,11 +86,6 @@ export function DesktopSidebar({ isCollapsed, onToggle }: DesktopSidebarProps) {
       >
         <div className="relative">
           <item.icon className={cn('h-5 w-5 shrink-0', active && 'stroke-[2.5]')} />
-          {item.showBadge && unreadCount > 0 && (
-            <span className="absolute -top-1.5 -right-1.5 min-w-[16px] h-4 px-0.5 flex items-center justify-center rounded-full bg-soft-coral text-white text-[10px] font-bold leading-none">
-              {unreadCount > 99 ? '99+' : unreadCount}
-            </span>
-          )}
         </div>
 
         <div
