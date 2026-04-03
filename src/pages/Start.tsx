@@ -50,7 +50,9 @@ export default function Start() {
       <header className="sticky top-0 z-40 bg-background/90 backdrop-blur-xl border-b border-border/60">
         <div className="flex items-center justify-between h-14 px-4 max-w-5xl mx-auto">
           <div className="flex items-center gap-2">
-            <img src="/logo.png" alt="WordStack" className="h-7 w-7" />
+            <span className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-primary/15 text-xs font-semibold text-primary">
+              WS
+            </span>
             <span className="font-semibold text-sm tracking-wide">WordStack</span>
           </div>
           {user ? (

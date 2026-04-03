@@ -100,11 +100,9 @@ export function Header({ activeTab = 'for-you', onTabChange, showTabs = false }:
               animate={{ opacity: 1 }}
               className="flex-1 flex justify-center md:hidden"
             >
-              <img
-                src="/logo.png"
-                alt="WordStack"
-                className="h-7 w-7 rounded-md"
-              />
+              <span className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-primary/15 text-xs font-semibold text-primary">
+                WS
+              </span>
             </motion.div>
 
             {/* Right: Notifications */}

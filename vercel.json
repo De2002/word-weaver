@@ -18,7 +18,7 @@
       ]
     },
     {
-      "source": "/logo.png",
+      "source": "/favicon.svg",
       "headers": [
         {
           "key": "Cache-Control",
@@ -28,18 +28,6 @@
     }
   ],
   "rewrites": [
-    {
-      "source": "/favicon.ico",
-      "destination": "/logo.png"
-    },
-    {
-      "source": "/favicon.png",
-      "destination": "/logo.png"
-    },
-    {
-      "source": "/favicon.svg",
-      "destination": "/logo.png"
-    },
     {
       "source": "/sitemap.xml",
       "destination": "https://amfagonrhlcnoqpmiawh.supabase.co/functions/v1/sitemap"
