@@ -30,7 +30,7 @@ export default function PoemDetail() {
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [showInkSheet, setShowInkSheet] = useState(false);
   const shareMenuRef = useRef<HTMLDivElement>(null);
-  const inkOptions = [5, 10, 25, 50, 100];
+  
 
   // Extract comment ID from URL hash (e.g., #comment-abc123)
   const highlightCommentId = useMemo(() => {
