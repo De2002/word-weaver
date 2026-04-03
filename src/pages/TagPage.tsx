@@ -35,7 +35,7 @@ export default function TagPage() {
   // Fetch poems for different tabs
   const { poems: recentPoems, isLoading: recentLoading, hasMore: recentHasMore, loadMore: loadMoreRecent, totalCount } = useTagPoems(displayTag);
   const { poems: forYouPoems, isLoading: forYouLoading, error: forYouError, hasMore: forYouHasMore, loadMore: loadMoreForYou, refresh: refreshForYou } = useTagForYouPoems(displayTag);
-  const { poems: followingPoems, isLoading: followingLoading, error: followingError, hasMore: followingHasMore, loadMore: loadMoreFollowing, refresh: refreshFollowing, isAuthenticated } = useTagFollowingPoems(displayTag);
+  const { poems: followingPoems, isLoading: followingLoading, error: followingError, hasMore: followingHasMore, loadMore: loadMoreFollowing, refresh: refreshFollowing, isAuthenticated, followingCount } = useTagFollowingPoems(displayTag);
   
   const { data: tagMeta } = useTagMetadata(displayTag);
 
@@ -229,8 +229,17 @@ export default function TagPage() {
             {activeTab === 'following' && currentData.isAuthenticated && !currentData.loading && !currentData.error && sortedPoems.length === 0 && (
               <div className="flex flex-col items-center justify-center py-12 text-center">
                 <Users className="w-12 h-12 text-muted-foreground mb-4" />
-                <p className="text-lg font-medium text-foreground mb-2">No poems from followed poets</p>
-                <p className="text-muted-foreground mb-4">Follow poets to see their tagged work in your feed</p>
+                {followingCount > 0 ? (
+                  <>
+                    <p className="text-lg font-medium text-foreground mb-2">No new posts from your followed poets</p>
+                    <p className="text-muted-foreground mb-4">The poets you're following haven't published under #{displayTag} yet.</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="text-lg font-medium text-foreground mb-2">No poems from followed poets</p>
+                    <p className="text-muted-foreground mb-4">Follow poets to see their tagged work in your feed.</p>
+                  </>
+                )}
               </div>
             )}
 
@@ -239,7 +248,7 @@ export default function TagPage() {
               <div className="flex flex-col items-center justify-center py-12 text-center">
                 <Star className="w-12 h-12 text-muted-foreground mb-4" />
                 <p className="text-lg font-medium text-foreground mb-2">No top poems yet</p>
-                <p className="text-muted-foreground mb-4">Top liked poems tagged with #{displayTag} will appear here</p>
+                <p className="text-muted-foreground mb-4">Poems gaining traction in likes, comments, and saves under #{displayTag} will appear here.</p>
               </div>
             )}
 

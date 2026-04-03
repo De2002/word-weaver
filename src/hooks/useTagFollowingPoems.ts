@@ -12,11 +12,14 @@ export function useTagFollowingPoems(tag: string) {
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
   const [page, setPage] = useState(0);
-  const [isAuthenticated] = useState(!!user);
+  const [followingCount, setFollowingCount] = useState(0);
+  const isAuthenticated = !!user;
 
   const fetchPoems = useCallback(async (pageNum: number) => {
     if (!user || !tag) {
       setPoems([]);
+      setFollowingCount(0);
+      setHasMore(false);
       setIsLoading(false);
       return;
     }
@@ -32,6 +35,7 @@ export function useTagFollowingPoems(tag: string) {
       if (followingError) throw followingError;
 
       const followingIds = followingData?.map((f) => f.following_id) || [];
+      setFollowingCount(followingIds.length);
 
       if (followingIds.length === 0) {
         setPoems([]);
@@ -96,5 +100,6 @@ export function useTagFollowingPoems(tag: string) {
       });
     },
     isAuthenticated,
+    followingCount,
   };
 }
