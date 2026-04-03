@@ -290,7 +290,6 @@ export function PoemCard({ poem, index = 0, showProBadge = false }: PoemCardProp
         poemId={poem.id}
         poetUserId={poem.poet.id}
       />
-      </AnimatePresence>
     </motion.article>
   );
 }
