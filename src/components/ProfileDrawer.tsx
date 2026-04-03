@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, User, BookOpen, Bookmark, Bell, Settings, LogOut, Feather, Sun, Moon, Trophy } from 'lucide-react';
+import { X, User, BookOpen, Bookmark, Bell, Settings, LogOut, Sun, Moon, Trophy, Calendar, MessageCircle, Map, Newspaper, Info, ScrollText, FileText, Shield, DollarSign } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/context/AuthProvider';
@@ -21,6 +21,19 @@ const menuItems = [
   { icon: Bookmark, label: 'Saved Poems', href: '/saved' },
   { icon: Bell, label: 'Notifications', href: '/notifications', showBadge: true },
   { icon: Settings, label: 'Edit Profile', href: '/profile' },
+];
+
+const moreMenuItems = [
+  { icon: Calendar, label: 'Events', href: '/events' },
+  { icon: MessageCircle, label: 'Messages', href: '/messages', requiresAuth: true },
+  { icon: BookOpen, label: 'Bookstore', href: '/chapbooks' },
+  { icon: Map, label: 'Trails', href: '/trails' },
+  { icon: Newspaper, label: 'Journals', href: '/journals' },
+  { icon: Info, label: 'About', href: '/about' },
+  { icon: ScrollText, label: 'Rules', href: '/rules' },
+  { icon: FileText, label: 'User Agreement', href: '/user-agreement' },
+  { icon: Shield, label: 'Privacy Policy', href: '/privacy-policy' },
+  { icon: DollarSign, label: 'Refund Policy', href: '/refund-policy' },
 ];
 
 export function ProfileDrawer({ open, onClose }: ProfileDrawerProps) {
@@ -174,15 +187,21 @@ export function ProfileDrawer({ open, onClose }: ProfileDrawerProps) {
 
               <Separator className="my-2" />
 
-              {/* Additional links */}
-              <Link
-                to="/more"
-                onClick={handleNavClick}
-                className="flex items-center gap-4 px-5 py-3.5 text-foreground hover:bg-secondary/60 transition-colors group"
-              >
-                <Settings className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
-                <span className="font-medium text-base">More</span>
-              </Link>
+              {moreMenuItems.map((item) => {
+                if (item.requiresAuth && !user) return null;
+
+                return (
+                  <Link
+                    key={item.label}
+                    to={item.href}
+                    onClick={handleNavClick}
+                    className="flex items-center gap-4 px-5 py-3.5 text-foreground hover:bg-secondary/60 transition-colors group"
+                  >
+                    <item.icon className="h-5 w-5 text-muted-foreground group-hover:text-foreground transition-colors" />
+                    <span className="font-medium text-base">{item.label}</span>
+                  </Link>
+                );
+              })}
             </nav>
 
             {/* Bottom: theme toggle + sign out */}
