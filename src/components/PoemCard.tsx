@@ -282,6 +282,15 @@ export function PoemCard({ poem, index = 0, showProBadge = false }: PoemCardProp
           <CommentSection poemId={poem.id} onViewAll={handlePoemClick} maxComments={3} />
         )}
       </AnimatePresence>
+
+      {/* Ink Pour Drawer */}
+      <InkPourDrawer
+        open={showInkDrawer}
+        onOpenChange={setShowInkDrawer}
+        poemId={poem.id}
+        poetUserId={poem.poet.id}
+      />
+      </AnimatePresence>
     </motion.article>
   );
 }
