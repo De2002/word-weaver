@@ -6,6 +6,7 @@ import { CreateButton } from '@/components/CreateButton';
 import { PoemCard } from '@/components/PoemCard';
 import { DiscoverSection } from '@/components/DiscoverSection';
 import { PullToRefreshIndicator } from '@/components/PullToRefreshIndicator';
+import { PoetPoolBanner } from '@/components/PoetPoolBanner';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { usePublishedPoems } from '@/hooks/usePublishedPoems';
