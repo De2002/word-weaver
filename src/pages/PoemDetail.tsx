@@ -14,14 +14,7 @@ import { CommentSection } from '@/components/CommentSection';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
-import {
-  Drawer,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-} from '@/components/ui/drawer';
+import { InkPourDrawer } from '@/components/InkPourDrawer';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import { usePoemInteractions } from '@/hooks/usePoemInteractions';
@@ -37,7 +30,7 @@ export default function PoemDetail() {
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [showInkSheet, setShowInkSheet] = useState(false);
   const shareMenuRef = useRef<HTMLDivElement>(null);
-  const inkOptions = [5, 10, 25, 50, 100];
+  
 
   // Extract comment ID from URL hash (e.g., #comment-abc123)
   const highlightCommentId = useMemo(() => {
@@ -472,31 +465,12 @@ export default function PoemDetail() {
           <CommentSection poemId={poem.id} highlightCommentId={highlightCommentId} />
         </motion.article>
       </main>
-      <Drawer open={showInkSheet} onOpenChange={setShowInkSheet}>
-        <DrawerContent>
-          <DrawerHeader>
-            <DrawerTitle>Pour ink</DrawerTitle>
-            <DrawerDescription>Support this poem with an ink amount.</DrawerDescription>
-          </DrawerHeader>
-          <div className="px-4 pb-2 grid grid-cols-3 gap-2">
-            {inkOptions.map((amount) => (
-              <Button
-                key={amount}
-                variant="outline"
-                className="h-11"
-                onClick={() => setShowInkSheet(false)}
-              >
-                {amount} ink
-              </Button>
-            ))}
-          </div>
-          <DrawerFooter>
-            <Button variant="secondary" onClick={() => setShowInkSheet(false)}>
-              Cancel
-            </Button>
-          </DrawerFooter>
-        </DrawerContent>
-      </Drawer>
+      <InkPourDrawer
+        open={showInkSheet}
+        onOpenChange={setShowInkSheet}
+        poemId={poem.id}
+        poetUserId={poem.poet.id}
+      />
     </div>
   );
 }

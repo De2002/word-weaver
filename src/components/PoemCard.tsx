@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Heart, MessageCircle, Bookmark, Share2, Sparkles, Twitter, Facebook, Link2, MessageSquare, TrendingUp, Crown } from 'lucide-react';
+import { Heart, MessageCircle, Bookmark, Share2, Sparkles, Twitter, Facebook, Link2, MessageSquare, TrendingUp, Crown, Droplets } from 'lucide-react';
 import { Poem } from '@/types/poem';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { AudioPlayButton } from '@/components/AudioPlayButton';
@@ -13,6 +13,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { usePoemInteractions } from '@/hooks/usePoemInteractions';
 import { useComments } from '@/hooks/useComments';
 import { useNativeShare } from '@/hooks/useNativeShare';
+import { InkPourDrawer } from '@/components/InkPourDrawer';
 
 interface PoemCardProps {
   poem: Poem;
@@ -38,6 +39,7 @@ export function PoemCard({ poem, index = 0, showProBadge = false }: PoemCardProp
 
   const [showComments, setShowComments] = useState(false);
   const [showShareMenu, setShowShareMenu] = useState(false);
+  const [showInkDrawer, setShowInkDrawer] = useState(false);
   const shareMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -178,6 +180,14 @@ export function PoemCard({ poem, index = 0, showProBadge = false }: PoemCardProp
             </div>
         </Link>
         <div className="flex items-center gap-2">
+          <motion.button
+            whileTap={{ scale: 0.88 }}
+            onClick={(e) => { e.stopPropagation(); setShowInkDrawer(true); }}
+            className="p-1.5 rounded-full text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
+            aria-label="Pour ink"
+          >
+            <Droplets className="h-4 w-4" />
+          </motion.button>
           {poem.audioUrl && <AudioPlayButton audioUrl={poem.audioUrl} size="sm" />}
           <FollowButton poetUserId={poem.poet.id} variant="outline" />
         </div>
@@ -272,6 +282,14 @@ export function PoemCard({ poem, index = 0, showProBadge = false }: PoemCardProp
           <CommentSection poemId={poem.id} onViewAll={handlePoemClick} maxComments={3} />
         )}
       </AnimatePresence>
+
+      {/* Ink Pour Drawer */}
+      <InkPourDrawer
+        open={showInkDrawer}
+        onOpenChange={setShowInkDrawer}
+        poemId={poem.id}
+        poetUserId={poem.poet.id}
+      />
     </motion.article>
   );
 }
