@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2, RefreshCw, AlertCircle, Users, Star } from 'lucide-react';
+import { Loader2, Users, Star } from 'lucide-react';
 import { Header } from '@/components/Header';
 import { CreateButton } from '@/components/CreateButton';
 import { PoemCard } from '@/components/PoemCard';
@@ -9,6 +9,7 @@ import { PullToRefreshIndicator } from '@/components/PullToRefreshIndicator';
 import { PoetPoolBanner } from '@/components/PoetPoolBanner';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { PoemLoadError } from '@/components/PoemLoadError';
 import { usePublishedPoems } from '@/hooks/usePublishedPoems';
 import { useFollowingPoems } from '@/hooks/useFollowingPoems';
 import { useTopLikedPoems } from '@/hooks/useTopLikedPoems';
@@ -171,14 +172,7 @@ const Index = () => {
 
           {/* Error State */}
           {currentData.error && !currentData.loading && (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <AlertCircle className="w-12 h-12 text-destructive mb-4" />
-              <p className="text-muted-foreground mb-4">{currentData.error}</p>
-              <Button onClick={currentData.refresh} variant="outline">
-                <RefreshCw className="w-4 h-4 mr-2" />
-                Try Again
-              </Button>
-            </div>
+            <PoemLoadError error={currentData.error} onRetry={currentData.refresh} />
           )}
 
           {/* Empty State for Following Tab (not authenticated) */}

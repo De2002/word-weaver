@@ -23,6 +23,7 @@ export function useTagFollowingPoems(tag: string) {
 
     try {
       setIsLoading(true);
+      setError(null);
       const { data: followingData, error: followingError } = await db
         .from('follows')
         .select('following_id')
@@ -71,12 +72,23 @@ export function useTagFollowingPoems(tag: string) {
     fetchPoems(0);
   }, [tag, fetchPoems]);
 
+  const refresh = useCallback(() => {
+    setPoems([]);
+    setPage(0);
+    setHasMore(true);
+    setError(null);
+    fetchPoems(0);
+  }, [fetchPoems]);
+
   return {
     poems,
     isLoading,
     error,
     hasMore,
+    refresh,
     loadMore: () => {
+      if (isLoading || !hasMore) return;
+
       setPage((p) => {
         const nextPage = p + 1;
         fetchPoems(nextPage);
