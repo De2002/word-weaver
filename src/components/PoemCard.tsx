@@ -13,6 +13,7 @@ import { formatDistanceToNow } from 'date-fns';
 import { usePoemInteractions } from '@/hooks/usePoemInteractions';
 import { useComments } from '@/hooks/useComments';
 import { useNativeShare } from '@/hooks/useNativeShare';
+import { InkPourDrawer } from '@/components/InkPourDrawer';
 
 interface PoemCardProps {
   poem: Poem;
