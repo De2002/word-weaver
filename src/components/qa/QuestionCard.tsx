@@ -16,7 +16,7 @@ export function QuestionCard({ question }: QuestionCardProps) {
 
   return (
     <Link
-      to={`/qa/${question.id}`}
+      to={`/qa/${question.slug}`}
       className="block px-4 py-4 border-b border-border hover:bg-secondary/20 transition-colors"
     >
       <div className="flex gap-3">

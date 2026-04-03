@@ -26,6 +26,7 @@ export interface Notification {
   question?: {
     id: string;
     title: string;
+    slug: string;
   };
   challenge?: {
     id: string;
@@ -119,13 +120,13 @@ export function useNotifications(): UseNotificationsResult {
       const questionIds = notificationsData
         .filter((n: DbNotification) => n.question_id)
         .map((n: DbNotification) => n.question_id as string);
-      const questionsMap = new Map<string, { id: string; title: string }>();
+      const questionsMap = new Map<string, { id: string; title: string; slug: string }>();
       if (questionIds.length > 0) {
         const { data: questionsData } = await dbAny
           .from('qa_questions')
-          .select('id, title')
+          .select('id, title, slug')
           .in('id', questionIds);
-        (questionsData || []).forEach((q: { id: string; title: string }) => questionsMap.set(q.id, q));
+        (questionsData || []).forEach((q: { id: string; title: string; slug: string }) => questionsMap.set(q.id, q));
       }
 
       // Challenge titles
@@ -164,7 +165,7 @@ export function useNotifications(): UseNotificationsResult {
             avatar: actorProfile?.avatar_url || '',
           },
           poem: poem ? { id: poem.id, title: poem.title } : undefined,
-          question: question ? { id: question.id, title: question.title } : undefined,
+          question: question ? { id: question.id, title: question.title, slug: question.slug } : undefined,
           challenge: challenge ? { id: challenge.id, title: challenge.title } : undefined,
         };
       });

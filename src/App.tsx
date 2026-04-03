@@ -207,7 +207,7 @@ const App = () => {
 
             {/* Q&A Routes */}
             <Route path="/qa" element={<QA />} />
-            <Route path="/qa/:id" element={<QADetail />} />
+            <Route path="/qa/:slug" element={<QADetail />} />
 
             {/* Classic Poetry Library */}
             <Route path="/classics" element={<Classics />} />

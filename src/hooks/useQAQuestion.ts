@@ -3,35 +3,37 @@ import { db } from '@/lib/db';
 import { useAuth } from '@/context/AuthProvider';
 import { QAQuestion, QAAnswer, QAPoet } from '@/types/qa';
 
-export function useQAQuestion(questionId: string) {
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+export function useQAQuestion(questionIdentifier: string) {
   const { user } = useAuth();
   const [question, setQuestion] = useState<QAQuestion | null>(null);
   const [answers, setAnswers] = useState<QAAnswer[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchAll = useCallback(async () => {
-    if (!questionId) return;
+    if (!questionIdentifier) return;
     setIsLoading(true);
     try {
       // Fetch question
-      const { data: q, error: qErr } = await db
-        .from('qa_questions')
-        .select('*')
-        .eq('id', questionId)
-        .single();
+      const isUuid = UUID_REGEX.test(questionIdentifier);
+      let query = db.from('qa_questions').select('*');
+      query = isUuid ? query.eq('id', questionIdentifier) : query.eq('slug', questionIdentifier);
+
+      const { data: q, error: qErr } = await query.single();
       if (qErr) throw qErr;
 
       // Increment view count
       await db
         .from('qa_questions')
         .update({ views: (q.views || 0) + 1 })
-        .eq('id', questionId);
+        .eq('id', q.id);
 
       // Fetch answers
       const { data: answersData } = await db
         .from('qa_answers')
         .select('*')
-        .eq('question_id', questionId)
+        .eq('question_id', q.id)
         .order('is_accepted', { ascending: false })
         .order('created_at', { ascending: true });
 
@@ -98,20 +100,20 @@ export function useQAQuestion(questionId: string) {
     } finally {
       setIsLoading(false);
     }
-  }, [questionId, user?.id]);
+  }, [questionIdentifier, user?.id]);
 
   useEffect(() => {
     fetchAll();
   }, [fetchAll]);
 
   const postAnswer = useCallback(async (content: string) => {
-    if (!user) throw new Error('Must be logged in');
+    if (!user || !question) throw new Error('Must be logged in');
     const { error } = await db
       .from('qa_answers')
-      .insert({ question_id: questionId, user_id: user.id, content });
+      .insert({ question_id: question.id, user_id: user.id, content });
     if (error) throw error;
     fetchAll();
-  }, [user, questionId, fetchAll]);
+  }, [user, question, fetchAll]);
 
   const toggleVote = useCallback(async (answerId: string, hasVoted: boolean) => {
     if (!user) throw new Error('Must be logged in');
@@ -128,13 +130,13 @@ export function useQAQuestion(questionId: string) {
     if (!user || !question || question.user_id !== user.id) return;
     // Toggle accepted
     const newId = question.accepted_answer_id === answerId ? null : answerId;
-    await db.from('qa_questions').update({ accepted_answer_id: newId }).eq('id', questionId);
-    await db.from('qa_answers').update({ is_accepted: false }).eq('question_id', questionId);
+    await db.from('qa_questions').update({ accepted_answer_id: newId }).eq('id', question.id);
+    await db.from('qa_answers').update({ is_accepted: false }).eq('question_id', question.id);
     if (newId) {
       await db.from('qa_answers').update({ is_accepted: true }).eq('id', newId);
     }
     fetchAll();
-  }, [user, question, questionId, fetchAll]);
+  }, [user, question, fetchAll]);
 
   return { question, answers, isLoading, postAnswer, toggleVote, acceptAnswer, refresh: fetchAll };
 }

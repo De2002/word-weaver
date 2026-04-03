@@ -57,7 +57,7 @@ function getNotificationMessage(notification: Notification): string {
 }
 
 function getNotificationLink(notification: Notification): string {
-  const { type, poemId, commentId, questionId, challengeId } = notification;
+  const { type, poemId, commentId, questionId, challengeId, question } = notification;
 
   switch (type) {
     case 'follow':
@@ -69,7 +69,7 @@ function getNotificationLink(notification: Notification): string {
     case 'upvote':
       return poemId ? `/poem/${poemId}` : '/';
     case 'qa_answer':
-      return questionId ? `/qa/${questionId}` : '/qa';
+      return question?.slug ? `/qa/${question.slug}` : (questionId ? `/qa/${questionId}` : '/qa');
     case 'challenge_open':
     case 'challenge_winner':
       return challengeId ? `/challenges/${challengeId}` : '/challenges';

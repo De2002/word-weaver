@@ -15,14 +15,14 @@ import { useToast } from '@/hooks/use-toast';
 import { richTextToPlainText, sanitizeRichTextHtml } from '@/lib/qaRichText';
 
 export default function QADetail() {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { toast } = useToast();
   const [answerText, setAnswerText] = useState('');
   const [isPosting, setIsPosting] = useState(false);
 
-  const { question, answers, isLoading, postAnswer, toggleVote, acceptAnswer } = useQAQuestion(id!);
+  const { question, answers, isLoading, postAnswer, toggleVote, acceptAnswer } = useQAQuestion(slug!);
 
   const isOwner = user?.id === question?.user_id;
   const categoryLabel = QA_CATEGORIES.find(c => c.value === question?.category)?.label || 'General';
