@@ -4,6 +4,7 @@ import { MessageCircle, CheckCircle, Star } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { QAQuestion, QA_CATEGORIES } from '@/types/qa';
+import { toUrlSlug } from '@/lib/slug';
 import { cn } from '@/lib/utils';
 
 interface QuestionCardProps {
@@ -16,7 +17,7 @@ export function QuestionCard({ question }: QuestionCardProps) {
 
   return (
     <Link
-      to={`/qa/${question.id}`}
+      to={`/qa/${question.id}/${toUrlSlug(question.title)}`}
       className="block px-4 py-4 border-b border-border hover:bg-secondary/20 transition-colors"
     >
       <div className="flex gap-3">

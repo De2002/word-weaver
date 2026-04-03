@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import { useSEO } from '@/hooks/useSEO';
+import { toUrlSlug } from '@/lib/slug';
 
 function NotificationIcon({ type }: { type: Notification['type'] }) {
   switch (type) {
@@ -57,7 +58,7 @@ function getNotificationMessage(notification: Notification): string {
 }
 
 function getNotificationLink(notification: Notification): string {
-  const { type, poemId, commentId, questionId, challengeId } = notification;
+  const { type, poemId, commentId, questionId, challengeId, question } = notification;
 
   switch (type) {
     case 'follow':
@@ -69,7 +70,9 @@ function getNotificationLink(notification: Notification): string {
     case 'upvote':
       return poemId ? `/poem/${poemId}` : '/';
     case 'qa_answer':
-      return questionId ? `/qa/${questionId}` : '/qa';
+      return questionId
+        ? `/qa/${questionId}${question?.title ? `/${toUrlSlug(question.title)}` : ''}`
+        : '/qa';
     case 'challenge_open':
     case 'challenge_winner':
       return challengeId ? `/challenges/${challengeId}` : '/challenges';
