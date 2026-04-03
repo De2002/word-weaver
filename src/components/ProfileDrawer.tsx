@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, User, BookOpen, Bookmark, Bell, Settings, LogOut, Feather, Sun, Moon } from 'lucide-react';
+import { X, User, BookOpen, Bookmark, Bell, Settings, LogOut, Feather, Sun, Moon, Trophy } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { useAuth } from '@/context/AuthProvider';
@@ -17,6 +17,7 @@ interface ProfileDrawerProps {
 const menuItems = [
   { icon: User, label: 'Profile', href: '/poet/:username', dynamic: true },
   { icon: BookOpen, label: 'My Poems', href: '/my-poems' },
+  { icon: Trophy, label: 'Challenges', href: '/challenges' },
   { icon: Bookmark, label: 'Saved Poems', href: '/saved' },
   { icon: Bell, label: 'Notifications', href: '/notifications', showBadge: true },
   { icon: Settings, label: 'Edit Profile', href: '/profile' },
