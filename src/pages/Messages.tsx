@@ -256,7 +256,7 @@ export default function Messages() {
       {!selectedPartner && (
         <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-xl border-b border-border">
           <div className="flex items-center gap-3 px-4 h-14 max-w-2xl mx-auto">
-            <Link to="/more" className="p-2 -ml-2 hover:bg-secondary rounded-full transition-colors">
+            <Link to="/feed" className="p-2 -ml-2 hover:bg-secondary rounded-full transition-colors">
               <ArrowLeft className="h-5 w-5" />
             </Link>
             <h1 className="font-semibold">Messages</h1>
