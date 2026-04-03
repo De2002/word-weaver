@@ -43,8 +43,8 @@ function PoemCardSkeleton() {
 
 const Index = () => {
   useSEO({
-    title: "Read, Write Poems, Listen & Join Events",
-    description: "Join Wordstack — a poetry community where you can read poems, publish your own poetry, listen to spoken word, and take part in poetry events with writers around the world."
+    title: "Poetry Feed – Explore New Poems on Wordstack",
+    description: "Find your next favorite poem on Wordstack. A live feed of creativity, emotion, and real voices."
   });
 
   const [activeTab, setActiveTab] = useState('for-you');

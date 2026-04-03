@@ -36,9 +36,9 @@ const pricingTiers = [
 
 export default function Start() {
   useSEO({
-    title: "Where Your Poetry Finally Matters",
+    title: "Wordstack Poetry Platform – Publish & Earn",
     description:
-      "Publish your poems, get real support, and receive ink from readers who truly feel your words.",
+      "Publish your poems on Wordstack, connect with readers, and start earning from your writing today.",
     fullTitle: true,
   });
 
