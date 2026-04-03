@@ -4,9 +4,9 @@ import { ThumbsUp, CheckCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 import { QAAnswer } from '@/types/qa';
 import { cn } from '@/lib/utils';
+import { sanitizeRichTextHtml } from '@/lib/qaRichText';
 
 interface AnswerCardProps {
   answer: QAAnswer;
@@ -80,9 +80,10 @@ export function AnswerCard({ answer, isQuestionOwner, onVote, onAccept, currentU
       </div>
 
       {/* Answer content */}
-      <p className="text-sm leading-relaxed text-foreground whitespace-pre-wrap mb-3">
-        {answer.content}
-      </p>
+      <div
+        className="text-sm leading-relaxed text-foreground mb-3 space-y-2 [&_a]:text-primary [&_a]:underline [&_code]:rounded [&_code]:bg-muted [&_code]:px-1 [&_pre]:overflow-x-auto [&_pre]:rounded [&_pre]:bg-muted [&_pre]:p-2 [&_ul]:list-disc [&_ul]:pl-5 [&_ol]:list-decimal [&_ol]:pl-5"
+        dangerouslySetInnerHTML={{ __html: sanitizeRichTextHtml(answer.content) }}
+      />
 
       {/* Vote */}
       <div className="flex items-center gap-2">
