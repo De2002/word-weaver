@@ -189,6 +189,7 @@ export default function QADetail() {
                 placeholder="Share your expertise…"
                 className="mb-3"
               />
+              <p className="text-xs text-muted-foreground mb-3">Supports rich formatting and markdown (paste markdown to auto-convert).</p>
               <Button
                 onClick={handlePostAnswer}
                 disabled={isPosting || !richTextToPlainText(answerText)}
