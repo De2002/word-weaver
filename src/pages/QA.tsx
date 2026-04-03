@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, PenLine, HelpCircle, Star } from 'lucide-react';
+import { Search, PenLine, HelpCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { QuestionCard } from '@/components/qa/QuestionCard';
@@ -61,11 +61,11 @@ export default function QA() {
           </form>
 
           {/* Category pills */}
-          <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
+          <div className="flex flex-wrap gap-2 pb-1">
             <button
               onClick={() => setCategory('all')}
               className={cn(
-                "shrink-0 text-xs px-3 py-1.5 rounded-full border transition-colors",
+                "text-xs px-3 py-1.5 rounded-full border transition-colors whitespace-nowrap",
                 category === 'all'
                   ? "bg-primary text-primary-foreground border-primary"
                   : "border-border text-muted-foreground hover:text-foreground"
@@ -78,7 +78,7 @@ export default function QA() {
                 key={cat.value}
                 onClick={() => setCategory(cat.value)}
                 className={cn(
-                  "shrink-0 text-xs px-3 py-1.5 rounded-full border transition-colors whitespace-nowrap",
+                  "text-xs px-3 py-1.5 rounded-full border transition-colors whitespace-nowrap",
                   category === cat.value
                     ? "bg-primary text-primary-foreground border-primary"
                     : "border-border text-muted-foreground hover:text-foreground"
@@ -92,17 +92,6 @@ export default function QA() {
       </div>
 
       <div className="max-w-2xl mx-auto">
-        {/* Featured banner */}
-        {category === 'all' && !search && (
-          <div className="mx-4 mt-4 mb-2 rounded-xl border border-amber-500/30 bg-amber-500/5 px-4 py-3 flex items-center gap-2">
-            <Star className="h-4 w-4 text-amber-500 shrink-0 fill-amber-500" />
-            <p className="text-sm text-foreground">
-              <span className="font-medium">All poets can answer.</span>{' '}
-              <span className="text-muted-foreground">Learn from shared experience across the community.</span>
-            </p>
-          </div>
-        )}
-
         {isLoading ? (
           <div className="space-y-0">
             {Array.from({ length: 6 }).map((_, i) => (
