@@ -122,7 +122,7 @@ const Index = () => {
       />
       
       <main className="max-w-3xl mx-auto pb-safe">
-
+        <PoetPoolBanner />
         {/* Discover Sections - only show on For You tab */}
         {activeTab === 'for-you' && !poetsLoading && (
           <>
