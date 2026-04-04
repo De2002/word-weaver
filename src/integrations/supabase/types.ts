@@ -1235,7 +1235,6 @@ export type Database = {
           details: string | null
           id: string
           is_featured: boolean
-          slug: string
           title: string
           updated_at: string
           user_id: string
@@ -1248,7 +1247,6 @@ export type Database = {
           details?: string | null
           id?: string
           is_featured?: boolean
-          slug: string
           title: string
           updated_at?: string
           user_id: string
@@ -1261,7 +1259,6 @@ export type Database = {
           details?: string | null
           id?: string
           is_featured?: boolean
-          slug?: string
           title?: string
           updated_at?: string
           user_id?: string
@@ -1613,10 +1610,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      generate_qa_question_slug: {
-        Args: { exclude_question_id?: string; title_input: string }
-        Returns: string
-      }
       generate_poem_slug: {
         Args: { exclude_poem_id?: string; title_input: string }
         Returns: string
