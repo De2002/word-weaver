@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, Heart, MessageCircle, Bookmark, Share2, 
-  Sparkles, TrendingUp, Twitter, Facebook, Link2, MessageSquare, PaintBucket
+  Sparkles, TrendingUp, Twitter, Facebook, Link2, MessageSquare, Droplets
 } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { TagBadge } from '@/components/TagBadge';
@@ -280,7 +280,7 @@ export default function PoemDetail() {
             aria-label="Give ink"
             onClick={() => setShowInkSheet(true)}
           >
-            <PaintBucket className="h-5 w-5" />
+            <Droplets className="h-5 w-5" />
           </Button>
         </div>
       </header>
