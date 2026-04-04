@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect, useMemo } from "react";
-import { ChevronDown, Check } from "lucide-react";
+import { Check } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { useAdminTags } from "@/hooks/useAdminTags";
+import { db } from "@/lib/db";
 import { addTag, normalizeTag, removeTag } from "@/lib/tags";
 
 interface TagSelectorProps {
@@ -12,32 +13,59 @@ interface TagSelectorProps {
 }
 
 export function TagSelector({ selectedTags, onTagsChange, maxTags = 2 }: TagSelectorProps) {
-  const { tags: adminTags, isLoading } = useAdminTags();
   const [isOpen, setIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const { data: suggestedTags = [], isLoading } = useQuery({
+    queryKey: ["open-tag-suggestions"],
+    queryFn: async () => {
+      const [metadataResult, poemsResult] = await Promise.all([
+        db.from("tag_metadata").select("tag").order("tag", { ascending: true }),
+        db
+          .from("poems")
+          .select("tags")
+          .eq("status", "published")
+          .not("tags", "eq", "{}"),
+      ]);
+
+      if (metadataResult.error) throw metadataResult.error;
+      if (poemsResult.error) throw poemsResult.error;
+
+      const suggestions = new Map<string, string>();
+
+      (metadataResult.data || []).forEach((item) => {
+        const normalized = normalizeTag(item.tag);
+        if (normalized && !suggestions.has(normalized)) {
+          suggestions.set(normalized, normalized);
+        }
+      });
+
+      (poemsResult.data || []).forEach((poem) => {
+        if (!Array.isArray(poem.tags)) return;
+
+        poem.tags.forEach((tag) => {
+          const normalized = normalizeTag(tag);
+          if (normalized && !suggestions.has(normalized)) {
+            suggestions.set(normalized, normalized);
+          }
+        });
+      });
+
+      return Array.from(suggestions.values()).sort((a, b) => a.localeCompare(b));
+    },
+  });
 
   const normalizedSelectedTags = useMemo(
     () => new Set(selectedTags.map((tag) => normalizeTag(tag))),
     [selectedTags]
   );
 
-  const normalizedAdminTagMap = useMemo(() => {
-    const map = new Map<string, string>();
-    adminTags.forEach((adminTag) => {
-      const normalized = normalizeTag(adminTag.tag);
-      if (normalized && !map.has(normalized)) {
-        map.set(normalized, adminTag.tag);
-      }
-    });
-    return map;
-  }, [adminTags]);
-
-  const filteredAdminTags = useMemo(() => {
+  const filteredSuggestedTags = useMemo(() => {
     const query = normalizeTag(inputValue);
-    if (!query) return adminTags;
-    return adminTags.filter((adminTag) => normalizeTag(adminTag.tag).includes(query));
-  }, [adminTags, inputValue]);
+    if (!query) return suggestedTags.slice(0, 12);
+    return suggestedTags.filter((tag) => normalizeTag(tag).includes(query)).slice(0, 12);
+  }, [suggestedTags, inputValue]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -56,8 +84,7 @@ export function TagSelector({ selectedTags, onTagsChange, maxTags = 2 }: TagSele
     const normalized = normalizeTag(rawTag);
     if (!normalized) return;
 
-    const canonicalTag = normalizedAdminTagMap.get(normalized) ?? normalized;
-    const nextTags = addTag(selectedTags, canonicalTag);
+    const nextTags = addTag(selectedTags, normalized);
 
     if (nextTags.length !== selectedTags.length) {
       onTagsChange(nextTags);
@@ -103,67 +130,10 @@ export function TagSelector({ selectedTags, onTagsChange, maxTags = 2 }: TagSele
 
   return (
     <div className="space-y-2">
-      <div className="relative" ref={dropdownRef}>
-        <button
-          type="button"
-          onClick={() => setIsOpen((open) => !open)}
-          className={cn(
-            "w-full px-3 py-2 bg-secondary/40 border border-border/60 rounded-md",
-            "flex items-center justify-between gap-2",
-            "text-sm text-foreground hover:bg-secondary/60 transition-colors",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-          )}
-        >
-          <span className="text-muted-foreground">Browse existing tags</span>
-          <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
-        </button>
-
-        {isOpen && (
-          <div
-            className={cn(
-              "absolute top-full left-0 right-0 mt-2 bg-background border border-border rounded-md shadow-lg z-50",
-              "max-h-64 overflow-y-auto"
-            )}
-          >
-            {isLoading ? (
-              <div className="p-3 text-xs text-muted-foreground text-center">Loading tags...</div>
-            ) : filteredAdminTags.length === 0 ? (
-              <div className="p-3 text-xs text-muted-foreground text-center">No matching tags</div>
-            ) : (
-              <div className="p-2 space-y-1">
-                {filteredAdminTags.map((adminTag) => {
-                  const isSelected = normalizedSelectedTags.has(normalizeTag(adminTag.tag));
-
-                  return (
-                    <button
-                      key={adminTag.id}
-                      type="button"
-                      onClick={() => handleTagClick(adminTag.tag)}
-                      className={cn(
-                        "w-full text-left px-3 py-2 rounded-md text-sm flex items-center justify-between",
-                        "hover:bg-secondary/60 transition-colors",
-                        isSelected && "bg-primary/10"
-                      )}
-                    >
-                      <div className="flex-1">
-                        <span className="font-medium">#{adminTag.tag}</span>
-                        {adminTag.description && (
-                          <p className="text-xs text-muted-foreground line-clamp-1">{adminTag.description}</p>
-                        )}
-                      </div>
-                      {isSelected && <Check className="h-4 w-4 text-primary ml-2 flex-shrink-0" />}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        )}
-      </div>
-
       <div
+        ref={dropdownRef}
         className={cn(
-          "flex min-h-11 flex-wrap items-center gap-2 rounded-md border border-border/60 bg-secondary/30 px-3 py-2",
+          "relative flex min-h-11 flex-wrap items-center gap-2 rounded-md border border-border/60 bg-secondary/30 px-3 py-2",
           !canAddMoreTags && "opacity-80"
         )}
       >
@@ -197,10 +167,47 @@ export function TagSelector({ selectedTags, onTagsChange, maxTags = 2 }: TagSele
           className="min-w-[140px] flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground/70 disabled:cursor-not-allowed"
           maxLength={40}
         />
+
+        {isOpen && canAddMoreTags && (
+          <div
+            className={cn(
+              "absolute top-full left-0 right-0 mt-2 bg-background border border-border rounded-md shadow-lg z-50",
+              "max-h-64 overflow-y-auto"
+            )}
+          >
+            {isLoading ? (
+              <div className="p-3 text-xs text-muted-foreground text-center">Loading tag suggestions...</div>
+            ) : filteredSuggestedTags.length === 0 ? (
+              <div className="p-3 text-xs text-muted-foreground text-center">No matching tags yet — press Enter to create one</div>
+            ) : (
+              <div className="p-2 space-y-1">
+                {filteredSuggestedTags.map((tag) => {
+                  const isSelected = normalizedSelectedTags.has(normalizeTag(tag));
+
+                  return (
+                    <button
+                      key={tag}
+                      type="button"
+                      onClick={() => handleTagClick(tag)}
+                      className={cn(
+                        "w-full text-left px-3 py-2 rounded-md text-sm flex items-center justify-between",
+                        "hover:bg-secondary/60 transition-colors",
+                        isSelected && "bg-primary/10"
+                      )}
+                    >
+                      <span className="font-medium">#{tag}</span>
+                      {isSelected && <Check className="h-4 w-4 text-primary ml-2 flex-shrink-0" />}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
       <p className="text-xs text-muted-foreground/80">
-        Open tagging is enabled: add your own tag or pick from suggestions. Tags are saved case-insensitively.
+        Open tagging is enabled: type your own tags or pick autocomplete suggestions from community-created tags.
       </p>
     </div>
   );
