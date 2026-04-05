@@ -469,10 +469,10 @@ export function PoemEditor({ initial }: Props) {
                   <TagSelector
                     selectedTags={tags}
                     onTagsChange={setTags}
-                    maxTags={2}
+                    maxTags={maxTags}
                   />
                   {tags.length < 1 && (
-                    <p className="text-xs text-amber-600/70">Tag 1 is required. Tag 2 is optional.</p>
+                    <p className="text-xs text-amber-600/70">Tag 1 is required.{isPro ? " Up to 3 tags allowed." : " Tag 2 is optional."}</p>
                   )}
                 </div>
 
