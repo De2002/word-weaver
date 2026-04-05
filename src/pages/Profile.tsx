@@ -76,18 +76,24 @@ export default function Profile() {
     if (instagramUrl.trim()) updatedLinks.instagram = instagramUrl.trim();
     if (websiteUrl.trim()) updatedLinks.website = websiteUrl.trim();
 
+    const updatePayload: Record<string, unknown> = {
+      username: username.trim() || null,
+      display_name: displayName.trim() || null,
+      avatar_url: avatarUrl.trim() || null,
+      bio: bio.trim() || null,
+    };
+
+    // Only include pro-exclusive fields for pro users
+    if (isPro) {
+      updatePayload.about = about.trim() || null;
+      updatePayload.links = updatedLinks;
+      updatePayload.header_image = headerImage || null;
+      updatePayload.pinned_poem_id = (pinnedPoemId && pinnedPoemId !== "none") ? pinnedPoemId : null;
+    }
+
     const { error } = await db
       .from("profiles")
-      .update({
-        username: username.trim() || null,
-        display_name: displayName.trim() || null,
-        avatar_url: avatarUrl.trim() || null,
-        bio: bio.trim() || null,
-        about: about.trim() || null,
-        links: updatedLinks,
-        header_image: headerImage || null,
-        pinned_poem_id: (pinnedPoemId && pinnedPoemId !== "none") ? pinnedPoemId : null,
-      } as any)
+      .update(updatePayload)
       .eq("user_id", user.id);
     setSaving(false);
 
