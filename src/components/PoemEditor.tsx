@@ -201,6 +201,10 @@ export function PoemEditor({ initial }: Props) {
       return;
     }
     setIsSubmitting(true);
+    // Auto-generate copyright for Pro poets on publish
+    const copyrightValue = (status === "published" && isPro && profile?.display_name)
+      ? `© ${new Date().getFullYear()} ${profile.display_name}`
+      : null;
     try {
       let poemId = initial?.id;
       if (!poemId) {
@@ -217,6 +221,7 @@ export function PoemEditor({ initial }: Props) {
             tags,
             status,
             slug: slugData as string,
+            copyright: copyrightValue,
           })
           .select("id")
           .single();
