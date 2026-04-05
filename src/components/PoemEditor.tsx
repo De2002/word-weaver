@@ -143,7 +143,7 @@ export function PoemEditor({ initial }: Props) {
     return () => { if (intervalTimerRef.current) clearInterval(intervalTimerRef.current); };
   }, [autoSave]);
 
-  const maxTags = 2;
+  
 
   const handleAudioUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
