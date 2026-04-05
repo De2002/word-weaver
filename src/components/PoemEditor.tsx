@@ -60,6 +60,8 @@ export function PoemEditor({ initial }: Props) {
   const intervalTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const isEdit = Boolean(initial?.id);
+  const isPro = roles.includes("pro");
+  const maxTags = isPro ? 3 : 2;
   const hasPoemContent = poemText.trim().length > 0;
   const canSaveDraft = hasPoemContent;
   const canPublish = hasPoemContent && tags.length >= 1;
