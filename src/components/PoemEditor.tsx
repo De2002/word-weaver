@@ -38,7 +38,7 @@ type Props = {
 export function PoemEditor({ initial }: Props) {
   const navigate = useNavigate();
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user, roles, profile } = useAuth();
   const audioInputRef = useRef<HTMLInputElement>(null);
   const titleRef = useRef<HTMLTextAreaElement>(null);
   const poemRef = useRef<HTMLTextAreaElement>(null);
@@ -60,6 +60,8 @@ export function PoemEditor({ initial }: Props) {
   const intervalTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const isEdit = Boolean(initial?.id);
+  const isPro = roles.includes("pro");
+  const maxTags = isPro ? 3 : 2;
   const hasPoemContent = poemText.trim().length > 0;
   const canSaveDraft = hasPoemContent;
   const canPublish = hasPoemContent && tags.length >= 1;
@@ -141,7 +143,7 @@ export function PoemEditor({ initial }: Props) {
     return () => { if (intervalTimerRef.current) clearInterval(intervalTimerRef.current); };
   }, [autoSave]);
 
-  const maxTags = 2;
+  
 
   const handleAudioUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -199,6 +201,10 @@ export function PoemEditor({ initial }: Props) {
       return;
     }
     setIsSubmitting(true);
+    // Auto-generate copyright for Pro poets on publish
+    const copyrightValue = (status === "published" && isPro && profile?.display_name)
+      ? `© ${new Date().getFullYear()} ${profile.display_name}`
+      : null;
     try {
       let poemId = initial?.id;
       if (!poemId) {
@@ -215,6 +221,7 @@ export function PoemEditor({ initial }: Props) {
             tags,
             status,
             slug: slugData as string,
+            copyright: copyrightValue,
           })
           .select("id")
           .single();
@@ -229,6 +236,7 @@ export function PoemEditor({ initial }: Props) {
             content: poemText,
             tags,
             status,
+            copyright: copyrightValue,
           })
           .eq("id", poemId);
         if (error) throw error;
@@ -467,10 +475,10 @@ export function PoemEditor({ initial }: Props) {
                   <TagSelector
                     selectedTags={tags}
                     onTagsChange={setTags}
-                    maxTags={2}
+                    maxTags={maxTags}
                   />
                   {tags.length < 1 && (
-                    <p className="text-xs text-amber-600/70">Tag 1 is required. Tag 2 is optional.</p>
+                    <p className="text-xs text-amber-600/70">Tag 1 is required.{isPro ? " Up to 3 tags allowed." : " Tag 2 is optional."}</p>
                   )}
                 </div>
 
