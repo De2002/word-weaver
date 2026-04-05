@@ -1,41 +1,37 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Check, Crown, Star, TrendingUp, MessageSquare, Users, BarChart2, Heart, Shield } from 'lucide-react';
+import { Check, Crown, Star, TrendingUp, MessageSquare, Users, BarChart2, Heart, Shield, Droplets } from 'lucide-react';
 import { useAuth } from '@/context/AuthProvider';
 import { usePaddle, PADDLE_PRICE_IDS } from '@/hooks/usePaddle';
 
-const proFeatures = [
-  { icon: Crown, label: 'Verified Pro badge on your profile' },
-  { icon: Star, label: 'Premium author profile layout' },
-  { icon: Shield, label: 'Copyright signature on every poem' },
-  { icon: TrendingUp, label: 'Priority visibility & platform promotions' },
-  { icon: MessageSquare, label: 'Answer questions in Q&A' },
-  { icon: BarChart2, label: 'Analytics — see how your poems perform' },
-  { icon: Users, label: 'See who follows you' },
-  { icon: Heart, label: 'Tipping link support (Ko-fi, BMC, PayPal)' },
+const lyricFeatures = [
+  'Verified Pro badge',
+  'Copyright signature on every poem',
+  '50 Ink credits / month',
+  'Submit to platform Challenges',
+  'Answer questions in Q&A',
+  'Up to 3 tags per poem',
+  'Eligible for Poet Pool Fund',
 ];
 
-const comparison = {
-  free: [
-    'Standard profile',
-    'Community visibility',
-    'Basic posting',
-    'Read & upvote poems',
-  ],
-  pro: [
-    'Verified Pro badge',
-    'Premium author layout',
-    'Priority visibility',
-    'Inclusion in platform promotions',
-    'Eligible for Poet Pool Fund rewards',
-    'Submit to platform Challenges',
-    'Answer questions in Q&A',
-    'Analytics access',
-    'See who follows you',
-    'Tipping link support (Ko-fi, BMC, PayPal)',
-    'Plus future Pro features',
-  ],
-};
+const epicFeatures = [
+  'Everything in Lyric, plus:',
+  '150 Ink credits / month',
+  'Premium author profile layout',
+  'Profile banner image',
+  'Extended About bio',
+  'Social links (Twitter, IG, website)',
+  'Pinned poem on profile',
+  'Analytics — see how your poems perform',
+  'Priority visibility & promotions',
+];
+
+const freeFeatures = [
+  'Standard profile',
+  'Community visibility',
+  'Basic posting (up to 2 tags)',
+  'Read & upvote poems',
+];
 
 function FadeUp({ children, delay = 0, className }: { children: React.ReactNode; delay?: number; className?: string }) {
   return (
@@ -54,7 +50,11 @@ function FadeUp({ children, delay = 0, className }: { children: React.ReactNode;
 export default function Upgrade() {
   const { user, roles } = useAuth();
   const isPro = roles.includes('pro');
+  const isLyric = roles.includes('lyric');
+  const isEpic = roles.includes('epic');
   const { openCheckout } = usePaddle();
+
+  const currentTier = isEpic ? 'epic' : isLyric ? 'lyric' : 'free';
 
   return (
     <div className="min-h-screen bg-background">
@@ -65,7 +65,7 @@ export default function Upgrade() {
           style={{ background: 'hsl(var(--warm-gold) / 0.06)' }} />
       </div>
 
-      <div className="relative max-w-2xl mx-auto px-5 pb-24 pt-16">
+      <div className="relative max-w-3xl mx-auto px-5 pb-24 pt-16">
 
         {/* ── Hero ─────────────────────────────── */}
         <section className="text-center pt-8 pb-14">
@@ -93,81 +93,21 @@ export default function Upgrade() {
 
           <FadeUp delay={0.16}>
             <p className="text-muted-foreground text-lg leading-relaxed mb-10 max-w-sm mx-auto">
-              Upgrade to Pro and give your poetry the presence it deserves.
+              Choose the tier that fits your journey.
             </p>
-          </FadeUp>
-
-          <FadeUp delay={0.24}>
-            {isPro ? (
-              <div className="inline-flex items-center gap-2 px-6 py-3 rounded-full border font-medium"
-                style={{ background: 'hsl(var(--warm-gold) / 0.1)', borderColor: 'hsl(var(--warm-gold) / 0.3)', color: 'hsl(var(--warm-gold))' }}>
-                <Crown className="h-4 w-4" />
-                You're already a Pro Poet
-              </div>
-            ) : (
-              <div className="flex flex-col items-center gap-3">
-                <button
-                  onClick={() => {
-                    if (!user) { window.location.href = '/login'; return; }
-                    openCheckout(PADDLE_PRICE_IDS.epic, user.email ?? undefined);
-                  }}
-                  className="inline-flex items-center gap-2 px-8 py-4 rounded-full text-primary-foreground font-semibold text-base shadow-lg hover:shadow-xl hover:opacity-95 transition-all duration-300 cursor-pointer"
-                  style={{ background: 'var(--gradient-warm)' }}
-                >
-                  <Crown className="h-4 w-4" />
-                  Become a Pro Poet — $2.99/month
-                </button>
-                <p className="text-muted-foreground/60 text-xs">
-                  Cancel anytime. No pressure.{' '}
-                  <Link to="/refund-policy" className="underline underline-offset-2 hover:text-muted-foreground transition-colors">Refund policy</Link>
-                </p>
-              </div>
-            )}
           </FadeUp>
         </section>
 
-        {/* ── What changes ────────────────────── */}
+        {/* ── Pricing Cards ───────────────────── */}
         <section className="mb-16">
-          <FadeUp delay={0}>
-            <h2 className="font-poem text-2xl font-semibold text-foreground text-center mb-2">
-              As a Pro Poet, you get:
-            </h2>
-            <p className="text-muted-foreground text-sm text-center mb-8">
-              Everything you need to be seen as the author you are.
-            </p>
-          </FadeUp>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {proFeatures.map((feat, i) => (
-              <FadeUp key={feat.label} delay={i * 0.04 + 0.1}>
-                <div className="flex items-start gap-3 p-4 rounded-2xl border border-border/50 bg-card hover:border-primary/30 transition-colors duration-200 h-full">
-                  <div className="flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center"
-                    style={{ background: 'hsl(var(--warm-gold) / 0.1)' }}>
-                    <feat.icon className="h-3.5 w-3.5" style={{ color: 'hsl(var(--warm-gold))' }} />
-                  </div>
-                  <span className="text-sm text-foreground/80 leading-snug pt-1">{feat.label}</span>
-                </div>
-              </FadeUp>
-            ))}
-          </div>
-        </section>
-
-        {/* ── Visual Comparison ───────────────── */}
-        <section className="mb-16">
-          <FadeUp delay={0}>
-            <h2 className="font-poem text-2xl font-semibold text-foreground text-center mb-2">
-              Free vs Pro
-            </h2>
-            <p className="text-muted-foreground text-sm text-center mb-8">Not an upgrade. An evolution.</p>
-          </FadeUp>
-
-          <div className="grid grid-cols-2 gap-3">
-            {/* Free */}
-            <FadeUp delay={0.1}>
-              <div className="rounded-2xl border border-border/60 bg-secondary/40 p-5 h-full">
-                <p className="font-poem text-base font-semibold text-muted-foreground mb-4">Free Poet</p>
-                <ul className="space-y-2.5">
-                  {comparison.free.map((item) => (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Free Tier */}
+            <FadeUp delay={0.05}>
+              <div className="rounded-2xl border border-border/60 bg-secondary/40 p-6 h-full flex flex-col">
+                <p className="font-poem text-lg font-semibold text-muted-foreground mb-1">Free Poet</p>
+                <p className="text-2xl font-bold text-foreground mb-4">$0<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
+                <ul className="space-y-2.5 flex-1">
+                  {freeFeatures.map((item) => (
                     <li key={item} className="flex items-start gap-2 text-sm text-muted-foreground">
                       <span className="mt-1 h-3.5 w-3.5 flex-shrink-0 rounded-full border border-border flex items-center justify-center">
                         <span className="h-1 w-1 rounded-full bg-muted-foreground/40" />
@@ -176,30 +116,96 @@ export default function Upgrade() {
                     </li>
                   ))}
                 </ul>
+                {currentTier === 'free' && (
+                  <div className="mt-6 text-center text-sm text-muted-foreground font-medium">Current plan</div>
+                )}
               </div>
             </FadeUp>
 
-            {/* Pro */}
+            {/* Lyric Tier */}
+            <FadeUp delay={0.12}>
+              <div className="rounded-2xl border p-6 h-full flex flex-col relative overflow-hidden"
+                style={{ borderColor: 'hsl(var(--primary) / 0.35)', background: 'linear-gradient(160deg, hsl(var(--primary) / 0.04), transparent)' }}>
+                <p className="font-poem text-lg font-semibold text-primary mb-1 flex items-center gap-1.5">
+                  <Droplets className="h-4 w-4" /> The Lyric
+                </p>
+                <p className="text-2xl font-bold text-foreground mb-1">$0.99<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
+                <p className="text-xs text-muted-foreground mb-4">50 Ink credits included</p>
+                <ul className="space-y-2.5 flex-1">
+                  {lyricFeatures.map((item) => (
+                    <li key={item} className="flex items-start gap-2 text-sm text-foreground/80">
+                      <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-primary" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+                {currentTier === 'lyric' ? (
+                  <div className="mt-6 text-center text-sm text-primary font-medium">Your current plan</div>
+                ) : currentTier === 'epic' ? (
+                  <div className="mt-6 text-center text-sm text-muted-foreground">Included in your Epic plan</div>
+                ) : (
+                  <button
+                    onClick={() => {
+                      if (!user) { window.location.href = '/login'; return; }
+                      openCheckout(PADDLE_PRICE_IDS.lyric, user.email ?? undefined);
+                    }}
+                    className="mt-6 w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full text-primary-foreground font-semibold text-sm shadow-md hover:shadow-lg hover:opacity-95 transition-all duration-300 cursor-pointer bg-primary"
+                  >
+                    Get The Lyric — $0.99/mo
+                  </button>
+                )}
+              </div>
+            </FadeUp>
+
+            {/* Epic Tier */}
             <FadeUp delay={0.18}>
-              <div className="rounded-2xl border p-5 relative overflow-hidden h-full"
+              <div className="rounded-2xl border p-6 h-full flex flex-col relative overflow-hidden"
                 style={{ borderColor: 'hsl(var(--warm-gold) / 0.35)', background: 'linear-gradient(160deg, hsl(var(--warm-gold) / 0.06), transparent)' }}>
                 <div className="absolute top-0 right-0 w-20 h-20 rounded-full blur-2xl"
                   style={{ background: 'hsl(var(--warm-gold) / 0.08)' }} />
-                <p className="font-poem text-base font-semibold mb-4 flex items-center gap-1.5"
+                <div className="absolute top-3 right-3">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full"
+                    style={{ background: 'hsl(var(--warm-gold) / 0.15)', color: 'hsl(var(--warm-gold))' }}>
+                    Best value
+                  </span>
+                </div>
+                <p className="font-poem text-lg font-semibold mb-1 flex items-center gap-1.5"
                   style={{ color: 'hsl(var(--warm-gold))' }}>
-                  <Crown className="h-3.5 w-3.5" /> Pro Poet
+                  <Crown className="h-4 w-4" /> The Epic
                 </p>
-                <ul className="space-y-2.5">
-                  {comparison.pro.map((item) => (
+                <p className="text-2xl font-bold text-foreground mb-1">$2.99<span className="text-sm font-normal text-muted-foreground">/mo</span></p>
+                <p className="text-xs text-muted-foreground mb-4">150 Ink credits included</p>
+                <ul className="space-y-2.5 flex-1">
+                  {epicFeatures.map((item) => (
                     <li key={item} className="flex items-start gap-2 text-sm text-foreground/80">
                       <Check className="mt-0.5 h-3.5 w-3.5 flex-shrink-0" style={{ color: 'hsl(var(--warm-gold))' }} />
                       {item}
                     </li>
                   ))}
                 </ul>
+                {currentTier === 'epic' ? (
+                  <div className="mt-6 text-center text-sm font-medium" style={{ color: 'hsl(var(--warm-gold))' }}>Your current plan</div>
+                ) : (
+                  <button
+                    onClick={() => {
+                      if (!user) { window.location.href = '/login'; return; }
+                      openCheckout(PADDLE_PRICE_IDS.epic, user.email ?? undefined);
+                    }}
+                    className="mt-6 w-full inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full text-primary-foreground font-semibold text-sm shadow-lg hover:shadow-xl hover:opacity-95 transition-all duration-300 cursor-pointer"
+                    style={{ background: 'var(--gradient-warm)' }}
+                  >
+                    <Crown className="h-4 w-4" />
+                    Get The Epic — $2.99/mo
+                  </button>
+                )}
               </div>
             </FadeUp>
           </div>
+
+          <p className="text-center text-muted-foreground/60 text-xs mt-4">
+            Cancel anytime. No pressure.{' '}
+            <Link to="/refund-policy" className="underline underline-offset-2 hover:text-muted-foreground transition-colors">Refund policy</Link>
+          </p>
         </section>
 
         {/* ── Emotional Section ───────────────── */}
@@ -232,7 +238,17 @@ export default function Upgrade() {
             </FadeUp>
 
             <FadeUp delay={0.1}>
-              <div className="flex flex-col items-center gap-3">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                <button
+                  onClick={() => {
+                    if (!user) { window.location.href = '/login'; return; }
+                    openCheckout(PADDLE_PRICE_IDS.lyric, user.email ?? undefined);
+                  }}
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-full font-semibold text-sm border border-primary text-primary hover:bg-primary/10 transition-all duration-300 cursor-pointer"
+                >
+                  <Droplets className="h-4 w-4" />
+                  The Lyric — $0.99/mo
+                </button>
                 <button
                   onClick={() => {
                     if (!user) { window.location.href = '/login'; return; }
@@ -242,13 +258,13 @@ export default function Upgrade() {
                   style={{ background: 'var(--gradient-warm)' }}
                 >
                   <Crown className="h-4 w-4" />
-                  Upgrade to Pro — $2.99/month
+                  The Epic — $2.99/mo
                 </button>
-                <p className="text-muted-foreground/60 text-xs mt-1">
-                  Your voice deserves more than ordinary.{' '}
-                  <Link to="/refund-policy" className="underline underline-offset-2 hover:text-muted-foreground transition-colors">Refund policy</Link>
-                </p>
               </div>
+              <p className="text-muted-foreground/60 text-xs mt-3">
+                Your voice deserves more than ordinary.{' '}
+                <Link to="/refund-policy" className="underline underline-offset-2 hover:text-muted-foreground transition-colors">Refund policy</Link>
+              </p>
             </FadeUp>
           </section>
         )}
