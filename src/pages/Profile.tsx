@@ -99,6 +99,8 @@ export default function Profile() {
     toast({ title: "Saved", description: "Your profile was updated." });
   };
 
+  const isPro = roles.includes("pro");
+
   if (!user) return null;
 
   return (
@@ -116,8 +118,9 @@ export default function Profile() {
       <main className="max-w-lg mx-auto px-4 pb-24">
         <div className="pt-6 pb-4 space-y-5">
 
-          {/* Profile Banner */}
-          <div className="space-y-2 pb-5 border-b border-border">
+          {/* Profile Banner — Pro only */}
+          {isPro ? (
+            <div className="space-y-2 pb-5 border-b border-border">
               <div className="flex items-center gap-2 mb-1">
                 <Sparkles className="h-4 w-4 text-primary" />
                 <Label className="text-sm font-semibold">Profile Banner</Label>
@@ -131,7 +134,18 @@ export default function Profile() {
                 onUploadComplete={(url) => setHeaderImage(url)}
               />
             </div>
-
+          ) : (
+            <div className="p-4 rounded-xl border border-border bg-secondary/30 pb-5 border-b">
+              <div className="flex items-center gap-2 mb-1">
+                <Sparkles className="h-4 w-4 text-muted-foreground" />
+                <Label className="text-sm font-semibold text-muted-foreground">Profile Banner</Label>
+              </div>
+              <p className="text-xs text-muted-foreground mb-3">Customize your profile header with a banner image.</p>
+              <Button asChild variant="outline" size="sm">
+                <Link to="/upgrade">Upgrade to Pro to unlock</Link>
+              </Button>
+            </div>
+          )}
 
           {/* Avatar Upload */}
           <div className="flex flex-col items-center gap-3 pb-5 border-b border-border">
