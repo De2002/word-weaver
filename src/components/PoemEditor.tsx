@@ -236,6 +236,7 @@ export function PoemEditor({ initial }: Props) {
             content: poemText,
             tags,
             status,
+            copyright: copyrightValue,
           })
           .eq("id", poemId);
         if (error) throw error;
