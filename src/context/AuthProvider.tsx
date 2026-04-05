@@ -3,7 +3,7 @@ import type { Session, User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { db } from "@/lib/db";
 
-export type UserRole = "user" | "poet" | "moderator" | "admin" | "pro";
+export type UserRole = "user" | "poet" | "moderator" | "admin" | "pro" | "lyric" | "epic";
 
 type ProfileRow = {
   user_id: string;
