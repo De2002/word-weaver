@@ -175,8 +175,9 @@ export default function Profile() {
             <Textarea id="bio" value={bio} onChange={(e) => setBio(e.target.value)} className="bg-secondary/50 resize-none" rows={2} placeholder="Tell readers about your voice…" />
           </div>
 
-          {/* About section */}
-          <div className="space-y-2">
+          {/* About section — Pro only */}
+          {isPro ? (
+            <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Label htmlFor="about">About</Label>
               </div>
@@ -190,10 +191,19 @@ export default function Profile() {
               />
               <p className="text-xs text-muted-foreground">Shown on the About tab of your public profile.</p>
             </div>
+          ) : (
+            <div className="p-4 rounded-xl border border-border bg-secondary/30">
+              <Label className="text-sm font-semibold text-muted-foreground">About</Label>
+              <p className="text-xs text-muted-foreground mt-1 mb-3">Share your poetry journey with a longer bio on your profile.</p>
+              <Button asChild variant="outline" size="sm">
+                <Link to="/upgrade">Upgrade to Pro to unlock</Link>
+              </Button>
+            </div>
+          )}
 
-
-          {/* Pin a poem */}
-          <div className="space-y-2">
+          {/* Pin a poem — Pro only */}
+          {isPro ? (
+            <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <Pin className="h-4 w-4 text-primary" />
                 <Label htmlFor="pinned-poem">Pinned Poem</Label>
@@ -213,12 +223,24 @@ export default function Profile() {
               </Select>
               <p className="text-xs text-muted-foreground">This poem appears pinned at the top of your public profile.</p>
             </div>
-
+          ) : (
+            <div className="p-4 rounded-xl border border-border bg-secondary/30">
+              <div className="flex items-center gap-2">
+                <Pin className="h-4 w-4 text-muted-foreground" />
+                <Label className="text-sm font-semibold text-muted-foreground">Pinned Poem</Label>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1 mb-3">Pin your best poem to the top of your profile.</p>
+              <Button asChild variant="outline" size="sm">
+                <Link to="/upgrade">Upgrade to Pro to unlock</Link>
+              </Button>
+            </div>
+          )}
 
           <Separator />
 
-          {/* Social links */}
-          <div className="space-y-4 p-4 rounded-xl bg-secondary/30 border border-border">
+          {/* Social links — Pro only */}
+          {isPro ? (
+            <div className="space-y-4 p-4 rounded-xl bg-secondary/30 border border-border">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-primary" />
                 <p className="text-sm font-semibold">Social Links</p>
@@ -264,6 +286,18 @@ export default function Profile() {
                 />
               </div>
             </div>
+          ) : (
+            <div className="p-4 rounded-xl border border-border bg-secondary/30">
+              <div className="flex items-center gap-2">
+                <Sparkles className="h-4 w-4 text-muted-foreground" />
+                <p className="text-sm font-semibold text-muted-foreground">Social Links</p>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1 mb-3">Add your Twitter, Instagram, and website links to your profile.</p>
+              <Button asChild variant="outline" size="sm">
+                <Link to="/upgrade">Upgrade to Pro to unlock</Link>
+              </Button>
+            </div>
+          )}
 
 
           <div className="flex flex-wrap gap-2 pt-1">
