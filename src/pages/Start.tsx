@@ -79,10 +79,10 @@ export default function Start() {
           className="text-center pt-16 pb-12"
         >
           <h1 className="font-poem text-4xl sm:text-5xl text-foreground leading-tight">
-            Where Your Poetry Finally Matters
+            Earn from your poems.
           </h1>
           <p className="mt-5 text-base sm:text-lg text-muted-foreground max-w-xl mx-auto leading-relaxed">
-            Publish your poems. Get real support. Receive <em>ink</em> from people who feel your words.
+            Get monthly support ink, enter contests, and earn as your work grows.
           </p>
           <div className="mt-7 flex flex-wrap justify-center gap-3">
             <Button asChild size="lg" className="rounded-full px-8 gap-2">
