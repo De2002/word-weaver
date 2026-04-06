@@ -63,10 +63,11 @@ export function PoemEditor({ initial }: Props) {
   const isEdit = Boolean(initial?.id);
   const isPro = roles.includes("pro");
   const maxTags = isPro ? 3 : 2;
+  const { canPublish: hasPublishRole, tier, quotaReached, remaining, monthlyLimit } = usePublishPermission();
   const hasPoemContent = poemText.trim().length > 0;
-  const canSaveDraft = hasPoemContent;
-  const canPublish = hasPoemContent && tags.length >= 1;
-  const canWritePoems = true;
+  const canSaveDraft = hasPoemContent && hasPublishRole;
+  const canPublish = hasPoemContent && tags.length >= 1 && hasPublishRole && !quotaReached;
+  const canWritePoems = hasPublishRole;
 
   // Auto-grow textareas
   const autoGrow = useCallback((el: HTMLTextAreaElement | null) => {
