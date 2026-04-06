@@ -14,6 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { db } from "@/lib/db";
 import { useAuth } from "@/context/AuthProvider";
 import { TagSelector } from "@/components/TagSelector";
+import { usePublishPermission } from "@/hooks/usePublishPermission";
 
 const MAX_TITLE_LENGTH = 100;
 const MAX_POEM_LENGTH = 5000;
@@ -62,10 +63,11 @@ export function PoemEditor({ initial }: Props) {
   const isEdit = Boolean(initial?.id);
   const isPro = roles.includes("pro");
   const maxTags = isPro ? 3 : 2;
+  const { canPublish: hasPublishRole, tier, quotaReached, remaining, monthlyLimit } = usePublishPermission();
   const hasPoemContent = poemText.trim().length > 0;
-  const canSaveDraft = hasPoemContent;
-  const canPublish = hasPoemContent && tags.length >= 1;
-  const canWritePoems = true;
+  const canSaveDraft = hasPoemContent && hasPublishRole;
+  const canPublish = hasPoemContent && tags.length >= 1 && hasPublishRole && !quotaReached;
+  const canWritePoems = hasPublishRole;
 
   // Auto-grow textareas
   const autoGrow = useCallback((el: HTMLTextAreaElement | null) => {
@@ -258,8 +260,31 @@ export function PoemEditor({ initial }: Props) {
     }
   };
 
+  if (tier === "observer") {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center gap-4 px-6 text-center">
+        <h2 className="text-xl font-semibold text-foreground">Publishing requires a subscription</h2>
+        <p className="text-sm text-muted-foreground max-w-md">
+          Upgrade to <span className="font-medium text-foreground">The Lyric</span> or <span className="font-medium text-foreground">The Epic</span> to start publishing poems.
+        </p>
+        <Button onClick={() => navigate("/upgrade")} className="mt-2">View Plans</Button>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
+      {/* Quota indicator for Lyric users */}
+      {tier === "lyric" && (
+        <div className="mb-4 px-3 py-2 rounded-lg bg-secondary/50 border border-border text-xs text-muted-foreground flex items-center justify-between">
+          <span>Monthly poems: {monthlyLimit - remaining}/{monthlyLimit}</span>
+          {quotaReached ? (
+            <span className="text-destructive font-medium">Limit reached</span>
+          ) : (
+            <span>{remaining} remaining</span>
+          )}
+        </div>
+      )}
       {/* ── Floating action bar ── */}
       <div className="flex items-center justify-between gap-3 mb-8">
         {/* Alignment toggle */}
