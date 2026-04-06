@@ -428,7 +428,7 @@ export function ChallengesAdminPanel() {
               <Crown className="h-4 w-4 text-primary" />
               Create monthly challenge
             </CardTitle>
-            <CardDescription>Only Pro Poets will be able to submit.</CardDescription>
+            <CardDescription>Only Lyric and Epic poets will be able to submit.</CardDescription>
           </CardHeader>
           <CardContent>
             <ChallengeForm
