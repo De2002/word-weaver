@@ -14,6 +14,38 @@ export type Database = {
   }
   public: {
     Tables: {
+      ad_revenue_pool: {
+        Row: {
+          created_at: string
+          id: string
+          period_id: string | null
+          total_amount: number
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          period_id?: string | null
+          total_amount?: number
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          period_id?: string | null
+          total_amount?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_revenue_pool_period_id_fkey"
+            columns: ["period_id"]
+            isOneToOne: false
+            referencedRelation: "payout_periods"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       blocked_users: {
         Row: {
           blocked_id: string
@@ -576,24 +608,30 @@ export type Database = {
       }
       ink_wallets: {
         Row: {
+          available_balance: number
           balance: number
           id: string
+          locked_balance: number
           total_poured: number
           total_received: number
           updated_at: string
           user_id: string
         }
         Insert: {
+          available_balance?: number
           balance?: number
           id?: string
+          locked_balance?: number
           total_poured?: number
           total_received?: number
           updated_at?: string
           user_id: string
         }
         Update: {
+          available_balance?: number
           balance?: number
           id?: string
+          locked_balance?: number
           total_poured?: number
           total_received?: number
           updated_at?: string
@@ -1610,6 +1648,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_poem_quota: { Args: { _user_id: string }; Returns: boolean }
       generate_poem_slug: {
         Args: { exclude_poem_id?: string; title_input: string }
         Returns: string
