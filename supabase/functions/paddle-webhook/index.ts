@@ -25,7 +25,6 @@ Deno.serve(async (req) => {
     const signature = req.headers.get("paddle-signature");
     const webhookSecret = Deno.env.get("PADDLE_WEBHOOK_SECRET");
 
-    // Verify webhook signature
     if (!signature || !webhookSecret) {
       console.error("Missing signature or webhook secret");
       return new Response(JSON.stringify({ error: "Unauthorized" }), {
@@ -96,6 +95,59 @@ Deno.serve(async (req) => {
         });
       }
 
+      // If upgrading from lyric to epic, remove lyric role first
+      if (tier === "epic") {
+        await supabase
+          .from("user_roles")
+          .delete()
+          .eq("user_id", user.id)
+          .eq("role", "lyric");
+
+        // Move locked_balance to available_balance on upgrade
+        const { data: existingWallet } = await supabase
+          .from("ink_wallets")
+          .select("locked_balance, available_balance")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        if (existingWallet && existingWallet.locked_balance > 0) {
+          await supabase
+            .from("ink_wallets")
+            .update({
+              available_balance: (existingWallet.available_balance || 0) + existingWallet.locked_balance,
+              locked_balance: 0,
+            })
+            .eq("user_id", user.id);
+          console.log(`🔓 Unlocked ${existingWallet.locked_balance} ink for ${email} on upgrade to Epic`);
+        }
+      }
+
+      // If downgrading from epic to lyric, move available_balance to locked_balance
+      if (tier === "lyric") {
+        await supabase
+          .from("user_roles")
+          .delete()
+          .eq("user_id", user.id)
+          .eq("role", "epic");
+
+        const { data: existingWallet } = await supabase
+          .from("ink_wallets")
+          .select("locked_balance, available_balance")
+          .eq("user_id", user.id)
+          .maybeSingle();
+
+        if (existingWallet && existingWallet.available_balance > 0) {
+          await supabase
+            .from("ink_wallets")
+            .update({
+              locked_balance: (existingWallet.locked_balance || 0) + existingWallet.available_balance,
+              available_balance: 0,
+            })
+            .eq("user_id", user.id);
+          console.log(`🔒 Locked ${existingWallet.available_balance} ink for ${email} on downgrade to Lyric`);
+        }
+      }
+
       // Grant tier role (lyric or epic)
       await supabase.from("user_roles").upsert(
         { user_id: user.id, role: tier },
@@ -112,23 +164,32 @@ Deno.serve(async (req) => {
       const inkAmount = INK_CREDITS[tier];
       const { data: existingWallet } = await supabase
         .from("ink_wallets")
-        .select("id, balance, total_received")
+        .select("id, balance, total_received, locked_balance, available_balance")
         .eq("user_id", user.id)
         .maybeSingle();
 
       if (existingWallet) {
+        const updateData: Record<string, number> = {
+          balance: existingWallet.balance + inkAmount,
+          total_received: existingWallet.total_received + inkAmount,
+        };
+        // Lyric: ink goes to locked_balance. Epic: ink goes to available_balance.
+        if (tier === "lyric") {
+          updateData.locked_balance = (existingWallet.locked_balance || 0) + inkAmount;
+        } else {
+          updateData.available_balance = (existingWallet.available_balance || 0) + inkAmount;
+        }
         await supabase
           .from("ink_wallets")
-          .update({
-            balance: existingWallet.balance + inkAmount,
-            total_received: existingWallet.total_received + inkAmount,
-          })
+          .update(updateData)
           .eq("user_id", user.id);
       } else {
         await supabase.from("ink_wallets").insert({
           user_id: user.id,
           balance: inkAmount,
           total_received: inkAmount,
+          locked_balance: tier === "lyric" ? inkAmount : 0,
+          available_balance: tier === "epic" ? inkAmount : 0,
         });
       }
 
@@ -217,7 +278,7 @@ Deno.serve(async (req) => {
           (u: { email?: string }) => u.email?.toLowerCase() === email.toLowerCase()
         );
         if (user) {
-          // Remove tier roles but keep poet role
+          // Remove all subscription roles — revert to Observer
           for (const role of ["lyric", "epic", "pro"] as const) {
             await supabase
               .from("user_roles")
@@ -225,6 +286,25 @@ Deno.serve(async (req) => {
               .eq("user_id", user.id)
               .eq("role", role);
           }
+
+          // Move any available_balance to locked_balance (freeze withdrawals)
+          const { data: walletData } = await supabase
+            .from("ink_wallets")
+            .select("locked_balance, available_balance")
+            .eq("user_id", user.id)
+            .maybeSingle();
+
+          if (walletData && walletData.available_balance > 0) {
+            await supabase
+              .from("ink_wallets")
+              .update({
+                locked_balance: (walletData.locked_balance || 0) + walletData.available_balance,
+                available_balance: 0,
+              })
+              .eq("user_id", user.id);
+            console.log(`🔒 Froze ${walletData.available_balance} ink for ${email} on cancellation`);
+          }
+
           console.log(`❌ Subscription canceled for ${email}, roles removed`);
         }
       }
