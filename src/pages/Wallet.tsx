@@ -147,13 +147,14 @@ export default function Wallet() {
 
       <main className="max-w-2xl mx-auto p-4 space-y-4 pb-24">
         {loading ? (
-          <div className="grid sm:grid-cols-2 gap-3">
+          <div className="grid sm:grid-cols-3 gap-3">
+            <Skeleton className="h-24 rounded-xl" />
             <Skeleton className="h-24 rounded-xl" />
             <Skeleton className="h-24 rounded-xl" />
           </div>
         ) : (
           <>
-            <div className="grid sm:grid-cols-2 gap-3">
+            <div className="grid sm:grid-cols-3 gap-3">
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm text-muted-foreground">Current ink</CardTitle>
@@ -171,17 +172,26 @@ export default function Wallet() {
                   <p className="text-2xl font-semibold text-foreground">{wallet?.total_poured ?? 0} ink</p>
                 </CardContent>
               </Card>
+
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-sm text-muted-foreground">Earned ink</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-2xl font-semibold text-foreground">{wallet?.total_received ?? 0} ink</p>
+                </CardContent>
+              </Card>
             </div>
 
             <Card>
               <CardHeader className="pb-2">
-                <CardTitle className="text-base">Poet USD balance</CardTitle>
+                <CardTitle className="text-base">Available USD balance</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
                   <p className="text-3xl font-semibold text-foreground">${poetBalance.toFixed(2)}</p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    This is what you earned from the poet pool. If the ${threshold.toFixed(2)} threshold is not met yet, balance rolls over.
+                    This is your share from the poet pool, calculated from Earned ink only (ink received from other poets on you or your poems). If the ${threshold.toFixed(2)} threshold is not met yet, balance rolls over.
                   </p>
                 </div>
 
