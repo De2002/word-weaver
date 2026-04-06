@@ -45,7 +45,7 @@ export default function AdminDashboard() {
       value: qaStats?.totalAnswers ?? 0,
       icon: MessageSquare,
       color: "text-green-500",
-      description: "Answers by Pro Poets",
+      description: "Answers by Lyric and Epic poets",
     },
     {
       label: "Unanswered",
@@ -169,14 +169,14 @@ export default function AdminDashboard() {
                 ))}
               </div>
 
-              {/* Top Pro Poet Answerers */}
+              {/* Top Lyric & Epic Answerers */}
               <Card className="mt-4">
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-2">
                     <Crown className="h-4 w-4 text-amber-500" />
-                    <CardTitle className="text-base">Top Pro Poet Answerers</CardTitle>
+                    <CardTitle className="text-base">Top Lyric & Epic Answerers</CardTitle>
                   </div>
-                  <CardDescription>Pro Poets with the most answers</CardDescription>
+                  <CardDescription>Lyric and Epic poets with the most answers</CardDescription>
                 </CardHeader>
                 <CardContent>
                   {answerersLoading ? (
