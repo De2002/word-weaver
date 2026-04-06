@@ -14,6 +14,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { db } from "@/lib/db";
 import { useAuth } from "@/context/AuthProvider";
 import { TagSelector } from "@/components/TagSelector";
+import { usePublishPermission } from "@/hooks/usePublishPermission";
 
 const MAX_TITLE_LENGTH = 100;
 const MAX_POEM_LENGTH = 5000;
