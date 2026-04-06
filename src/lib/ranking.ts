@@ -52,6 +52,11 @@ export function calculateHotScore(poem: Poem, weights = DEFAULT_WEIGHTS): number
   if (badges.includes('rising')) {
     boostMultiplier *= weights.risingBoost;
   }
+
+  // Epic spotlight boost — Epic poets get priority visibility
+  if ((poem as any).isEpicPoet) {
+    boostMultiplier *= 1.4; // 40% visibility boost for Epic tier
+  }
   
   // Time decay - newer content ranks higher
   const timeDecay = Math.pow(ageHours + 2, weights.decayFactor);

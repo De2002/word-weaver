@@ -1,9 +1,15 @@
 import { useNavigate } from 'react-router-dom';
 import { Feather } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useAuth } from '@/context/AuthProvider';
 
 export function CreateButton() {
   const navigate = useNavigate();
+  const { roles } = useAuth();
+  
+  // Only show create button for Lyric or Epic users
+  const canPublish = roles.includes('lyric') || roles.includes('epic');
+  if (!canPublish) return null;
 
   return (
     <motion.button

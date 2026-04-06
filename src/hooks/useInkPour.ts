@@ -72,17 +72,31 @@ export function useInkPour() {
       // Upsert recipient wallet
       const { data: recipientWallet } = await db
         .from('ink_wallets')
-        .select('balance, total_received')
+        .select('balance, total_received, locked_balance, available_balance')
         .eq('user_id', poetUserId)
         .maybeSingle();
 
+      // Check if recipient is Epic (available_balance) or Lyric (locked_balance)
+      const { data: recipientRoles } = await db
+        .from('user_roles')
+        .select('role')
+        .eq('user_id', poetUserId);
+
+      const isRecipientEpic = recipientRoles?.some((r: { role: string }) => r.role === 'epic');
+
       if (recipientWallet) {
+        const updateData: Record<string, number> = {
+          balance: recipientWallet.balance + amount,
+          total_received: recipientWallet.total_received + amount,
+        };
+        if (isRecipientEpic) {
+          updateData.available_balance = (recipientWallet.available_balance || 0) + amount;
+        } else {
+          updateData.locked_balance = (recipientWallet.locked_balance || 0) + amount;
+        }
         await db
           .from('ink_wallets')
-          .update({
-            balance: recipientWallet.balance + amount,
-            total_received: recipientWallet.total_received + amount,
-          })
+          .update(updateData)
           .eq('user_id', poetUserId);
       }
       // If no wallet exists for recipient, the edge function / trigger should handle creation
