@@ -7,7 +7,7 @@ import { useSEO } from '@/hooks/useSEO';
 export default function About() {
   useSEO({
     title: "About",
-    description: "Learn about WordStack, a community-driven platform dedicated to celebrating the art of poetry in all its forms."
+    description: "Learn how WordStack has evolved into a full creative ecosystem for poets to publish, connect, collaborate, and grow."
   });
   return (
     <div className="min-h-screen bg-background">
@@ -35,10 +35,10 @@ export default function About() {
               <Feather className="h-10 w-10 text-primary" />
             </div>
             <h2 className="text-3xl font-bold font-poem text-foreground">
-              Where Words Find Their Home
+              Built for the Full Poet Journey
             </h2>
             <p className="text-muted-foreground text-lg leading-relaxed">
-              WordStack is a community-driven platform dedicated to celebrating the art of poetry in all its forms.
+              WordStack started as a place to share poems. Today, it&apos;s a living poetry ecosystem where writers publish, collaborate, learn, and build a sustainable creative practice.
             </p>
           </div>
 
@@ -49,10 +49,10 @@ export default function About() {
               Our Mission
             </h3>
             <p className="text-muted-foreground leading-relaxed">
-              We believe poetry has the power to connect, heal, and inspire. Our mission is to create a welcoming space where poets of all backgrounds and experience levels can share their work, discover new voices, and be part of a supportive creative community.
+              We believe poetry can shape culture, heal communities, and open honest conversation. Our mission is to give every poet, from first draft writers to published voices, the tools and support to create bravely and be discovered meaningfully.
             </p>
             <p className="text-muted-foreground leading-relaxed">
-              Whether you're a seasoned poet or just starting your journey with words, WordStack is your home for creative expression.
+              Whether you write for expression, impact, or income, WordStack is designed to help your voice travel further.
             </p>
           </section>
 
@@ -65,19 +65,19 @@ export default function About() {
             <ul className="space-y-3 text-muted-foreground">
               <li className="flex items-start gap-3">
                 <span className="h-2 w-2 rounded-full bg-primary mt-2 flex-shrink-0" />
-                <span><strong className="text-foreground">A Platform for All Poets:</strong> Share your work with a community that appreciates the craft of poetry.</span>
+                <span><strong className="text-foreground">Publishing That Feels Personal:</strong> Share poems, journals, and crafted collections in a space built for literary work.</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="h-2 w-2 rounded-full bg-primary mt-2 flex-shrink-0" />
-                <span><strong className="text-foreground">Discovery & Connection:</strong> Find poets whose work resonates with you and build meaningful connections.</span>
+                <span><strong className="text-foreground">Discovery with Depth:</strong> Explore tags, classics, trails, and recommendations that connect readers to the right voices.</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="h-2 w-2 rounded-full bg-primary mt-2 flex-shrink-0" />
-                <span><strong className="text-foreground">Recognition & Growth:</strong> Get featured, earn recognition, and grow as a poet through community engagement.</span>
+                <span><strong className="text-foreground">Growth Through Community:</strong> Join challenges, discussions, and Q&A spaces that turn inspiration into momentum.</span>
               </li>
               <li className="flex items-start gap-3">
                 <span className="h-2 w-2 rounded-full bg-primary mt-2 flex-shrink-0" />
-                <span><strong className="text-foreground">Curated Experiences:</strong> Explore the bookstore, journals, and themed collections.</span>
+                <span><strong className="text-foreground">Opportunities Beyond Posting:</strong> Participate in events, submit chapbooks, and unlock new ways to earn recognition and support.</span>
               </li>
             </ul>
           </section>
@@ -89,7 +89,7 @@ export default function About() {
               Our Community
             </h3>
             <p className="text-muted-foreground leading-relaxed">
-              WordStack is more than a platform—it's a community of passionate wordsmiths who believe in the transformative power of poetry. We celebrate diversity in voice, style, and perspective, creating a space where every poet can find their audience.
+              WordStack is now powered by readers, poets, curators, and mentors who care deeply about language and lived experience. We celebrate diverse forms, cultures, and perspectives so every writer can find both audience and belonging.
             </p>
           </section>
 
@@ -97,7 +97,7 @@ export default function About() {
           <section className="p-6 rounded-xl bg-card border border-border">
             <h3 className="text-lg font-semibold text-foreground mb-2">Get in Touch</h3>
             <p className="text-muted-foreground text-sm">
-              Have questions, feedback, or just want to say hello? We'd love to hear from you at{' '}
+              Have ideas, partnership opportunities, or feedback on where WordStack should go next? We&apos;d love to hear from you at{' '}
               <a href="mailto:hello@wordstack.io" className="text-primary hover:underline">
                 hello@wordstack.io
               </a>
