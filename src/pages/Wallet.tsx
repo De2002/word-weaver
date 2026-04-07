@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowDownLeft, ArrowLeft, ArrowUpRight, Droplets, Lock, Unlock, Wallet as WalletIcon } from 'lucide-react';
+import { ArrowDownLeft, ArrowLeft, ArrowUpRight, DollarSign, Droplets, Wallet as WalletIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
