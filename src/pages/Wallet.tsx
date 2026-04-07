@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ArrowDownLeft, ArrowLeft, ArrowUpRight, Droplets, Lock, Unlock, Wallet as WalletIcon } from 'lucide-react';
+import { ArrowDownLeft, ArrowLeft, ArrowUpRight, DollarSign, Droplets, Wallet as WalletIcon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -192,36 +192,34 @@ export default function Wallet() {
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm text-muted-foreground flex items-center gap-1">
-                    <Lock className="h-3 w-3" />
-                    Locked ink
+                    <Droplets className="h-3 w-3" />
+                    Earned ink
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-2xl font-semibold text-foreground">{wallet?.locked_balance ?? 0} ink</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {isLyric ? 'Upgrade to Epic to unlock' : 'Non-withdrawable'}
-                  </p>
+                  <p className="text-2xl font-semibold text-foreground">{wallet?.total_received ?? 0} ink</p>
+                  <p className="text-xs text-muted-foreground mt-1">Ink received from others</p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm text-muted-foreground flex items-center gap-1">
-                    <Unlock className="h-3 w-3" />
-                    Available ink
+                    <DollarSign className="h-3 w-3" />
+                    Available USD
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-2xl font-semibold text-foreground">{wallet?.available_balance ?? 0} ink</p>
+                  <p className="text-2xl font-semibold text-foreground">${poetBalance.toFixed(2)}</p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {isEpic ? 'Withdrawable' : 'Epic tier only'}
+                    {isEpic ? 'Withdrawable' : isLyric ? 'Upgrade to Epic to withdraw' : 'Subscribe to earn'}
                   </p>
                 </CardContent>
               </Card>
             </div>
 
-            {/* USD Earnings & Withdrawal — Epic only */}
-            {isEpic && (
+            {/* USD Earnings & Withdrawal — Lyric and Epic */}
+            {(isEpic || isLyric) && (
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-base">Earnings & Withdrawal</CardTitle>
@@ -230,51 +228,55 @@ export default function Wallet() {
                   <div>
                     <p className="text-3xl font-semibold text-foreground">${poetBalance.toFixed(2)}</p>
                     <p className="text-xs text-muted-foreground mt-1">
-                      Your share from the poet pool + ad revenue, calculated from available ink. Minimum ${threshold.toFixed(2)} to withdraw.
+                      Your share from the poet pool + ad revenue, calculated from earned ink.
+                      {isEpic
+                        ? ` Minimum $${threshold.toFixed(2)} to withdraw.`
+                        : ' Upgrade to Epic to unlock withdrawals.'}
                     </p>
                   </div>
 
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium" htmlFor="paypal-email">
-                      PayPal email
-                    </label>
-                    <div className="flex flex-col sm:flex-row gap-2">
-                      <Input
-                        id="paypal-email"
-                        type="email"
-                        placeholder="you@example.com"
-                        value={paypalEmail}
-                        onChange={(event) => setPaypalEmail(event.target.value)}
-                      />
-                      <Button type="button" variant="secondary" onClick={handleSavePaymentDetails} disabled={savingPayment}>
-                        {savingPayment ? 'Saving...' : 'Save'}
-                      </Button>
+                  {isEpic && (
+                    <>
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium" htmlFor="paypal-email">
+                          PayPal email
+                        </label>
+                        <div className="flex flex-col sm:flex-row gap-2">
+                          <Input
+                            id="paypal-email"
+                            type="email"
+                            placeholder="you@example.com"
+                            value={paypalEmail}
+                            onChange={(event) => setPaypalEmail(event.target.value)}
+                          />
+                          <Button type="button" variant="secondary" onClick={handleSavePaymentDetails} disabled={savingPayment}>
+                            {savingPayment ? 'Saving...' : 'Save'}
+                          </Button>
+                        </div>
+                        <p className="text-xs text-muted-foreground">Add your payment details so we can process payouts.</p>
+                      </div>
+
+                      {canWithdraw && (
+                        <Button type="button" onClick={handleWithdraw} disabled={withdrawing}>
+                          {withdrawing ? 'Requesting...' : 'Withdraw'}
+                        </Button>
+                      )}
+                      {!canWithdraw && (
+                        <p className="text-xs text-muted-foreground">
+                          Withdraw becomes available once your balance reaches ${threshold.toFixed(2)}.
+                        </p>
+                      )}
+                    </>
+                  )}
+
+                  {isLyric && (
+                    <div className="rounded-lg border border-dashed border-border p-3 text-center">
+                      <p className="text-sm text-muted-foreground">
+                        Your USD earnings are visible but locked. Upgrade to <span className="font-medium text-foreground">The Epic</span> to unlock withdrawals and ad revenue share.
+                      </p>
+                      <Button variant="outline" size="sm" className="mt-2" onClick={() => navigate('/upgrade')}>Upgrade to Epic</Button>
                     </div>
-                    <p className="text-xs text-muted-foreground">Add your payment details so we can process payouts.</p>
-                  </div>
-
-                  {canWithdraw && (
-                    <Button type="button" onClick={handleWithdraw} disabled={withdrawing}>
-                      {withdrawing ? 'Requesting...' : 'Withdraw'}
-                    </Button>
                   )}
-                  {!canWithdraw && (
-                    <p className="text-xs text-muted-foreground">
-                      Withdraw becomes available once your balance reaches ${threshold.toFixed(2)}.
-                    </p>
-                  )}
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Lyric notice about earnings */}
-            {isLyric && (
-              <Card className="border-dashed">
-                <CardContent className="pt-6 text-center space-y-2">
-                  <p className="text-sm text-muted-foreground">
-                    Your ink earnings are accumulating but locked. Upgrade to <span className="font-medium text-foreground">The Epic</span> to unlock withdrawals and ad revenue share.
-                  </p>
-                  <Button variant="outline" size="sm" onClick={() => navigate('/upgrade')}>Upgrade to Epic</Button>
                 </CardContent>
               </Card>
             )}
