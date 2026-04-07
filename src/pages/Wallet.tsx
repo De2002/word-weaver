@@ -192,29 +192,27 @@ export default function Wallet() {
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm text-muted-foreground flex items-center gap-1">
-                    <Lock className="h-3 w-3" />
-                    Locked ink
+                    <Droplets className="h-3 w-3" />
+                    Earned ink
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-2xl font-semibold text-foreground">{wallet?.locked_balance ?? 0} ink</p>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {isLyric ? 'Upgrade to Epic to unlock' : 'Non-withdrawable'}
-                  </p>
+                  <p className="text-2xl font-semibold text-foreground">{wallet?.total_received ?? 0} ink</p>
+                  <p className="text-xs text-muted-foreground mt-1">Ink received from others</p>
                 </CardContent>
               </Card>
 
               <Card>
                 <CardHeader className="pb-2">
                   <CardTitle className="text-sm text-muted-foreground flex items-center gap-1">
-                    <Unlock className="h-3 w-3" />
-                    Available ink
+                    <DollarSign className="h-3 w-3" />
+                    Available USD
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-2xl font-semibold text-foreground">{wallet?.available_balance ?? 0} ink</p>
+                  <p className="text-2xl font-semibold text-foreground">${poetBalance.toFixed(2)}</p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {isEpic ? 'Withdrawable' : 'Epic tier only'}
+                    {isEpic ? 'Withdrawable' : isLyric ? 'Upgrade to Epic to withdraw' : 'Subscribe to earn'}
                   </p>
                 </CardContent>
               </Card>
