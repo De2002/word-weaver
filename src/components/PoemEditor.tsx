@@ -260,24 +260,14 @@ export function PoemEditor({ initial }: Props) {
     }
   };
 
-  if (tier === "observer") {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4 px-6 text-center">
-        <h2 className="text-xl font-semibold text-foreground">Publishing requires a subscription</h2>
-        <p className="text-sm text-muted-foreground max-w-md">
-          Upgrade to <span className="font-medium text-foreground">The Lyric</span> or <span className="font-medium text-foreground">The Epic</span> to start publishing poems.
-        </p>
-        <Button onClick={() => navigate("/upgrade")} className="mt-2">View Plans</Button>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Quota indicator for Lyric users */}
-      {tier === "lyric" && (
+      {/* Quota indicator for non-Epic users */}
+      {tier !== "epic" && (
         <div className="mb-4 px-3 py-2 rounded-lg bg-secondary/50 border border-border text-xs text-muted-foreground flex items-center justify-between">
-          <span>Monthly poems: {monthlyLimit - remaining}/{monthlyLimit}</span>
+          <span>
+            Monthly poems ({tier === "observer" ? "Observer" : "Lyric"}): {monthlyLimit - remaining}/{monthlyLimit}
+          </span>
           {quotaReached ? (
             <span className="text-destructive font-medium">Limit reached</span>
           ) : (

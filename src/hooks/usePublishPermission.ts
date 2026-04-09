@@ -9,10 +9,11 @@ export function usePublishPermission() {
 
   const isEpic = roles.includes("epic");
   const isLyric = roles.includes("lyric");
+  const isObserver = !isLyric && !isEpic;
   const tier: PublishTier = isEpic ? "epic" : isLyric ? "lyric" : "observer";
-  const canPublish = isLyric || isEpic;
+  const canPublish = true;
 
-  // Fetch monthly poem count for Lyric quota
+  // Fetch monthly poem count for quota tracking
   const { data: monthlyCount = 0 } = useQuery({
     queryKey: ["monthly-poem-count", user?.id],
     queryFn: async () => {
@@ -30,16 +31,17 @@ export function usePublishPermission() {
       if (error) return 0;
       return count ?? 0;
     },
-    enabled: !!user && isLyric && !isEpic,
+    enabled: !!user && !isEpic,
   });
 
-  const monthlyLimit = isLyric && !isEpic ? 100 : Infinity;
+  const monthlyLimit = isEpic ? Infinity : isLyric ? 100 : 10;
   const remaining = Math.max(0, monthlyLimit - monthlyCount);
-  const quotaReached = isLyric && !isEpic && monthlyCount >= 100;
+  const quotaReached = !isEpic && monthlyCount >= monthlyLimit;
 
   return {
     tier,
     canPublish,
+    isObserver,
     isLyric,
     isEpic,
     monthlyCount,

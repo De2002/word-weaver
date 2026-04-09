@@ -7,6 +7,8 @@ import { usePaddle, PADDLE_PRICE_IDS } from '@/hooks/usePaddle';
 const observerFeatures = [
   'Read poems',
   'Discover poets',
+  'Publish up to 10 poems/month',
+  'No ink earnings',
   'Ad-supported',
 ];
 
