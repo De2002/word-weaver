@@ -15,6 +15,7 @@ import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { InkPourDrawer } from '@/components/InkPourDrawer';
+import { PoemReadingControls } from '@/components/PoemReadingControls';
 import { cn } from '@/lib/utils';
 import { formatDistanceToNow } from 'date-fns';
 import { usePoemInteractions } from '@/hooks/usePoemInteractions';
@@ -23,12 +24,15 @@ import { usePoemRealtime } from '@/hooks/usePoemRealtime';
 import { useNativeShare } from '@/hooks/useNativeShare';
 import { db } from '@/lib/db';
 import { Poem } from '@/types/poem';
+import { DEFAULT_READING_PREFERENCES, fontStyles, type ReadingPreferences } from '@/lib/poemReading';
+
 export default function PoemDetail() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const location = useLocation();
   const [showShareMenu, setShowShareMenu] = useState(false);
   const [showInkSheet, setShowInkSheet] = useState(false);
+  const [readingPreferences, setReadingPreferences] = useState<ReadingPreferences>(DEFAULT_READING_PREFERENCES);
   const shareMenuRef = useRef<HTMLDivElement>(null);
   
 
@@ -143,7 +147,26 @@ export default function PoemDetail() {
     if (poem?.id) {
       recordRead();
     }
-  }, [poem?.id]);
+  }, [poem?.id, recordRead]);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('poem-reading-preferences');
+    if (!stored) return;
+
+    try {
+      const parsed = JSON.parse(stored) as Partial<ReadingPreferences>;
+      setReadingPreferences((prev) => ({
+        ...prev,
+        ...parsed,
+      }));
+    } catch {
+      setReadingPreferences(DEFAULT_READING_PREFERENCES);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('poem-reading-preferences', JSON.stringify(readingPreferences));
+  }, [readingPreferences]);
 
   // Close share menu when clicking outside
   useEffect(() => {
@@ -258,6 +281,13 @@ export default function PoemDetail() {
   };
 
   const poetBadge = poem.poet.badges[0];
+  const stanzas = poem.text.split(/\n\s*\n/).filter(Boolean);
+  const poemStyles = {
+    fontFamily: fontStyles[readingPreferences.font].family,
+    fontSize: `${readingPreferences.fontSize}px`,
+    lineHeight: readingPreferences.lineHeight,
+    maxWidth: `${readingPreferences.lineWidth}px`,
+  } as const;
 
   return (
     <div className="min-h-screen bg-background">
@@ -310,9 +340,24 @@ export default function PoemDetail() {
           </div>
 
           {/* Poem Full Text */}
-          <div className="mb-5">
-            <div className="poem-text text-[1.55rem] md:text-3xl text-foreground">
-              {poem.text}
+          <div className="mb-5 space-y-4">
+            <PoemReadingControls
+              preferences={readingPreferences}
+              onChange={setReadingPreferences}
+            />
+            <div
+              className="mx-auto text-foreground whitespace-pre-wrap break-words"
+              style={poemStyles}
+            >
+              {stanzas.map((stanza, index) => (
+                <p
+                  key={`${index}-${stanza.slice(0, 20)}`}
+                  className="m-0"
+                  style={{ marginBottom: index === stanzas.length - 1 ? 0 : `${readingPreferences.lineHeight}em` }}
+                >
+                  {stanza}
+                </p>
+              ))}
             </div>
           </div>
 
