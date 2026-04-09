@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { User2, CalendarDays, BookOpen, Share2, Feather } from 'lucide-react';
@@ -8,10 +8,13 @@ import { useClassicPoem } from '@/hooks/useClassics';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
+import { PoemReadingControls } from '@/components/PoemReadingControls';
+import { DEFAULT_READING_PREFERENCES, fontStyles, type ReadingPreferences } from '@/lib/poemReading';
 
 export default function ClassicPoemDetail() {
   const { slug } = useParams<{ slug: string }>();
   const { data: poem, isLoading } = useClassicPoem(slug ?? '');
+  const [readingPreferences, setReadingPreferences] = useState<ReadingPreferences>(DEFAULT_READING_PREFERENCES);
 
   // Advanced SEO meta
   useEffect(() => {
@@ -63,6 +66,25 @@ export default function ClassicPoemDetail() {
     };
   }, [poem]);
 
+  useEffect(() => {
+    const stored = localStorage.getItem('poem-reading-preferences');
+    if (!stored) return;
+
+    try {
+      const parsed = JSON.parse(stored) as Partial<ReadingPreferences>;
+      setReadingPreferences((prev) => ({
+        ...prev,
+        ...parsed,
+      }));
+    } catch {
+      setReadingPreferences(DEFAULT_READING_PREFERENCES);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem('poem-reading-preferences', JSON.stringify(readingPreferences));
+  }, [readingPreferences]);
+
   const handleShare = async () => {
     const url = window.location.href;
     if (navigator.share) {
@@ -104,6 +126,13 @@ export default function ClassicPoemDetail() {
   }
 
   const poet = poem.poet;
+  const stanzas = poem.content.split(/\n\s*\n/).filter(Boolean);
+  const poemStyles = {
+    fontFamily: fontStyles[readingPreferences.font].family,
+    fontSize: `${readingPreferences.fontSize}px`,
+    lineHeight: readingPreferences.lineHeight,
+    maxWidth: `${readingPreferences.lineWidth}px`,
+  } as const;
 
   return (
     <div className="min-h-screen bg-background">
@@ -166,12 +195,27 @@ export default function ClassicPoemDetail() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.1 }}
-          className="mb-8"
+          className="mb-8 space-y-4"
         >
+          <PoemReadingControls
+            preferences={readingPreferences}
+            onChange={setReadingPreferences}
+          />
           <div className="p-6 rounded-2xl border border-border bg-card">
-            <pre className="font-poem text-base text-foreground leading-[1.9] whitespace-pre-wrap break-words">
-              {poem.content}
-            </pre>
+            <div
+              className="mx-auto whitespace-pre-wrap break-words text-foreground"
+              style={poemStyles}
+            >
+              {stanzas.map((stanza, index) => (
+                <p
+                  key={`${index}-${stanza.slice(0, 20)}`}
+                  className="m-0"
+                  style={{ marginBottom: index === stanzas.length - 1 ? 0 : `${readingPreferences.lineHeight}em` }}
+                >
+                  {stanza}
+                </p>
+              ))}
+            </div>
           </div>
         </motion.article>
 
