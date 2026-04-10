@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://wordstack.io/sitemap.xml
+Sitemap: https://www.wordstack.io/sitemap.xml
