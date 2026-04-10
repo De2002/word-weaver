@@ -33,14 +33,20 @@ function escapeXml(str: string): string {
     .replace(/'/g, "&apos;");
 }
 
+function normalizeSitemapUrl(loc: string): string {
+  return loc.replace(LEGACY_SITE_URL, SITE_URL);
+}
+
 function urlEntry(
   loc: string,
   lastmod?: string,
   changefreq?: string,
   priority?: string
 ): string {
+  const normalizedLoc = normalizeSitemapUrl(loc);
+
   return `  <url>
-    <loc>${escapeXml(loc)}</loc>${lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : ""}${changefreq ? `\n    <changefreq>${changefreq}</changefreq>` : ""}${priority ? `\n    <priority>${priority}</priority>` : ""}
+    <loc>${escapeXml(normalizedLoc)}</loc>${lastmod ? `\n    <lastmod>${lastmod}</lastmod>` : ""}${changefreq ? `\n    <changefreq>${changefreq}</changefreq>` : ""}${priority ? `\n    <priority>${priority}</priority>` : ""}
   </url>`;
 }
 
