@@ -11,7 +11,7 @@ const pricingTiers = [
     name: "The Observer",
     price: "Free",
     description: "Perfect if you just want to explore.",
-    perks: ["Read poems", "Discover poets", "Ad-supported"],
+    perks: ["Publish up to 10 poems per month", "Discover poets", "Ad-supported"],
     cta: "Keep Reading",
     priceId: null,
   },
