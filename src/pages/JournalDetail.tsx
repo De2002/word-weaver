@@ -37,7 +37,7 @@ export default function JournalDetail() {
   const isOwner = user?.id === journal?.user_id;
   const displayName = journal?.profile?.display_name || 'Anonymous';
   const username = journal?.profile?.username;
-  const avatarUrl = journal?.profile?.avatar_url || authorBoxImageUrl;
+  const avatarUrl = authorBoxImageUrl;
   const initials = displayName.slice(0, 2).toUpperCase();
 
   // Update document title
