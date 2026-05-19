@@ -25,6 +25,7 @@ import {
 } from '@/components/ui/alert-dialog';
 
 export default function JournalDetail() {
+  const authorBoxImageUrl = 'https://i.ibb.co/VcFRV219/IMG-20260409-094310-1.jpg';
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -36,7 +37,7 @@ export default function JournalDetail() {
   const isOwner = user?.id === journal?.user_id;
   const displayName = journal?.profile?.display_name || 'Anonymous';
   const username = journal?.profile?.username;
-  const avatarUrl = journal?.profile?.avatar_url;
+  const avatarUrl = journal?.profile?.avatar_url || authorBoxImageUrl;
   const initials = displayName.slice(0, 2).toUpperCase();
 
   // Update document title
