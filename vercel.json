@@ -32,6 +32,9 @@
       "source": "/sitemap.xml",
       "destination": "https://amfagonrhlcnoqpmiawh.supabase.co/functions/v1/sitemap"
     },
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/((?!api|assets|.*\\..*).*)",
+      "destination": "/index.html"
+    }
   ]
 }
